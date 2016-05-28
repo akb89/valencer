@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="lexUnit.xsl"?>
+<lexUnit status="Created" POS="V" name="treat.v" ID="17073" frame="Medical_intervention" frameID="2741" totalAnnotated="2" xsi:schemaLocation="../schema/lexUnit.xsd" xmlns="http://framenet.icsi.berkeley.edu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <header>
+        <corpus description="WikiNews" name="WikiNews" ID="246">
+            <document description="Fires_6" name="Fires_6" ID="25621"/>
+        </corpus>
+        <frame>
+            <FE fgColor="FFFFFF" bgColor="A52A2A" type="Peripheral" abbrev="" name="Extent"/>
+            <FE fgColor="FFFFFF" bgColor="1E90FF" type="Peripheral" abbrev="" name="Frequency_of_success"/>
+            <FE fgColor="FFFFFF" bgColor="008000" type="Core" abbrev="" name="Intervention"/>
+            <FE fgColor="FFFFFF" bgColor="800080" type="Core" abbrev="" name="Medical_condition"/>
+            <FE fgColor="FFFFFF" bgColor="FF0000" type="Core" abbrev="" name="Medical_professional"/>
+            <FE fgColor="FFFFFF" bgColor="800080" type="Peripheral" abbrev="" name="Patient"/>
+            <FE fgColor="FFFFFF" bgColor="0000FF" type="Core" abbrev="" name="Result"/>
+            <FE fgColor="FFFFFF" bgColor="FFD700" type="Peripheral" abbrev="" name="Side_effects"/>
+        </frame>
+    </header>
+    <definition>To attempt to alleviate symptoms</definition>
+    <lexeme POS="V" name="treat"/>
+    <valences>
+        <FERealization total="2">
+            <FE name="Medical_condition"/>
+            <pattern total="2">
+                <valenceUnit GF="Dep" PT="PP[for]" FE="Medical_condition"/>
+                <annoSet ID="6669699"/>
+                <annoSet ID="6669714"/>
+            </pattern>
+        </FERealization>
+        <FERealization total="2">
+            <FE name="Patient"/>
+            <pattern total="2">
+                <valenceUnit GF="Ext" PT="NP" FE="Patient"/>
+                <annoSet ID="6669699"/>
+                <annoSet ID="6669714"/>
+            </pattern>
+        </FERealization>
+        <FEGroupRealization total="2">
+            <FE name="Medical_condition"/>
+            <FE name="Patient"/>
+            <pattern total="2">
+                <valenceUnit GF="Dep" PT="PP[for]" FE="Medical_condition"/>
+                <valenceUnit GF="Ext" PT="NP" FE="Patient"/>
+                <annoSet ID="6669699"/>
+                <annoSet ID="6669714"/>
+            </pattern>
+        </FEGroupRealization>
+    </valences>
+    <subCorpus name="manually-added">
+        <sentence corpID="246" docID="25621" sentNo="1" paragNo="14" aPos="0" ID="4165054">
+            <text>One firefighter is being treated for bite injuries to his face that he received while attempting to rescue a dog .</text>
+            <annotationSet cDate="07/17/2014 11:44:33 PDT Thu" status="UNANN" ID="6669224">
+                <layer rank="1" name="PENN">
+                    <label end="2" start="0" name="cd"/>
+                    <label end="14" start="4" name="nn"/>
+                    <label end="17" start="16" name="VBZ"/>
+                    <label end="23" start="19" name="VBG"/>
+                    <label end="31" start="25" name="VVN"/>
+                    <label end="35" start="33" name="in"/>
+                    <label end="40" start="37" name="nn"/>
+                    <label end="49" start="42" name="nns"/>
+                    <label end="52" start="51" name="to"/>
+                    <label end="56" start="54" name="PP$"/>
+                    <label end="61" start="58" name="nn"/>
+                    <label end="66" start="63" name="IN/that"/>
+                    <label end="69" start="68" name="PP"/>
+                    <label end="78" start="71" name="VVD"/>
+                    <label end="84" start="80" name="in"/>
+                    <label end="95" start="86" name="VVG"/>
+                    <label end="98" start="97" name="to"/>
+                    <label end="105" start="100" name="VV"/>
+                    <label end="107" start="107" name="dt"/>
+                    <label end="111" start="109" name="nn"/>
+                    <label end="113" start="113" name="sent"/>
+                </layer>
+                <layer rank="1" name="NER"/>
+                <layer rank="1" name="WSL">
+                    <label end="17" start="16" name="NT"/>
+                    <label end="23" start="19" name="NT"/>
+                    <label end="35" start="33" name="NT"/>
+                    <label end="52" start="51" name="NT"/>
+                    <label end="56" start="54" name="NT"/>
+                    <label end="69" start="68" name="NT"/>
+                    <label end="98" start="97" name="NT"/>
+                    <label end="107" start="107" name="NT"/>
+                    <label end="113" start="113" name="NT"/>
+                    <label end="84" start="80" name="NT"/>
+                </layer>
+            </annotationSet>
+            <annotationSet cDate="07/18/2014 02:30:03 PDT Fri" status="MANUAL" ID="6669699">
+                <layer rank="1" name="Target">
+                    <label cBy="CVa" end="31" start="25" name="Target"/>
+                </layer>
+                <layer rank="1" name="FE">
+                    <label cBy="CVa" feID="15723" end="14" start="0" name="Patient"/>
+                    <label cBy="CVa" feID="15691" end="111" start="33" name="Medical_condition"/>
+                </layer>
+                <layer rank="1" name="GF">
+                    <label end="14" start="0" name="Ext"/>
+                    <label end="111" start="33" name="Dep"/>
+                </layer>
+                <layer rank="1" name="PT">
+                    <label end="14" start="0" name="NP"/>
+                    <label end="111" start="33" name="PP"/>
+                </layer>
+                <layer rank="1" name="Other"/>
+                <layer rank="1" name="Sent"/>
+                <layer rank="1" name="Verb"/>
+            </annotationSet>
+        </sentence>
+        <sentence corpID="246" docID="25621" sentNo="1" paragNo="15" aPos="0" ID="4165055">
+            <text>The other firefighter was treated for injuries he received to his hand , which was believed to have been caused by glass or a cat scratching him .</text>
+            <annotationSet cDate="07/17/2014 11:44:33 PDT Thu" status="UNANN" ID="6669225">
+                <layer rank="1" name="PENN">
+                    <label end="2" start="0" name="dt"/>
+                    <label end="8" start="4" name="jj"/>
+                    <label end="20" start="10" name="nn"/>
+                    <label end="24" start="22" name="VBD"/>
+                    <label end="32" start="26" name="VVN"/>
+                    <label end="36" start="34" name="in"/>
+                    <label end="45" start="38" name="nns"/>
+                    <label end="48" start="47" name="PP"/>
+                    <label end="57" start="50" name="VVD"/>
+                    <label end="60" start="59" name="to"/>
+                    <label end="64" start="62" name="PP$"/>
+                    <label end="69" start="66" name="nn"/>
+                    <label end="71" start="71" name=","/>
+                    <label end="77" start="73" name="wdt"/>
+                    <label end="81" start="79" name="VBD"/>
+                    <label end="90" start="83" name="VVN"/>
+                    <label end="93" start="92" name="to"/>
+                    <label end="98" start="95" name="VH"/>
+                    <label end="103" start="100" name="VBN"/>
+                    <label end="110" start="105" name="VVN"/>
+                    <label end="113" start="112" name="in"/>
+                    <label end="119" start="115" name="nn"/>
+                    <label end="122" start="121" name="cc"/>
+                    <label end="124" start="124" name="dt"/>
+                    <label end="128" start="126" name="nn"/>
+                    <label end="139" start="130" name="VVG"/>
+                    <label end="143" start="141" name="PP"/>
+                    <label end="145" start="145" name="sent"/>
+                </layer>
+                <layer rank="1" name="NER"/>
+                <layer rank="1" name="WSL">
+                    <label end="2" start="0" name="NT"/>
+                    <label end="24" start="22" name="NT"/>
+                    <label end="36" start="34" name="NT"/>
+                    <label end="48" start="47" name="NT"/>
+                    <label end="60" start="59" name="NT"/>
+                    <label end="64" start="62" name="NT"/>
+                    <label end="71" start="71" name="NT"/>
+                    <label end="77" start="73" name="NT"/>
+                    <label end="81" start="79" name="NT"/>
+                    <label end="93" start="92" name="NT"/>
+                    <label end="98" start="95" name="NT"/>
+                    <label end="103" start="100" name="NT"/>
+                    <label end="113" start="112" name="NT"/>
+                    <label end="122" start="121" name="NT"/>
+                    <label end="124" start="124" name="NT"/>
+                    <label end="143" start="141" name="NT"/>
+                    <label end="145" start="145" name="NT"/>
+                </layer>
+            </annotationSet>
+            <annotationSet cDate="07/18/2014 02:34:21 PDT Fri" status="MANUAL" ID="6669714">
+                <layer rank="1" name="Target">
+                    <label cBy="CVa" end="32" start="26" name="Target"/>
+                </layer>
+                <layer rank="1" name="FE">
+                    <label cBy="CVa" feID="15723" end="20" start="0" name="Patient"/>
+                    <label cBy="CVa" feID="15691" end="69" start="34" name="Medical_condition"/>
+                </layer>
+                <layer rank="1" name="GF">
+                    <label end="20" start="0" name="Ext"/>
+                    <label end="69" start="34" name="Dep"/>
+                </layer>
+                <layer rank="1" name="PT">
+                    <label end="20" start="0" name="NP"/>
+                    <label end="69" start="34" name="PP"/>
+                </layer>
+                <layer rank="1" name="Other"/>
+                <layer rank="1" name="Sent"/>
+                <layer rank="1" name="Verb"/>
+            </annotationSet>
+        </sentence>
+    </subCorpus>
+</lexUnit>

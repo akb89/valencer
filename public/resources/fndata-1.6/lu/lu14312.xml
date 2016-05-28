@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="lexUnit.xsl"?>
+<lexUnit status="Created" POS="N" name="variable.n" ID="14312" frame="Contingency" frameID="900" totalAnnotated="1" xsi:schemaLocation="../schema/lexUnit.xsd" xmlns="http://framenet.icsi.berkeley.edu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <header>
+        <corpus description="Texts from Nuclear Threat Initiative website, created by Center for Non-Proliferation Studies" name="NTI" ID="135">
+            <document description="China Overview" name="ChinaOverview" ID="23671"/>
+        </corpus>
+        <frame>
+            <FE fgColor="FFFFFF" bgColor="1E90FF" type="Extra-Thematic" abbrev="cir" name="Circumstances"/>
+            <FE fgColor="FFFFFF" bgColor="FF00FF" type="Peripheral" abbrev="" name="Degree"/>
+            <FE fgColor="FFFFFF" bgColor="008000" type="Core" abbrev="" name="Determinant"/>
+            <FE fgColor="FFFFFF" bgColor="FF0000" type="Core" abbrev="" name="Outcome"/>
+        </frame>
+    </header>
+    <definition>FN: an uncertain fact that something else depends on.</definition>
+    <lexeme POS="N" name="variable"/>
+    <valences>
+        <FERealization total="1">
+            <FE name="Degree"/>
+            <pattern total="1">
+                <valenceUnit GF="Dep" PT="AJP" FE="Degree"/>
+                <annoSet ID="6544177"/>
+            </pattern>
+        </FERealization>
+        <FERealization total="1">
+            <FE name="Determinant"/>
+            <pattern total="1">
+                <valenceUnit GF="Ext" PT="NP" FE="Determinant"/>
+                <annoSet ID="6544177"/>
+            </pattern>
+        </FERealization>
+        <FERealization total="1">
+            <FE name="Outcome"/>
+            <pattern total="1">
+                <valenceUnit GF="" PT="DNI" FE="Outcome"/>
+                <annoSet ID="6544177"/>
+            </pattern>
+        </FERealization>
+        <FEGroupRealization total="1">
+            <FE name="Degree"/>
+            <FE name="Determinant"/>
+            <FE name="Outcome"/>
+            <pattern total="1">
+                <valenceUnit GF="Dep" PT="AJP" FE="Degree"/>
+                <valenceUnit GF="Ext" PT="NP" FE="Determinant"/>
+                <valenceUnit GF="" PT="DNI" FE="Outcome"/>
+                <annoSet ID="6544177"/>
+            </pattern>
+        </FEGroupRealization>
+    </valences>
+    <subCorpus name="manually-added">
+        <sentence corpID="135" docID="23671" sentNo="2" paragNo="2" aPos="0" ID="4100800">
+            <text>A key uncertainty is how ongoing military modernization efforts will ultimately reshape China 's strategic nuclear capabilities , but U.S. deployments of missile defenses are likely to be a key variable .</text>
+            <annotationSet cDate="02/07/2007 06:04:05 PST Wed" status="UNANN" ID="6540237">
+                <layer rank="1" name="PENN">
+                    <label end="0" start="0" name="dt"/>
+                    <label end="4" start="2" name="jj"/>
+                    <label end="16" start="6" name="nn"/>
+                    <label end="19" start="18" name="VBZ"/>
+                    <label end="23" start="21" name="wrb"/>
+                    <label end="31" start="25" name="jj"/>
+                    <label end="40" start="33" name="jj"/>
+                    <label end="54" start="42" name="nn"/>
+                    <label end="62" start="56" name="nns"/>
+                    <label end="67" start="64" name="md"/>
+                    <label end="78" start="69" name="rb"/>
+                    <label end="86" start="80" name="VV"/>
+                    <label end="92" start="88" name="NP"/>
+                    <label end="95" start="94" name="POS"/>
+                    <label end="105" start="97" name="jj"/>
+                    <label end="113" start="107" name="jj"/>
+                    <label end="126" start="115" name="nns"/>
+                    <label end="128" start="128" name=","/>
+                    <label end="132" start="130" name="cc"/>
+                    <label end="137" start="134" name="NP"/>
+                    <label end="149" start="139" name="nns"/>
+                    <label end="152" start="151" name="in"/>
+                    <label end="160" start="154" name="nn"/>
+                    <label end="169" start="162" name="nns"/>
+                    <label end="173" start="171" name="vbp"/>
+                    <label end="180" start="175" name="jj"/>
+                    <label end="183" start="182" name="to"/>
+                    <label end="186" start="185" name="vb"/>
+                    <label end="188" start="188" name="dt"/>
+                    <label end="192" start="190" name="jj"/>
+                    <label end="201" start="194" name="nn"/>
+                    <label end="203" start="203" name="sent"/>
+                </layer>
+                <layer rank="1" name="NER">
+                    <label end="92" start="88" name="GPE"/>
+                    <label end="137" start="134" name="GPE"/>
+                </layer>
+                <layer rank="1" name="WSL">
+                    <label end="0" start="0" name="NT"/>
+                    <label end="19" start="18" name="NT"/>
+                    <label end="23" start="21" name="NT"/>
+                    <label end="67" start="64" name="NT"/>
+                    <label end="92" start="88" name="NT"/>
+                    <label end="95" start="94" name="NT"/>
+                    <label end="128" start="128" name="NT"/>
+                    <label end="132" start="130" name="NT"/>
+                    <label end="137" start="134" name="NT"/>
+                    <label end="152" start="151" name="NT"/>
+                    <label end="173" start="171" name="NT"/>
+                    <label end="183" start="182" name="NT"/>
+                    <label end="186" start="185" name="NT"/>
+                    <label end="188" start="188" name="NT"/>
+                    <label end="203" start="203" name="NT"/>
+                </layer>
+            </annotationSet>
+            <annotationSet cDate="06/19/2007 01:03:49 PDT Tue" status="UNANN" ID="6544176">
+                <layer rank="1" name="Target">
+                    <label cBy="RLG" end="201" start="194" name="Target"/>
+                </layer>
+                <layer rank="1" name="FE"/>
+                <layer rank="1" name="GF"/>
+                <layer rank="1" name="PT"/>
+                <layer rank="1" name="Other"/>
+                <layer rank="1" name="Sent"/>
+                <layer rank="1" name="Noun"/>
+            </annotationSet>
+            <annotationSet cDate="06/19/2007 07:01:28 PDT Tue" status="MANUAL" ID="6544177">
+                <layer rank="1" name="Target">
+                    <label cBy="RLG" end="201" start="194" name="Target"/>
+                </layer>
+                <layer rank="1" name="FE">
+                    <label cBy="RLG" feID="5762" end="192" start="190" name="Degree"/>
+                    <label cBy="RLG" feID="5761" end="169" start="134" name="Determinant"/>
+                    <label cBy="RLG" feID="5760" itype="DNI" name="Outcome"/>
+                </layer>
+                <layer rank="1" name="GF">
+                    <label end="192" start="190" name="Dep"/>
+                    <label end="169" start="134" name="Ext"/>
+                </layer>
+                <layer rank="1" name="PT">
+                    <label end="192" start="190" name="AJP"/>
+                    <label end="169" start="134" name="NP"/>
+                </layer>
+                <layer rank="1" name="Other"/>
+                <layer rank="1" name="Sent"/>
+                <layer rank="1" name="Noun">
+                    <label end="186" start="185" name="Cop"/>
+                </layer>
+            </annotationSet>
+        </sentence>
+    </subCorpus>
+</lexUnit>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="lexUnit.xsl"?>
+<lexUnit status="Created" POS="A" name="easy.a" ID="16221" frame="Exertive_force" frameID="1563" totalAnnotated="0" xsi:schemaLocation="../schema/lexUnit.xsd" xmlns="http://framenet.icsi.berkeley.edu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <header>
+        <frame>
+            <FE fgColor="FFFFFF" bgColor="800080" type="Core" abbrev="act" name="Action"/>
+            <FE fgColor="FFFFFF" bgColor="A52A2A" type="Extra-Thematic" abbrev="cir" name="Circumstances"/>
+            <FE fgColor="FFFFFF" bgColor="FF00FF" type="Core" abbrev="" name="Degree"/>
+            <FE fgColor="FFFFFF" bgColor="FF0000" type="Core" abbrev="" name="Entity"/>
+            <FE fgColor="FFFFFF" bgColor="1E90FF" type="Core" abbrev="" name="Force"/>
+            <FE fgColor="FFFFFF" bgColor="006400" type="Core-Unexpressed" abbrev="mag" name="Magnitude"/>
+            <FE fgColor="FFFFFF" bgColor="FFA500" type="Extra-Thematic" abbrev="" name="Time"/>
+        </frame>
+    </header>
+    <definition>FN: exerting little force or having little impact. </definition>
+    <lexeme POS="A" name="easy"/>
+    <semType name="Negative" ID="99"/>
+    <valences/>
+</lexUnit>

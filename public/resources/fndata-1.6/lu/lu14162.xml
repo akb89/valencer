@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="lexUnit.xsl"?>
+<lexUnit status="Created" POS="N" name="shoulder.n" ID="14162" frame="Observable_body_parts" frameID="119" totalAnnotated="1" xsi:schemaLocation="../schema/lexUnit.xsd" xmlns="http://framenet.icsi.berkeley.edu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <header>
+        <corpus description="American National Corpus Texts" name="ANC" ID="195">
+            <document description="Berlitz Intro of Dublin" name="IntroOfDublin" ID="23652"/>
+        </corpus>
+        <frame>
+            <FE fgColor="FFFFFF" bgColor="00008B" type="Peripheral" abbrev="Attachment" name="Attachment"/>
+            <FE fgColor="FFFFFF" bgColor="FF0000" type="Core" abbrev="Body_P" name="Body_part"/>
+            <FE fgColor="FFFFFF" bgColor="0000FF" type="Peripheral" abbrev="Desc" name="Descriptor"/>
+            <FE fgColor="FFFFFF" bgColor="008000" type="Peripheral" abbrev="OrLoc" name="Orientational_location"/>
+            <FE fgColor="FFFFFF" bgColor="800080" type="Core" abbrev="Poss" name="Possessor"/>
+            <FE fgColor="FFFFFF" bgColor="FF69B4" type="Peripheral" abbrev="Subr" name="Subregion"/>
+        </frame>
+    </header>
+    <definition>COD: the joint between the upper arm or forelimb and the main part of the body.  </definition>
+    <lexeme POS="N" name="shoulder"/>
+    <valences>
+        <FERealization total="1">
+            <FE name="Body_part"/>
+            <pattern total="1">
+                <valenceUnit GF="" PT="DEN" FE="Body_part"/>
+                <annoSet ID="6551640"/>
+            </pattern>
+        </FERealization>
+        <FERealization total="1">
+            <FE name="Possessor"/>
+            <pattern total="1">
+                <valenceUnit GF="" PT="DNI" FE="Possessor"/>
+                <annoSet ID="6551640"/>
+            </pattern>
+        </FERealization>
+        <FEGroupRealization total="1">
+            <FE name="Body_part"/>
+            <FE name="Possessor"/>
+            <pattern total="1">
+                <valenceUnit GF="" PT="DEN" FE="Body_part"/>
+                <valenceUnit GF="" PT="DNI" FE="Possessor"/>
+                <annoSet ID="6551640"/>
+            </pattern>
+        </FEGroupRealization>
+    </valences>
+    <subCorpus name="manually-added">
+        <sentence corpID="195" docID="23652" sentNo="4" paragNo="20" aPos="0" ID="4100638">
+            <text>However , young and old , stranger and Dubliner rub shoulders quite happily .</text>
+            <annotationSet cDate="11/14/2006 04:25:31 PST Tue" status="UNANN" ID="6539637">
+                <layer rank="1" name="PENN">
+                    <label end="6" start="0" name="rb"/>
+                    <label end="8" start="8" name=","/>
+                    <label end="14" start="10" name="jj"/>
+                    <label end="18" start="16" name="cc"/>
+                    <label end="22" start="20" name="jj"/>
+                    <label end="24" start="24" name=","/>
+                    <label end="33" start="26" name="nn"/>
+                    <label end="37" start="35" name="cc"/>
+                    <label end="46" start="39" name="nn"/>
+                    <label end="50" start="48" name="nn"/>
+                    <label end="60" start="52" name="nns"/>
+                    <label end="66" start="62" name="rb"/>
+                    <label end="74" start="68" name="rb"/>
+                    <label end="76" start="76" name="sent"/>
+                </layer>
+                <layer rank="1" name="NER"/>
+                <layer rank="1" name="WSL">
+                    <label end="6" start="0" name="NT"/>
+                    <label end="8" start="8" name="NT"/>
+                    <label end="18" start="16" name="NT"/>
+                    <label end="24" start="24" name="NT"/>
+                    <label end="37" start="35" name="NT"/>
+                    <label end="66" start="62" name="NT"/>
+                    <label end="76" start="76" name="NT"/>
+                </layer>
+            </annotationSet>
+            <annotationSet cDate="02/20/2008 03:32:30 PST Wed" status="MANUAL" ID="6551640">
+                <layer rank="1" name="Target">
+                    <label cBy="JKs" end="60" start="52" name="Target"/>
+                </layer>
+                <layer rank="1" name="FE">
+                    <label cBy="JKs" feID="692" end="60" start="52" name="Body_part"/>
+                    <label cBy="JKs" feID="611" itype="DNI" name="Possessor"/>
+                </layer>
+                <layer rank="1" name="GF"/>
+                <layer rank="1" name="PT"/>
+                <layer rank="1" name="Other"/>
+                <layer rank="1" name="Sent"/>
+                <layer rank="1" name="Noun"/>
+            </annotationSet>
+        </sentence>
+    </subCorpus>
+</lexUnit>

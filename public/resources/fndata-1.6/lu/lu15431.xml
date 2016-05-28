@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="lexUnit.xsl"?>
+<lexUnit status="Created" POS="SCON" name="while.scon" ID="15431" frame="Concessive" frameID="2150" totalAnnotated="2" xsi:schemaLocation="../schema/lexUnit.xsd" xmlns="http://framenet.icsi.berkeley.edu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <header>
+        <corpus description="Wall Street Journal Texts from the PropBank Project" name="PropBank" ID="115">
+            <document description="Ticket Splitting" name="TicketSplitting" ID="23012"/>
+        </corpus>
+        <corpus description="American National Corpus Texts" name="ANC" ID="195">
+            <document description="Berlitz What to Do in Hong Kong" name="WhatToHongKong" ID="23758"/>
+        </corpus>
+        <frame>
+            <FE fgColor="FFFFFF" bgColor="800080" type="Core" abbrev="Msg" name="Conceded_state_of_affairs"/>
+            <FE fgColor="FFFFFF" bgColor="FF0000" type="Core" abbrev="" name="Main_assertion"/>
+            <FE fgColor="FFFFFF" bgColor="FFA500" type="Core" abbrev="Top" name="Topic"/>
+        </frame>
+    </header>
+    <definition>when on the other hand</definition>
+    <lexeme POS="SCON" name="while"/>
+    <valences>
+        <FERealization total="2">
+            <FE name="Conceded_state_of_affairs"/>
+            <pattern total="2">
+                <valenceUnit GF="Dep" PT="Sfin" FE="Conceded_state_of_affairs"/>
+                <annoSet ID="4531534"/>
+                <annoSet ID="6584610"/>
+            </pattern>
+        </FERealization>
+        <FERealization total="2">
+            <FE name="Main_assertion"/>
+            <pattern total="1">
+                <valenceUnit GF="Dep" PT="Sfin" FE="Main_assertion"/>
+                <annoSet ID="4531534"/>
+            </pattern>
+            <pattern total="1">
+                <valenceUnit GF="Head" PT="Sfin" FE="Main_assertion"/>
+                <annoSet ID="6584610"/>
+            </pattern>
+        </FERealization>
+        <FEGroupRealization total="2">
+            <FE name="Conceded_state_of_affairs"/>
+            <FE name="Main_assertion"/>
+            <pattern total="1">
+                <valenceUnit GF="Dep" PT="Sfin" FE="Conceded_state_of_affairs"/>
+                <valenceUnit GF="Dep" PT="Sfin" FE="Main_assertion"/>
+                <annoSet ID="4531534"/>
+            </pattern>
+            <pattern total="1">
+                <valenceUnit GF="Dep" PT="Sfin" FE="Conceded_state_of_affairs"/>
+                <valenceUnit GF="Head" PT="Sfin" FE="Main_assertion"/>
+                <annoSet ID="6584610"/>
+            </pattern>
+        </FEGroupRealization>
+    </valences>
+    <subCorpus name="manually-added">
+        <sentence corpID="115" docID="23012" sentNo="1" paragNo="9" aPos="0" ID="2824393">
+            <text>While this theory is exceedingly simple , it appears to explain several things .</text>
+            <annotationSet cDate="02/05/2004 08:30:23 PST Thu" status="UNANN" ID="4528388">
+                <layer rank="1" name="PENN">
+                    <label end="4" start="0" name="in"/>
+                    <label end="9" start="6" name="dt"/>
+                    <label end="16" start="11" name="nn"/>
+                    <label end="19" start="18" name="VBZ"/>
+                    <label end="31" start="21" name="rb"/>
+                    <label end="38" start="33" name="jj"/>
+                    <label end="40" start="40" name=","/>
+                    <label end="43" start="42" name="PP"/>
+                    <label end="51" start="45" name="VVZ"/>
+                    <label end="54" start="53" name="to"/>
+                    <label end="62" start="56" name="VV"/>
+                    <label end="70" start="64" name="jj"/>
+                    <label end="77" start="72" name="nns"/>
+                    <label end="79" start="79" name="sent"/>
+                </layer>
+                <layer rank="1" name="NER"/>
+                <layer rank="1" name="WSL">
+                    <label end="19" start="18" name="NT"/>
+                    <label end="31" start="21" name="NT"/>
+                    <label end="40" start="40" name="NT"/>
+                    <label end="54" start="53" name="NT"/>
+                    <label end="79" start="79" name="NT"/>
+                    <label end="9" start="6" name="NT"/>
+                    <label end="43" start="42" name="NT"/>
+                    <label end="77" start="72" name="NT"/>
+                </layer>
+            </annotationSet>
+            <annotationSet cDate="07/14/2010 01:03:21 PDT Wed" status="MANUAL" ID="4531534">
+                <layer rank="1" name="Target">
+                    <label cBy="AlK" end="4" start="0" name="Target"/>
+                </layer>
+                <layer rank="1" name="FE">
+                    <label cBy="AlK" feID="13302" end="38" start="6" name="Conceded_state_of_affairs"/>
+                    <label cBy="AlK" feID="13312" end="77" start="42" name="Main_assertion"/>
+                </layer>
+                <layer rank="1" name="GF">
+                    <label end="38" start="6" name="Dep"/>
+                    <label end="77" start="42" name="Dep"/>
+                </layer>
+                <layer rank="1" name="PT">
+                    <label end="38" start="6" name="Sfin"/>
+                    <label end="77" start="42" name="Sfin"/>
+                </layer>
+                <layer rank="1" name="Other"/>
+                <layer rank="1" name="Sent"/>
+            </annotationSet>
+        </sentence>
+        <sentence corpID="195" docID="23758" sentNo="2" paragNo="2" aPos="0" ID="4104030">
+            <text>While it 's no longer the bargain shopping destination it once was , there are still some good buys to be had .</text>
+            <annotationSet cDate="07/21/2008 03:48:15 PDT Mon" status="UNANN" ID="6552862">
+                <layer rank="1" name="PENN">
+                    <label end="4" start="0" name="in"/>
+                    <label end="7" start="6" name="PP"/>
+                    <label end="10" start="9" name="VBZ"/>
+                    <label end="13" start="12" name="rb"/>
+                    <label end="20" start="15" name="rbr"/>
+                    <label end="24" start="22" name="dt"/>
+                    <label end="32" start="26" name="nn"/>
+                    <label end="41" start="34" name="nn"/>
+                    <label end="53" start="43" name="nn"/>
+                    <label end="56" start="55" name="PP"/>
+                    <label end="61" start="58" name="rb"/>
+                    <label end="65" start="63" name="VBD"/>
+                    <label end="67" start="67" name=","/>
+                    <label end="73" start="69" name="ex"/>
+                    <label end="77" start="75" name="vbp"/>
+                    <label end="83" start="79" name="rb"/>
+                    <label end="88" start="85" name="dt"/>
+                    <label end="93" start="90" name="jj"/>
+                    <label end="98" start="95" name="nns"/>
+                    <label end="101" start="100" name="to"/>
+                    <label end="104" start="103" name="vb"/>
+                    <label end="108" start="106" name="VHN"/>
+                    <label end="110" start="110" name="sent"/>
+                </layer>
+                <layer rank="1" name="NER"/>
+                <layer rank="1" name="WSL">
+                    <label end="7" start="6" name="NT"/>
+                    <label end="10" start="9" name="NT"/>
+                    <label end="24" start="22" name="NT"/>
+                    <label end="56" start="55" name="NT"/>
+                    <label end="65" start="63" name="NT"/>
+                    <label end="67" start="67" name="NT"/>
+                    <label end="101" start="100" name="NT"/>
+                    <label end="104" start="103" name="NT"/>
+                    <label end="110" start="110" name="NT"/>
+                </layer>
+            </annotationSet>
+            <annotationSet cDate="09/23/2011 04:06:59 PDT Fri" status="MANUAL" ID="6584610">
+                <layer rank="1" name="Target">
+                    <label cBy="MLC" end="4" start="0" name="Target"/>
+                </layer>
+                <layer rank="1" name="FE">
+                    <label cBy="MLC" feID="13302" end="65" start="6" name="Conceded_state_of_affairs"/>
+                    <label cBy="MLC" feID="13312" end="108" start="69" name="Main_assertion"/>
+                </layer>
+                <layer rank="1" name="GF">
+                    <label end="65" start="6" name="Dep"/>
+                    <label end="108" start="69" name="Head"/>
+                </layer>
+                <layer rank="1" name="PT">
+                    <label end="65" start="6" name="Sfin"/>
+                    <label end="108" start="69" name="Sfin"/>
+                </layer>
+                <layer rank="1" name="Other"/>
+                <layer rank="1" name="Sent"/>
+            </annotationSet>
+        </sentence>
+    </subCorpus>
+</lexUnit>

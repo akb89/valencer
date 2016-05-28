@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="lexUnit.xsl"?>
+<lexUnit status="Created" POS="N" name="fourteen.n" ID="13753" frame="Cardinal_numbers" frameID="218" totalAnnotated="1" xsi:schemaLocation="../schema/lexUnit.xsd" xmlns="http://framenet.icsi.berkeley.edu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <header>
+        <corpus description="Texts from Nuclear Threat Initiative website, created by Center for Non-Proliferation Studies" name="NTI" ID="135">
+            <document description="China Overview" name="ChinaOverview" ID="23671"/>
+        </corpus>
+        <frame>
+            <FE fgColor="FFFFFF" bgColor="9400D3" type="Core" abbrev="Entity" name="Entity"/>
+            <FE fgColor="FFFFFF" bgColor="008000" type="Peripheral" abbrev="mul" name="Multiplier"/>
+            <FE fgColor="FFFFFF" bgColor="FF00FF" type="Core" abbrev="Num" name="Number"/>
+            <FE fgColor="FFFFFF" bgColor="FF69B4" type="Peripheral" abbrev="deg" name="Precision"/>
+        </frame>
+    </header>
+    <definition>COD: equivalent to the product of seven and two; one more than thirteen, or six less than twenty; 14.</definition>
+    <lexeme POS="N" name="fourteen"/>
+    <valences>
+        <FERealization total="1">
+            <FE name="Entity"/>
+            <pattern total="1">
+                <valenceUnit GF="Head" PT="N" FE="Entity"/>
+                <annoSet ID="6540855"/>
+            </pattern>
+        </FERealization>
+        <FERealization total="1">
+            <FE name="Number"/>
+            <pattern total="1">
+                <valenceUnit GF="" PT="DEN" FE="Number"/>
+                <annoSet ID="6540855"/>
+            </pattern>
+        </FERealization>
+        <FEGroupRealization total="1">
+            <FE name="Entity"/>
+            <FE name="Number"/>
+            <pattern total="1">
+                <valenceUnit GF="Head" PT="N" FE="Entity"/>
+                <valenceUnit GF="" PT="DEN" FE="Number"/>
+                <annoSet ID="6540855"/>
+            </pattern>
+        </FEGroupRealization>
+    </valences>
+    <subCorpus name="manually-added">
+        <sentence corpID="135" docID="23671" sentNo="2" paragNo="9" aPos="0" ID="4100819">
+            <text>Since 1997 , China has hosted 14 on - site inspections by the Organization for the Prohibition of Chemical Weapons ( OPCW ) .</text>
+            <annotationSet cDate="02/07/2007 06:04:14 PST Wed" status="UNANN" ID="6540256">
+                <layer rank="1" name="PENN">
+                    <label end="4" start="0" name="in"/>
+                    <label end="9" start="6" name="cd"/>
+                    <label end="11" start="11" name=","/>
+                    <label end="17" start="13" name="NP"/>
+                    <label end="21" start="19" name="VHZ"/>
+                    <label end="28" start="23" name="VVD"/>
+                    <label end="31" start="30" name="cd"/>
+                    <label end="34" start="33" name="in"/>
+                    <label end="36" start="36" name=":"/>
+                    <label end="41" start="38" name="nn"/>
+                    <label end="53" start="43" name="nns"/>
+                    <label end="56" start="55" name="in"/>
+                    <label end="60" start="58" name="dt"/>
+                    <label end="73" start="62" name="NP"/>
+                    <label end="77" start="75" name="in"/>
+                    <label end="81" start="79" name="dt"/>
+                    <label end="93" start="83" name="nn"/>
+                    <label end="96" start="95" name="in"/>
+                    <label end="105" start="98" name="NP"/>
+                    <label end="113" start="107" name="nns"/>
+                    <label end="115" start="115" name="("/>
+                    <label end="120" start="117" name="NP"/>
+                    <label end="122" start="122" name=")"/>
+                    <label end="124" start="124" name="sent"/>
+                </layer>
+                <layer rank="1" name="NER">
+                    <label end="9" start="6" name="date"/>
+                    <label end="17" start="13" name="GPE"/>
+                    <label end="120" start="117" name="organization"/>
+                </layer>
+                <layer rank="1" name="WSL">
+                    <label end="9" start="6" name="NT"/>
+                    <label end="11" start="11" name="NT"/>
+                    <label end="17" start="13" name="NT"/>
+                    <label end="36" start="36" name="NT"/>
+                    <label end="56" start="55" name="NT"/>
+                    <label end="60" start="58" name="NT"/>
+                    <label end="77" start="75" name="NT"/>
+                    <label end="81" start="79" name="NT"/>
+                    <label end="96" start="95" name="NT"/>
+                    <label end="115" start="115" name="NT"/>
+                    <label end="120" start="117" name="NT"/>
+                    <label end="122" start="122" name="NT"/>
+                    <label end="124" start="124" name="NT"/>
+                    <label end="21" start="19" name="NT"/>
+                </layer>
+            </annotationSet>
+            <annotationSet cDate="02/22/2007 11:39:42 PST Thu" status="MANUAL" ID="6540855">
+                <layer rank="1" name="Target">
+                    <label cBy="KmG" end="31" start="30" name="Target"/>
+                </layer>
+                <layer rank="1" name="FE">
+                    <label cBy="KmG" feID="3622" end="31" start="30" name="Number"/>
+                    <label cBy="KmG" feID="3623" end="53" start="33" name="Entity"/>
+                </layer>
+                <layer rank="1" name="GF">
+                    <label end="53" start="33" name="Head"/>
+                </layer>
+                <layer rank="1" name="PT">
+                    <label end="53" start="33" name="N"/>
+                </layer>
+                <layer rank="1" name="Other"/>
+                <layer rank="1" name="Sent"/>
+                <layer rank="1" name="Noun"/>
+            </annotationSet>
+        </sentence>
+    </subCorpus>
+</lexUnit>

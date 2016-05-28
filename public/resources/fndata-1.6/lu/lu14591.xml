@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="lexUnit.xsl"?>
+<lexUnit status="Created" POS="NUM" name="twenty-one.num" ID="14591" frame="Cardinal_numbers" frameID="218" totalAnnotated="1" xsi:schemaLocation="../schema/lexUnit.xsd" xmlns="http://framenet.icsi.berkeley.edu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <header>
+        <corpus description="American National Corpus Texts" name="ANC" ID="195">
+            <document description="Berlitz Where to Go in Hong Kong" name="WhereToHongKong" ID="23771"/>
+        </corpus>
+        <frame>
+            <FE fgColor="FFFFFF" bgColor="9400D3" type="Core" abbrev="Entity" name="Entity"/>
+            <FE fgColor="FFFFFF" bgColor="008000" type="Peripheral" abbrev="mul" name="Multiplier"/>
+            <FE fgColor="FFFFFF" bgColor="FF00FF" type="Core" abbrev="Num" name="Number"/>
+            <FE fgColor="FFFFFF" bgColor="FF69B4" type="Peripheral" abbrev="deg" name="Precision"/>
+        </frame>
+    </header>
+    <definition>FN: the number that is 20 + 1, 21</definition>
+    <lexeme POS="NUM" name="twenty-one"/>
+    <valences>
+        <FERealization total="1">
+            <FE name="Entity"/>
+            <pattern total="1">
+                <valenceUnit GF="Dep" PT="N" FE="Entity"/>
+                <annoSet ID="6556267"/>
+            </pattern>
+        </FERealization>
+        <FERealization total="1">
+            <FE name="Number"/>
+            <pattern total="1">
+                <valenceUnit GF="" PT="--" FE="Number"/>
+                <annoSet ID="6556267"/>
+            </pattern>
+        </FERealization>
+        <FEGroupRealization total="1">
+            <FE name="Entity"/>
+            <FE name="Number"/>
+            <pattern total="1">
+                <valenceUnit GF="Dep" PT="N" FE="Entity"/>
+                <valenceUnit GF="" PT="--" FE="Number"/>
+                <annoSet ID="6556267"/>
+            </pattern>
+        </FEGroupRealization>
+    </valences>
+    <subCorpus name="manually-added">
+        <sentence corpID="195" docID="23771" sentNo="5" paragNo="31" aPos="0" ID="4105909">
+            <text>One story has it that traders Jardine, Matheson and Co fired a private salute for a visiting tycoon , an act that incensed the colonial authorities , who felt that they had the sole right to issue such a 21 - gun welcome .</text>
+            <annotationSet cDate="07/25/2008 01:18:24 PDT Fri" status="UNANN" ID="6554999">
+                <layer rank="1" name="PENN">
+                    <label end="2" start="0" name="cd"/>
+                    <label end="8" start="4" name="nn"/>
+                    <label end="12" start="10" name="VHZ"/>
+                    <label end="15" start="14" name="PP"/>
+                    <label end="20" start="17" name="in"/>
+                    <label end="28" start="22" name="nns"/>
+                    <label end="37" start="30" name="NP"/>
+                    <label end="46" start="39" name="NP"/>
+                    <label end="50" start="48" name="cc"/>
+                    <label end="53" start="52" name="NP"/>
+                    <label end="59" start="55" name="VVD"/>
+                    <label end="61" start="61" name="dt"/>
+                    <label end="69" start="63" name="jj"/>
+                    <label end="76" start="71" name="nn"/>
+                    <label end="80" start="78" name="in"/>
+                    <label end="82" start="82" name="dt"/>
+                    <label end="91" start="84" name="VVG"/>
+                    <label end="98" start="93" name="nn"/>
+                    <label end="100" start="100" name=","/>
+                    <label end="103" start="102" name="dt"/>
+                    <label end="107" start="105" name="nn"/>
+                    <label end="112" start="109" name="in"/>
+                    <label end="121" start="114" name="jj"/>
+                    <label end="125" start="123" name="dt"/>
+                    <label end="134" start="127" name="jj"/>
+                    <label end="146" start="136" name="nns"/>
+                    <label end="148" start="148" name=","/>
+                    <label end="152" start="150" name="wp"/>
+                    <label end="157" start="154" name="VVD"/>
+                    <label end="162" start="159" name="in"/>
+                    <label end="167" start="164" name="PP"/>
+                    <label end="171" start="169" name="VHD"/>
+                    <label end="175" start="173" name="dt"/>
+                    <label end="180" start="177" name="jj"/>
+                    <label end="186" start="182" name="nn"/>
+                    <label end="189" start="188" name="to"/>
+                    <label end="195" start="191" name="VV"/>
+                    <label end="200" start="197" name="pdt"/>
+                    <label end="202" start="202" name="dt"/>
+                    <label end="205" start="204" name="cd"/>
+                    <label end="207" start="207" name=":"/>
+                    <label end="211" start="209" name="nn"/>
+                    <label end="219" start="213" name="nn"/>
+                    <label end="221" start="221" name="sent"/>
+                </layer>
+                <layer rank="1" name="NER">
+                    <label end="53" start="30" name="organization"/>
+                </layer>
+                <layer rank="1" name="WSL">
+                    <label end="15" start="14" name="NT"/>
+                    <label end="20" start="17" name="NT"/>
+                    <label end="37" start="30" name="NT"/>
+                    <label end="46" start="39" name="NT"/>
+                    <label end="50" start="48" name="NT"/>
+                    <label end="53" start="52" name="NT"/>
+                    <label end="61" start="61" name="NT"/>
+                    <label end="80" start="78" name="NT"/>
+                    <label end="82" start="82" name="NT"/>
+                    <label end="100" start="100" name="NT"/>
+                    <label end="103" start="102" name="NT"/>
+                    <label end="112" start="109" name="NT"/>
+                    <label end="125" start="123" name="NT"/>
+                    <label end="148" start="148" name="NT"/>
+                    <label end="152" start="150" name="NT"/>
+                    <label end="162" start="159" name="NT"/>
+                    <label end="167" start="164" name="NT"/>
+                    <label end="175" start="173" name="NT"/>
+                    <label end="189" start="188" name="NT"/>
+                    <label end="200" start="197" name="NT"/>
+                    <label end="202" start="202" name="NT"/>
+                    <label end="207" start="207" name="NT"/>
+                    <label end="221" start="221" name="NT"/>
+                </layer>
+            </annotationSet>
+            <annotationSet cDate="10/20/2008 04:06:05 PDT Mon" status="MANUAL" ID="6556267">
+                <layer rank="1" name="Target">
+                    <label cBy="JKs" end="205" start="204" name="Target"/>
+                </layer>
+                <layer rank="1" name="FE">
+                    <label cBy="JKs" feID="3622" end="205" start="204" name="Number"/>
+                    <label cBy="JKs" feID="3623" end="211" start="209" name="Entity"/>
+                </layer>
+                <layer rank="1" name="GF">
+                    <label end="211" start="209" name="Dep"/>
+                </layer>
+                <layer rank="1" name="PT">
+                    <label end="211" start="209" name="N"/>
+                </layer>
+                <layer rank="1" name="Other"/>
+                <layer rank="1" name="Sent"/>
+            </annotationSet>
+        </sentence>
+    </subCorpus>
+</lexUnit>

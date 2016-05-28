@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="lexUnit.xsl"?>
+<lexUnit status="Created" POS="A" name="rich.a" ID="1982" frame="Position_on_a_scale" frameID="95" totalAnnotated="1" xsi:schemaLocation="../schema/lexUnit.xsd" xmlns="http://framenet.icsi.berkeley.edu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <header>
+        <corpus description="American National Corpus Texts" name="ANC" ID="195">
+            <document description="Berlitz History of Las Vegas" name="HistoryOfLasVegas" ID="23691"/>
+        </corpus>
+        <frame>
+            <FE fgColor="FFFFFF" bgColor="FF69B4" type="Peripheral" abbrev="" name="Degree"/>
+            <FE fgColor="FFFFFF" bgColor="008000" type="Peripheral" abbrev="" name="Domain"/>
+            <FE fgColor="FFFFFF" bgColor="FF0000" type="Core" abbrev="Item" name="Item"/>
+            <FE fgColor="FFFFFF" bgColor="00008B" type="Core-Unexpressed" abbrev="Val" name="Value"/>
+            <FE fgColor="FFFFFF" bgColor="9400D3" type="Core" abbrev="Var" name="Variable"/>
+        </frame>
+    </header>
+    <definition>COD: having (something) in large amounts. </definition>
+    <lexeme POS="A" name="rich"/>
+    <valences>
+        <FERealization total="1">
+            <FE name="Item"/>
+            <pattern total="1">
+                <valenceUnit GF="Ext" PT="NP" FE="Item"/>
+                <annoSet ID="6543998"/>
+            </pattern>
+        </FERealization>
+        <FERealization total="1">
+            <FE name="Value"/>
+            <pattern total="1">
+                <valenceUnit GF="" PT="--" FE="Value"/>
+                <annoSet ID="6543998"/>
+            </pattern>
+        </FERealization>
+        <FERealization total="1">
+            <FE name="Variable"/>
+            <pattern total="1">
+                <valenceUnit GF="Dep" PT="PP[in]" FE="Variable"/>
+                <annoSet ID="6543998"/>
+            </pattern>
+        </FERealization>
+        <FEGroupRealization total="1">
+            <FE name="Item"/>
+            <FE name="Value"/>
+            <FE name="Variable"/>
+            <pattern total="1">
+                <valenceUnit GF="Ext" PT="NP" FE="Item"/>
+                <valenceUnit GF="" PT="--" FE="Value"/>
+                <valenceUnit GF="Dep" PT="PP[in]" FE="Variable"/>
+                <annoSet ID="6543998"/>
+            </pattern>
+        </FEGroupRealization>
+    </valences>
+    <subCorpus name="manually-added">
+        <sentence corpID="195" docID="23691" sentNo="1" paragNo="11" aPos="0" ID="4101052">
+            <text>Despite the fact that the local land was rich in silver , by 1865 most of the mining traffic through Las Vegas was of prospectors headed to California or Northern Nevada in search of gold .</text>
+            <annotationSet cDate="03/12/2007 02:46:37 PDT Mon" status="UNANN" ID="6541845">
+                <layer rank="1" name="PENN">
+                    <label end="6" start="0" name="in"/>
+                    <label end="10" start="8" name="dt"/>
+                    <label end="15" start="12" name="nn"/>
+                    <label end="20" start="17" name="in"/>
+                    <label end="24" start="22" name="dt"/>
+                    <label end="30" start="26" name="jj"/>
+                    <label end="35" start="32" name="nn"/>
+                    <label end="39" start="37" name="VBD"/>
+                    <label end="44" start="41" name="jj"/>
+                    <label end="47" start="46" name="in"/>
+                    <label end="54" start="49" name="nn"/>
+                    <label end="56" start="56" name=","/>
+                    <label end="59" start="58" name="in"/>
+                    <label end="64" start="61" name="cd"/>
+                    <label end="69" start="66" name="jjs"/>
+                    <label end="72" start="71" name="in"/>
+                    <label end="76" start="74" name="dt"/>
+                    <label end="83" start="78" name="nn"/>
+                    <label end="91" start="85" name="nn"/>
+                    <label end="99" start="93" name="in"/>
+                    <label end="103" start="101" name="NP"/>
+                    <label end="109" start="105" name="NP"/>
+                    <label end="113" start="111" name="VBD"/>
+                    <label end="116" start="115" name="in"/>
+                    <label end="128" start="118" name="nns"/>
+                    <label end="135" start="130" name="VVN"/>
+                    <label end="138" start="137" name="to"/>
+                    <label end="149" start="140" name="NP"/>
+                    <label end="152" start="151" name="cc"/>
+                    <label end="161" start="154" name="NP"/>
+                    <label end="168" start="163" name="NP"/>
+                    <label end="171" start="170" name="in"/>
+                    <label end="178" start="173" name="nn"/>
+                    <label end="181" start="180" name="in"/>
+                    <label end="186" start="183" name="nn"/>
+                    <label end="188" start="188" name="sent"/>
+                </layer>
+                <layer rank="1" name="NER">
+                    <label end="109" start="101" name="location"/>
+                    <label end="149" start="140" name="location"/>
+                    <label end="168" start="163" name="location"/>
+                </layer>
+                <layer rank="1" name="WSL">
+                    <label end="6" start="0" name="NT"/>
+                    <label end="10" start="8" name="NT"/>
+                    <label end="20" start="17" name="NT"/>
+                    <label end="24" start="22" name="NT"/>
+                    <label end="39" start="37" name="NT"/>
+                    <label end="47" start="46" name="NT"/>
+                    <label end="56" start="56" name="NT"/>
+                    <label end="64" start="61" name="NT"/>
+                    <label end="76" start="74" name="NT"/>
+                    <label end="99" start="93" name="NT"/>
+                    <label end="103" start="101" name="NT"/>
+                    <label end="109" start="105" name="NT"/>
+                    <label end="113" start="111" name="NT"/>
+                    <label end="116" start="115" name="NT"/>
+                    <label end="138" start="137" name="NT"/>
+                    <label end="149" start="140" name="NT"/>
+                    <label end="152" start="151" name="NT"/>
+                    <label end="161" start="154" name="NT"/>
+                    <label end="168" start="163" name="NT"/>
+                    <label end="171" start="170" name="NT"/>
+                    <label end="181" start="180" name="NT"/>
+                    <label end="188" start="188" name="NT"/>
+                    <label end="15" start="12" name="Nonrelational"/>
+                    <label end="35" start="32" name="Nonrelational"/>
+                    <label end="54" start="49" name="Nonrelational"/>
+                    <label end="69" start="66" name="NT"/>
+                    <label end="128" start="118" name="Nonrelational"/>
+                    <label end="186" start="183" name="Nonrelational"/>
+                </layer>
+            </annotationSet>
+            <annotationSet cDate="04/03/2007 03:31:00 PDT Tue" status="MANUAL" ID="6543998">
+                <layer rank="1" name="Target">
+                    <label cBy="KmG" end="44" start="41" name="Target"/>
+                </layer>
+                <layer rank="1" name="FE">
+                    <label cBy="KmG" feID="455" end="35" start="22" name="Item"/>
+                    <label cBy="KmG" feID="456" end="54" start="46" name="Variable"/>
+                    <label cBy="KmG" feID="4655" end="44" start="41" name="Value"/>
+                </layer>
+                <layer rank="1" name="GF">
+                    <label end="35" start="22" name="Ext"/>
+                    <label end="54" start="46" name="Dep"/>
+                </layer>
+                <layer rank="1" name="PT">
+                    <label end="35" start="22" name="NP"/>
+                    <label end="54" start="46" name="PP"/>
+                </layer>
+                <layer rank="1" name="Other"/>
+                <layer rank="1" name="Sent"/>
+                <layer rank="1" name="Adj">
+                    <label end="39" start="37" name="Cop"/>
+                </layer>
+            </annotationSet>
+        </sentence>
+    </subCorpus>
+</lexUnit>

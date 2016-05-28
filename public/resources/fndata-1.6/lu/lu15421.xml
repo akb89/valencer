@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="lexUnit.xsl"?>
+<lexUnit status="Created" POS="PREP" name="despite.prep" ID="15421" frame="Concessive" frameID="2150" totalAnnotated="1" xsi:schemaLocation="../schema/lexUnit.xsd" xmlns="http://framenet.icsi.berkeley.edu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <header>
+        <corpus description="American National Corpus Texts" name="ANC" ID="195">
+            <document description="Berlitz History of Las Vegas" name="HistoryOfLasVegas" ID="23691"/>
+        </corpus>
+        <frame>
+            <FE fgColor="FFFFFF" bgColor="800080" type="Core" abbrev="Msg" name="Conceded_state_of_affairs"/>
+            <FE fgColor="FFFFFF" bgColor="FF0000" type="Core" abbrev="" name="Main_assertion"/>
+            <FE fgColor="FFFFFF" bgColor="FFA500" type="Core" abbrev="Top" name="Topic"/>
+        </frame>
+    </header>
+    <definition>In spite of</definition>
+    <lexeme POS="PREP" name="despite"/>
+    <valences>
+        <FERealization total="1">
+            <FE name="Conceded_state_of_affairs"/>
+            <pattern total="1">
+                <valenceUnit GF="Dep" PT="NP" FE="Conceded_state_of_affairs"/>
+                <annoSet ID="6562554"/>
+            </pattern>
+        </FERealization>
+        <FERealization total="1">
+            <FE name="Main_assertion"/>
+            <pattern total="1">
+                <valenceUnit GF="Ext" PT="Sfin" FE="Main_assertion"/>
+                <annoSet ID="6562554"/>
+            </pattern>
+        </FERealization>
+        <FEGroupRealization total="1">
+            <FE name="Conceded_state_of_affairs"/>
+            <FE name="Main_assertion"/>
+            <pattern total="1">
+                <valenceUnit GF="Dep" PT="NP" FE="Conceded_state_of_affairs"/>
+                <valenceUnit GF="Ext" PT="Sfin" FE="Main_assertion"/>
+                <annoSet ID="6562554"/>
+            </pattern>
+        </FEGroupRealization>
+    </valences>
+    <subCorpus name="manually-added">
+        <sentence corpID="195" docID="23691" sentNo="1" paragNo="12" aPos="0" ID="4101058">
+            <text>Despite his ambition , Gass ' success was short-lived .</text>
+            <annotationSet cDate="03/12/2007 02:46:40 PDT Mon" status="UNANN" ID="6541851">
+                <layer rank="1" name="PENN">
+                    <label end="6" start="0" name="in"/>
+                    <label end="10" start="8" name="PP$"/>
+                    <label end="19" start="12" name="nn"/>
+                    <label end="21" start="21" name=","/>
+                    <label end="26" start="23" name="NP"/>
+                    <label end="28" start="28" name="POS"/>
+                    <label end="36" start="30" name="nn"/>
+                    <label end="40" start="38" name="VBD"/>
+                    <label end="52" start="42" name="jj"/>
+                    <label end="54" start="54" name="sent"/>
+                </layer>
+                <layer rank="1" name="NER">
+                    <label end="26" start="23" name="person"/>
+                </layer>
+                <layer rank="1" name="WSL">
+                    <label end="10" start="8" name="NT"/>
+                    <label end="21" start="21" name="NT"/>
+                    <label end="26" start="23" name="NT"/>
+                    <label end="28" start="28" name="NT"/>
+                    <label end="40" start="38" name="NT"/>
+                    <label end="54" start="54" name="NT"/>
+                </layer>
+            </annotationSet>
+            <annotationSet cDate="04/29/2011 03:23:18 PDT Fri" status="MANUAL" ID="6562554">
+                <layer rank="1" name="Target">
+                    <label cBy="MLC" end="6" start="0" name="Target"/>
+                </layer>
+                <layer rank="1" name="FE">
+                    <label cBy="MLC" feID="13302" end="19" start="8" name="Conceded_state_of_affairs"/>
+                    <label cBy="MLC" feID="13312" end="52" start="23" name="Main_assertion"/>
+                </layer>
+                <layer rank="1" name="GF">
+                    <label end="19" start="8" name="Dep"/>
+                    <label end="52" start="23" name="Ext"/>
+                </layer>
+                <layer rank="1" name="PT">
+                    <label end="19" start="8" name="NP"/>
+                    <label end="52" start="23" name="Sfin"/>
+                </layer>
+                <layer rank="1" name="Other"/>
+                <layer rank="1" name="Sent"/>
+                <layer rank="1" name="Prep"/>
+            </annotationSet>
+        </sentence>
+    </subCorpus>
+</lexUnit>

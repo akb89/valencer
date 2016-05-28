@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="lexUnit.xsl"?>
+<lexUnit status="Created" POS="V" name="gather.v" ID="17285" frame="Coming_to_believe" frameID="23" totalAnnotated="1" xsi:schemaLocation="../schema/lexUnit.xsd" xmlns="http://framenet.icsi.berkeley.edu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <header>
+        <frame>
+            <FE fgColor="FFFFFF" bgColor="FF0000" type="Core" abbrev="Cog" name="Cognizer"/>
+            <FE fgColor="FFFFFF" bgColor="0000FF" type="Core" abbrev="Cont" name="Content"/>
+            <FE fgColor="FFFFFF" bgColor="FF69B4" type="Peripheral" abbrev="Degr" name="Degree"/>
+            <FE fgColor="FFFFFF" bgColor="9400D3" type="Extra-Thematic" abbrev="Dep" name="Depictive"/>
+            <FE fgColor="FFFFFF" bgColor="006400" type="Core" abbrev="Evid" name="Evidence"/>
+            <FE fgColor="FFFFFF" bgColor="FF00FF" type="Peripheral" abbrev="Manr" name="Manner"/>
+            <FE fgColor="FFFFFF" bgColor="A52A2A" type="Core" abbrev="Mns" name="Means"/>
+            <FE fgColor="FFFFFF" bgColor="2E8B57" type="Core" abbrev="med" name="Medium"/>
+            <FE fgColor="FFFFFF" bgColor="800080" type="Peripheral" abbrev="pla" name="Place"/>
+            <FE fgColor="FFFFFF" bgColor="FFA500" type="Peripheral" abbrev="" name="Time"/>
+            <FE fgColor="FFFFFF" bgColor="00008B" type="Core" abbrev="Top" name="Topic"/>
+        </frame>
+    </header>
+    <definition>FN: to infer from context</definition>
+    <lexeme POS="V" name="gather"/>
+    <valences/>
+    <subCorpus name="manually-added">
+        <sentence sentNo="9" aPos="0" ID="4148931">
+            <text>CONCLUSIONS AND RELEVANCE :</text>
+            <annotationSet cDate="07/30/2013 03:43:28 PDT Tue" status="UNANN" ID="6647623">
+                <layer rank="1" name="PENN">
+                    <label end="10" start="0" name="nns"/>
+                    <label end="14" start="12" name="cc"/>
+                    <label end="24" start="16" name="NP"/>
+                    <label end="26" start="26" name=":"/>
+                </layer>
+                <layer rank="1" name="NER">
+                    <label end="24" start="0" name="organization"/>
+                </layer>
+                <layer rank="1" name="WSL">
+                    <label end="14" start="12" name="NT"/>
+                    <label end="24" start="16" name="NT"/>
+                    <label end="26" start="26" name="NT"/>
+                </layer>
+            </annotationSet>
+            <annotationSet cDate="07/30/2013 03:43:28 PDT Tue" status="MANUAL" ID="6647624">
+                <layer rank="1" name="Target">
+                    <label cBy="EGp" end="10" start="0" name="Target"/>
+                </layer>
+                <layer rank="1" name="FE"/>
+                <layer rank="1" name="GF"/>
+                <layer rank="1" name="PT"/>
+                <layer rank="1" name="Other"/>
+                <layer rank="1" name="Sent"/>
+                <layer rank="1" name="Noun"/>
+            </annotationSet>
+        </sentence>
+    </subCorpus>
+</lexUnit>

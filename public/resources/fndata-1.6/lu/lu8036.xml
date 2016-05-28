@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="lexUnit.xsl"?>
+<lexUnit status="Created" POS="V" name="defend.v" ID="8036" frame="Justifying" frameID="512" totalAnnotated="1" xsi:schemaLocation="../schema/lexUnit.xsd" xmlns="http://framenet.icsi.berkeley.edu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <header>
+        <corpus description="Texts from Nuclear Threat Initiative website, created by Center for Non-Proliferation Studies" name="NTI" ID="135">
+            <document description="Iran Missile" name="Iran_Missile" ID="23512"/>
+        </corpus>
+        <frame>
+            <FE fgColor="FFFFFF" bgColor="008000" type="Core" abbrev="" name="Act"/>
+            <FE fgColor="FFFFFF" bgColor="FF0000" type="Core" abbrev="" name="Agent"/>
+            <FE fgColor="000000" bgColor="FFFF00" type="Peripheral" abbrev="" name="Degree"/>
+            <FE fgColor="FFFFFF" bgColor="7FFF00" type="Peripheral" abbrev="" name="Domain"/>
+            <FE fgColor="FFFFFF" bgColor="90876C" type="Extra-Thematic" abbrev="exp" name="Explanation"/>
+            <FE fgColor="000000" bgColor="FFA500" type="Extra-Thematic" abbrev="" name="Frequency"/>
+            <FE fgColor="FFFFFF" bgColor="800080" type="Peripheral" abbrev="" name="Judge"/>
+            <FE fgColor="FFFFFF" bgColor="A52A2A" type="Peripheral" abbrev="" name="Means"/>
+            <FE fgColor="FFFFFF" bgColor="00BFFF" type="Core" abbrev="" name="State_of_affairs"/>
+            <FE fgColor="FFFFFF" bgColor="808080" type="Peripheral" abbrev="" name="Time"/>
+        </frame>
+    </header>
+    <definition>COD: attempt to justify</definition>
+    <lexeme POS="V" name="defend"/>
+    <valences>
+        <FERealization total="1">
+            <FE name="Act"/>
+            <pattern total="1">
+                <valenceUnit GF="Obj" PT="NP" FE="Act"/>
+                <annoSet ID="6525061"/>
+            </pattern>
+        </FERealization>
+        <FERealization total="1">
+            <FE name="Agent"/>
+            <pattern total="1">
+                <valenceUnit GF="Ext" PT="NP" FE="Agent"/>
+                <annoSet ID="6525061"/>
+            </pattern>
+        </FERealization>
+        <FEGroupRealization total="1">
+            <FE name="Act"/>
+            <FE name="Agent"/>
+            <pattern total="1">
+                <valenceUnit GF="Obj" PT="NP" FE="Act"/>
+                <valenceUnit GF="Ext" PT="NP" FE="Agent"/>
+                <annoSet ID="6525061"/>
+            </pattern>
+        </FEGroupRealization>
+    </valences>
+    <subCorpus name="manually-added">
+        <sentence corpID="135" docID="23512" sentNo="4" paragNo="34" aPos="0" ID="4096838">
+            <text>Iranian Defense and Foreign Ministry officials continue to defend Iran 's right to protect itself from potential threats in the region , while denying any ill intent towards countries such as the United States .</text>
+            <annotationSet cDate="02/25/2005 12:23:35 PST Fri" status="UNANN" ID="6522503">
+                <layer rank="1" name="PENN">
+                    <label end="6" start="0" name="NP"/>
+                    <label end="14" start="8" name="NP"/>
+                    <label end="18" start="16" name="cc"/>
+                    <label end="26" start="20" name="NP"/>
+                    <label end="35" start="28" name="NP"/>
+                    <label end="45" start="37" name="nns"/>
+                    <label end="54" start="47" name="VVP"/>
+                    <label end="57" start="56" name="to"/>
+                    <label end="64" start="59" name="VV"/>
+                    <label end="69" start="66" name="NP"/>
+                    <label end="72" start="71" name="POS"/>
+                    <label end="78" start="74" name="nn"/>
+                    <label end="81" start="80" name="to"/>
+                    <label end="89" start="83" name="VV"/>
+                    <label end="96" start="91" name="PP"/>
+                    <label end="101" start="98" name="in"/>
+                    <label end="111" start="103" name="jj"/>
+                    <label end="119" start="113" name="nns"/>
+                    <label end="122" start="121" name="in"/>
+                    <label end="126" start="124" name="dt"/>
+                    <label end="133" start="128" name="nn"/>
+                    <label end="135" start="135" name=","/>
+                    <label end="141" start="137" name="in"/>
+                    <label end="149" start="143" name="VVG"/>
+                    <label end="153" start="151" name="dt"/>
+                    <label end="157" start="155" name="jj"/>
+                    <label end="164" start="159" name="nn"/>
+                    <label end="172" start="166" name="in"/>
+                    <label end="182" start="174" name="nns"/>
+                    <label end="187" start="184" name="jj"/>
+                    <label end="190" start="189" name="in"/>
+                    <label end="194" start="192" name="dt"/>
+                    <label end="201" start="196" name="NP"/>
+                    <label end="208" start="203" name="NPS"/>
+                    <label end="210" start="210" name="sent"/>
+                </layer>
+                <layer rank="1" name="NER">
+                    <label end="69" start="66" name="GPE"/>
+                    <label end="208" start="196" name="GPE"/>
+                    <label end="35" start="0" name="organization"/>
+                </layer>
+                <layer rank="1" name="WSL">
+                    <label end="6" start="0" name="NT"/>
+                    <label end="14" start="8" name="NT"/>
+                    <label end="18" start="16" name="NT"/>
+                    <label end="26" start="20" name="NT"/>
+                    <label end="35" start="28" name="NT"/>
+                    <label end="57" start="56" name="NT"/>
+                    <label end="69" start="66" name="NT"/>
+                    <label end="72" start="71" name="NT"/>
+                    <label end="81" start="80" name="NT"/>
+                    <label end="96" start="91" name="NT"/>
+                    <label end="101" start="98" name="NT"/>
+                    <label end="122" start="121" name="NT"/>
+                    <label end="126" start="124" name="NT"/>
+                    <label end="135" start="135" name="NT"/>
+                    <label end="141" start="137" name="NT"/>
+                    <label end="153" start="151" name="NT"/>
+                    <label end="172" start="166" name="NT"/>
+                    <label end="190" start="189" name="NT"/>
+                    <label end="194" start="192" name="NT"/>
+                    <label end="201" start="196" name="NT"/>
+                    <label end="208" start="203" name="NT"/>
+                    <label end="210" start="210" name="NT"/>
+                </layer>
+            </annotationSet>
+            <annotationSet cDate="03/17/2005 08:22:42 PST Thu" status="MANUAL" ID="6525061">
+                <layer rank="1" name="Target">
+                    <label cBy="RLG" end="64" start="59" name="Target"/>
+                </layer>
+                <layer rank="1" name="FE">
+                    <label cBy="RLG" feID="5480" end="45" start="0" name="Agent"/>
+                    <label cBy="RLG" feID="5482" end="133" start="66" name="Act"/>
+                </layer>
+                <layer rank="1" name="GF">
+                    <label end="45" start="0" name="Ext"/>
+                    <label end="133" start="66" name="Obj"/>
+                </layer>
+                <layer rank="1" name="PT">
+                    <label end="45" start="0" name="NP"/>
+                    <label end="133" start="66" name="NP"/>
+                </layer>
+                <layer rank="1" name="Other"/>
+                <layer rank="1" name="Sent"/>
+                <layer rank="1" name="Verb"/>
+            </annotationSet>
+        </sentence>
+    </subCorpus>
+</lexUnit>

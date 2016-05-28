@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="lexUnit.xsl"?>
+<lexUnit status="Created" POS="A" name="of a mind.a" ID="17327" frame="Inclination" frameID="377" totalAnnotated="0" xsi:schemaLocation="../schema/lexUnit.xsd" xmlns="http://framenet.icsi.berkeley.edu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <header>
+        <frame>
+            <FE fgColor="FFFFFF" bgColor="0000FF" type="Extra-Thematic" abbrev="Basis" name="Basis"/>
+            <FE fgColor="FFFFFF" bgColor="006400" type="Core-Unexpressed" abbrev="Behavior" name="Behavior"/>
+            <FE fgColor="000000" bgColor="FFD700" type="Extra-Thematic" abbrev="conta" name="Containing_event"/>
+            <FE fgColor="FFFFFF" bgColor="FF69B4" type="Peripheral" abbrev="Degree" name="Degree"/>
+            <FE fgColor="FFFFFF" bgColor="800080" type="Core" abbrev="Entity" name="Entity"/>
+        </frame>
+    </header>
+    <definition>FN: to think about an action with the intent of carrying out the action</definition>
+    <lexeme order="1" headword="false" breakBefore="false" POS="PREP" name="of"/>
+    <lexeme order="2" headword="false" breakBefore="false" POS="ART" name="a"/>
+    <lexeme order="3" headword="true" breakBefore="false" POS="N" name="mind"/>
+    <valences/>
+    <subCorpus name="manually-added"/>
+</lexUnit>

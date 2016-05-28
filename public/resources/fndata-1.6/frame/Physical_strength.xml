@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="frame.xsl"?>
+<frame cBy="MLC" cDate="11/10/2010 12:47:31 PST Wed" name="Physical_strength" ID="2440" xsi:schemaLocation="../schema/frame.xsd" xmlns="http://framenet.icsi.berkeley.edu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <definition>&lt;def-root&gt;The &lt;fen&gt;Entity&lt;/fen&gt; has the capability of interacting with the &lt;fen&gt;Theme&lt;/fen&gt; with the effect of moving of the &lt;fen&gt;Theme&lt;/fen&gt;. 
+
+&lt;ex&gt;&lt;fex name="Entity"&gt;His&lt;/fex&gt; &lt;t&gt;control&lt;/t&gt; &lt;fex name="Theme"&gt;over the wheel&lt;/fex&gt; was lost.&lt;/ex&gt;&lt;/def-root&gt;</definition>
+    <FE bgColor="0000FF" fgColor="FFFFFF" coreType="Core" cBy="MLC" cDate="11/10/2010 01:07:42 PST Wed" abbrev="Ent" name="Entity" ID="14260">
+        <definition>&lt;def-root&gt;The &lt;fen&gt;Entity&lt;/fen&gt; is the sentient or non-sentient thing that causes the &lt;fen&gt;Theme&lt;/fen&gt; to move. &lt;/def-root&gt;</definition>
+    </FE>
+    <FE bgColor="FF0000" fgColor="FFFFFF" coreType="Core" cBy="MLC" cDate="11/10/2010 01:09:00 PST Wed" abbrev="" name="Theme" ID="14261">
+        <definition>&lt;def-root&gt;The Theme is the entity that the Force is applied to. &lt;/def-root&gt;</definition>
+    </FE>
+    <FE bgColor="800080" fgColor="FFFFFF" coreType="Peripheral" cBy="MLC" cDate="11/10/2010 01:09:56 PST Wed" abbrev="src" name="Source" ID="14262">
+        <definition>&lt;def-root&gt;The Source describes the entity or cause that is the origin of the Force. &lt;/def-root&gt;</definition>
+    </FE>
+    <FE bgColor="7FFF00" fgColor="000000" coreType="Peripheral" cBy="MLC" cDate="11/10/2010 01:22:54 PST Wed" abbrev="Desc" name="Descriptor" ID="14263">
+        <definition>&lt;def-root&gt;The Descriptor &lt;/def-root&gt;</definition>
+    </FE>
+    <FE bgColor="9F79EE" fgColor="FFFFFF" coreType="Peripheral" cBy="MLC" cDate="11/10/2010 03:55:23 PST Wed" abbrev="" name="Degree" ID="14264">
+        <definition>&lt;def-root&gt;The Degree to which the Force acts upon the Theme. &lt;/def-root&gt;</definition>
+    </FE>
+    <FE bgColor="FFA500" fgColor="FFFFFF" coreType="Peripheral" cBy="MJE" cDate="06/30/2015 05:29:13 PDT Tue" abbrev="" name="Time" ID="16495">
+        <definition>&lt;def-root&gt;The time at which the &lt;fen&gt;Entity&lt;/fen&gt; has the ability to control the &lt;fen&gt;Theme&lt;/fen&gt;.&lt;/def-root&gt;</definition>
+    </FE>
+    <frameRelation type="Inherits from">
+        <relatedFrame ID="990">Capability</relatedFrame>
+    </frameRelation>
+    <frameRelation type="Is Inherited by"/>
+    <frameRelation type="Perspective on"/>
+    <frameRelation type="Is Perspectivized in"/>
+    <frameRelation type="Uses"/>
+    <frameRelation type="Is Used by"/>
+    <frameRelation type="Subframe of"/>
+    <frameRelation type="Has Subframe(s)"/>
+    <frameRelation type="Precedes"/>
+    <frameRelation type="Is Preceded by"/>
+    <frameRelation type="Is Inchoative of"/>
+    <frameRelation type="Is Causative of"/>
+    <frameRelation type="See also"/>
+    <lexUnit status="Created" POS="N" name="force.n" ID="16151" lemmaID="15020" cBy="MLC" cDate="11/10/2010 01:37:46 PST Wed">
+        <definition>FN: </definition>
+        <sentenceCount annotated="25" total="25"/>
+        <lexeme order="1" headword="false" breakBefore="false" POS="N" name="force"/>
+    </lexUnit>
+    <lexUnit status="Created" POS="N" name="power.n" ID="16152" lemmaID="29988" cBy="MLC" cDate="11/10/2010 04:08:05 PST Wed">
+        <definition>FN: work that is performed on an object. </definition>
+        <sentenceCount annotated="8" total="8"/>
+        <lexeme order="1" headword="false" breakBefore="false" POS="N" name="power"/>
+    </lexUnit>
+    <lexUnit status="Created" POS="N" name="strength.n" ID="16160" lemmaID="51260" cBy="MLC" cDate="11/16/2010 11:57:05 PST Tue">
+        <definition>FN: the capability of a entity to exert force on a theme.</definition>
+        <sentenceCount annotated="1" total="1"/>
+        <lexeme order="1" headword="true" breakBefore="false" POS="N" name="strength"/>
+    </lexUnit>
+    <lexUnit status="Insufficient_Attestations" POS="N" name="control.n" ID="16562" lemmaID="8148" cBy="CVa" cDate="08/30/2011 04:00:30 PDT Tue">
+        <definition>FN: a person has the capability to move his own body part </definition>
+        <sentenceCount annotated="0" total="50"/>
+        <lexeme order="1" headword="false" breakBefore="false" POS="N" name="control"/>
+    </lexUnit>
+</frame>

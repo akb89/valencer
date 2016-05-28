@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="lexUnit.xsl"?>
+<lexUnit status="Created" POS="NUM" name="ninety.num" ID="11804" frame="Cardinal_numbers" frameID="218" totalAnnotated="1" xsi:schemaLocation="../schema/lexUnit.xsd" xmlns="http://framenet.icsi.berkeley.edu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <header>
+        <corpus description="American National Corpus Texts" name="ANC" ID="195">
+            <document description="Berlitz History of Las Vegas" name="HistoryOfLasVegas" ID="23691"/>
+        </corpus>
+        <frame>
+            <FE fgColor="FFFFFF" bgColor="9400D3" type="Core" abbrev="Entity" name="Entity"/>
+            <FE fgColor="FFFFFF" bgColor="008000" type="Peripheral" abbrev="mul" name="Multiplier"/>
+            <FE fgColor="FFFFFF" bgColor="FF00FF" type="Core" abbrev="Num" name="Number"/>
+            <FE fgColor="FFFFFF" bgColor="FF69B4" type="Peripheral" abbrev="deg" name="Precision"/>
+        </frame>
+    </header>
+    <definition>COD: equivalent to the product of nine and ten; ten less than one hundred; 90</definition>
+    <lexeme POS="NUM" name="ninety"/>
+    <valences>
+        <FERealization total="1">
+            <FE name="Entity"/>
+            <pattern total="1">
+                <valenceUnit GF="Head" PT="N" FE="Entity"/>
+                <annoSet ID="6544398"/>
+            </pattern>
+        </FERealization>
+        <FERealization total="1">
+            <FE name="Number"/>
+            <pattern total="1">
+                <valenceUnit GF="" PT="--" FE="Number"/>
+                <annoSet ID="6544398"/>
+            </pattern>
+        </FERealization>
+        <FEGroupRealization total="1">
+            <FE name="Entity"/>
+            <FE name="Number"/>
+            <pattern total="1">
+                <valenceUnit GF="Head" PT="N" FE="Entity"/>
+                <valenceUnit GF="" PT="--" FE="Number"/>
+                <annoSet ID="6544398"/>
+            </pattern>
+        </FEGroupRealization>
+    </valences>
+    <subCorpus name="manually-added">
+        <sentence corpID="195" docID="23691" sentNo="4" paragNo="18" aPos="0" ID="4101081">
+            <text>One year after the auction , the population of Las Vegas had ballooned to 1500 residents , a portent of things to come for the next ninety years .</text>
+            <annotationSet cDate="03/12/2007 02:46:56 PDT Mon" status="UNANN" ID="6541874">
+                <layer rank="1" name="PENN">
+                    <label end="2" start="0" name="cd"/>
+                    <label end="7" start="4" name="nn"/>
+                    <label end="13" start="9" name="in"/>
+                    <label end="17" start="15" name="dt"/>
+                    <label end="25" start="19" name="nn"/>
+                    <label end="27" start="27" name=","/>
+                    <label end="31" start="29" name="dt"/>
+                    <label end="42" start="33" name="nn"/>
+                    <label end="45" start="44" name="in"/>
+                    <label end="49" start="47" name="NP"/>
+                    <label end="55" start="51" name="NP"/>
+                    <label end="59" start="57" name="VHD"/>
+                    <label end="69" start="61" name="VVN"/>
+                    <label end="72" start="71" name="to"/>
+                    <label end="77" start="74" name="cd"/>
+                    <label end="87" start="79" name="nns"/>
+                    <label end="89" start="89" name=","/>
+                    <label end="91" start="91" name="dt"/>
+                    <label end="99" start="93" name="nn"/>
+                    <label end="102" start="101" name="in"/>
+                    <label end="109" start="104" name="nns"/>
+                    <label end="112" start="111" name="to"/>
+                    <label end="117" start="114" name="VV"/>
+                    <label end="121" start="119" name="in"/>
+                    <label end="125" start="123" name="dt"/>
+                    <label end="130" start="127" name="jj"/>
+                    <label end="137" start="132" name="cd"/>
+                    <label end="143" start="139" name="nns"/>
+                    <label end="145" start="145" name="sent"/>
+                </layer>
+                <layer rank="1" name="NER">
+                    <label end="55" start="47" name="location"/>
+                </layer>
+                <layer rank="1" name="WSL">
+                    <label end="17" start="15" name="NT"/>
+                    <label end="27" start="27" name="NT"/>
+                    <label end="31" start="29" name="NT"/>
+                    <label end="45" start="44" name="NT"/>
+                    <label end="49" start="47" name="NT"/>
+                    <label end="55" start="51" name="NT"/>
+                    <label end="59" start="57" name="NT"/>
+                    <label end="72" start="71" name="NT"/>
+                    <label end="77" start="74" name="NT"/>
+                    <label end="89" start="89" name="NT"/>
+                    <label end="91" start="91" name="NT"/>
+                    <label end="102" start="101" name="NT"/>
+                    <label end="112" start="111" name="NT"/>
+                    <label end="121" start="119" name="NT"/>
+                    <label end="125" start="123" name="NT"/>
+                    <label end="145" start="145" name="NT"/>
+                    <label end="117" start="114" name="NT"/>
+                </layer>
+            </annotationSet>
+            <annotationSet cDate="08/02/2007 12:27:47 PDT Thu" status="MANUAL" ID="6544398">
+                <layer rank="1" name="Target">
+                    <label cBy="KmG" end="137" start="132" name="Target"/>
+                </layer>
+                <layer rank="1" name="FE">
+                    <label cBy="KmG" feID="3622" end="137" start="132" name="Number"/>
+                    <label cBy="KmG" feID="3623" end="143" start="139" name="Entity"/>
+                </layer>
+                <layer rank="1" name="GF">
+                    <label end="143" start="139" name="Head"/>
+                </layer>
+                <layer rank="1" name="PT">
+                    <label end="143" start="139" name="N"/>
+                </layer>
+                <layer rank="1" name="Other"/>
+                <layer rank="1" name="Sent"/>
+            </annotationSet>
+        </sentence>
+    </subCorpus>
+</lexUnit>
