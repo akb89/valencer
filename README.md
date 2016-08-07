@@ -1,1 +1,0 @@
-# Web Application for querying FrameNet valence patterns
