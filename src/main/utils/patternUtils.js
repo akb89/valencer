@@ -1,16 +1,15 @@
 'use strict';
 
-const logger = require('./../../logger');
-
+// TODO throw error if length of valenceArray is > 3
 class PatternUtils{
     // A.B.C D.E.F G.H.I --> [A.B.C, D.E.F, G.H.I]
     static toValenceArray(string){
         string = string.trim();
-        if(containsWhiteSpace(string)){
+        if(_containsWhiteSpace(string)){
             var array = [];
             var iterator = 0;
             for(var i = 0; i < string.length; i++){
-                if(isWhiteSpace(string.charAt(i))){
+                if(_isWhiteSpace(string.charAt(i))){
                     if(iterator !== i){
                         array.push(string.substring(iterator, i));
                     }
@@ -25,14 +24,12 @@ class PatternUtils{
     };
 }
 
-function containsWhiteSpace(string){
+function _containsWhiteSpace(string){
     return /\s/.test(string);
 }
 
-function isWhiteSpace(char){
-    if(char.length > 1){
-        throw new IllegalArgumentException('Method should be called on a single char, not a string.')
-    }else{
+function _isWhiteSpace(char){
+    if(char.length === 1){
         return /\s/.test(char);
     }
 }

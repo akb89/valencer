@@ -2,7 +2,7 @@
 
 const chai = require('chai');
 const should = chai.should();
-const PatternUtils = require('../../../main/pattern/utils/patternUtils');
+const PatternUtils = require('./../main/utils/patternUtils');
 
 describe('PatternUtils', () => {
     it('#toValenceArray() should convert a string to an array of sub-strings where each array element is a substring' +

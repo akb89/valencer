@@ -2,7 +2,7 @@
 
 const chai = require('chai');
 const should = chai.should();
-const ValenceUnitUtils = require('../../../main/valenceUnit/utils/valenceUnitUtils');
+const ValenceUnitUtils = require('./../main/utils/valenceUnitUtils');
 
 describe('ValenceUnitUtils', () => {
     it('#toTokenArray() should convert a valenceUnit array of sub-strings separated by a comma to an array of' +

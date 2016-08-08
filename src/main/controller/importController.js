@@ -12,18 +12,20 @@ const context = new Jsonix.Context([FrameSchema, LexUnitSchema]);
 const unmarshaller = context.createUnmarshaller();
 const path = require('path');
 const PropertiesReader = require('properties-reader');
-const properties = PropertiesReader('../../properties.ini');
+const properties = PropertiesReader('./../../../properties.ini');
 const logger = require('./../logger');
 
-const LexUnit = require('./../model/lexUnitModel');
-const Sentence = require('./../model/sentenceModel');
 const AnnotationSet = require('./../model/annotationSetModel');
 const Label = require('./../model/labelModel');
+const LexUnit = require('./../model/lexUnitModel');
 const Pattern = require('./../model/patternModel');
+const Sentence = require('./../model/sentenceModel');
 const ValenceUnit = require('./../model/valenceUnitModel');
 
 const frameNetLayers = ['FE', 'PT', 'GF']; //TODO: externalize?
 const chunkLength = 20; //TODO: externalize?
+
+const JsonixUtils = require('./../utils/jsonixUtils');
 
 require('../utils/utils');
 
@@ -91,14 +93,18 @@ function importFNData(lexUnitDir){
             db = yield MongoClient.connect('mongodb://localhost:27017/noframenet');
             logger.info('Connected to database');
 
+            annoSetCollection = db.collection('annotationSets');
+            labelCollection = db.collection('labels');
             lexUnitCollection = db.collection('lexUnits');
-            valenceUnitCollection = db.collection('valenceUnits');
             patternCollection = db.collection('patterns');
             sentenceCollection = db.collection('sentences');
-            labelCollection = db.collection('labels');
-            annoSetCollection = db.collection('annotationSets');
+            valenceUnitCollection = db.collection('valenceUnits');
             //TODO add all indexes here
             valenceUnitCollection.createIndex({FE: 1, PT: 1, GF: 1}, {unique: true});
+            valenceUnitCollection.createIndex({FE: 1}); //TODO is this necessary?
+            valenceUnitCollection.createIndex({PT: 1}); //TODO is this necessary?
+            valenceUnitCollection.createIndex({GF: 1}); //TODO is this necessary?
+
 
             for(let batch of slicedFileArray){
                 yield importAll(batch);
@@ -151,7 +157,8 @@ function* importAll(files){
     lexUnitCollection.insertMany(lexUnits.map((lexUnit) => {return lexUnit.toObject()}), {w: 0, j: false, ordered: false}, (err) => {
         err !== null ? logger.error(err) : logger.silly('#lexunitCollection.insertMany');
     });
-    patternCollection.insertMany(patterns.map((pattern) => {return pattern.toObject({depopulate: true})}), {w: 0, j: false, ordered: false}, (err) => {
+    //FIXME depopulate: true here is causing an error
+    patternCollection.insertMany(patterns.map((pattern) => {return pattern.toObject()}), {w: 0, j: false, ordered: false}, (err) => {
         err !== null ? logger.error(err) : logger.silly('#patternCollection.insertMany');
     });
     sentenceCollection.insertMany(sentences.map((sentence) => {return sentence.toObject()}), {w: 0, j: false, ordered: false}, (err) => {
@@ -215,7 +222,7 @@ function getPatternsMap(jsonixLexUnit) {
         });
         patterns.push(pattern);
         JsonixUtils.toJsonixAnnoSetArray(jsonixPattern).forEach((jsonixAnnoSet) => {
-            if (map.has(jsonixAnnoSet.id)) {
+            if(map.has(jsonixAnnoSet.id)) {
                 logger.error('AnnoSet already exists');
             }
             map.set(jsonixAnnoSet.id, pattern);
@@ -262,7 +269,7 @@ function initAnnoSet(jsonixAnnoSet, lexUnit, sentence, annoSetPatternsMap) {
         sentence: sentence,
         lexUnit: lexUnit,
         labels: getLabels(jsonixAnnoSet),
-        patterns: annoSetPatternsMap.get(jsonixAnnoSet.id)
+        pattern: annoSetPatternsMap.get(jsonixAnnoSet.id)
     });
     annotationSets.push(annoSet); // there should not be duplicates
 }

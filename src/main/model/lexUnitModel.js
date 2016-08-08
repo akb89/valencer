@@ -19,6 +19,6 @@ lexUnitSchema.static('findByFNId', function(fnId){
     return this.findOne().where('fn_id').equals(fnId);
 });
 
-var LexUnit = mongoose.model('LexUnit', lexUnitSchema);
+var LexUnit = mongoose.model('LexUnit', lexUnitSchema, 'lexUnits');
 
 module.exports = LexUnit;
