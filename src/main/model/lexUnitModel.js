@@ -15,10 +15,6 @@ var lexUnitSchema = mongoose.Schema({
 
 //lexUnitSchema.index({fn_id: 1}, {unique: true});
 
-lexUnitSchema.static('findByFNId', function(fnId){
-    return this.findOne().where('fn_id').equals(fnId);
-});
-
-var LexUnit = mongoose.model('LexUnit', lexUnitSchema, 'lexUnits');
+var LexUnit = mongoose.model('LexUnit', lexUnitSchema);
 
 module.exports = LexUnit;

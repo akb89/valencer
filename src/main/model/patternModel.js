@@ -10,10 +10,6 @@ var patternSchema = mongoose.Schema({
 // TODO: in current configuration there are lot of duplicate patterns.
 //patternSchema.index({valenceUnits: 1}, {unique: true});
 
-patternSchema.static('findByValenceUnits', function(valenceUnits){
-    return Pattern.findOne().where('valenceUnits').equals(valenceUnits.sort());
-});
-
 var Pattern = mongoose.model('Pattern', patternSchema);
 
 module.exports = Pattern;

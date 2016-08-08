@@ -10,10 +10,6 @@ var sentenceSchema = mongoose.Schema({
 
 //sentenceSchema.index({fn_id: 1}, {unique: true});
 
-sentenceSchema.static('findByFNId', function(fnId){
-    return this.findOne().where('fn_id').equals(fnId);
-});
-
 var Sentence = mongoose.model('Sentence', sentenceSchema);
 
 module.exports = Sentence;

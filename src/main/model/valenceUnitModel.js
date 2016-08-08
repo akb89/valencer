@@ -10,6 +10,6 @@ var valenceUnitSchema = mongoose.Schema({
 });
 valenceUnitSchema.index({FE: 1, PT: 1, GF: 1}, {unique: true});
 
-var ValenceUnit = mongoose.model('ValenceUnit', valenceUnitSchema, 'valenceUnits');
+var ValenceUnit = mongoose.model('ValenceUnit', valenceUnitSchema);
 
 module.exports = ValenceUnit;

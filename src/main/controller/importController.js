@@ -54,11 +54,11 @@ var sentenceCollection;
 var labelCollection;
 var annoSetCollection;
 
+var annoSetCounter = 0;
+var labelCounter = 0;
 var lexUnitCounter = 0;
 var patternCounter = 0;
 var sentenceCounter = 0;
-var labelCounter = 0;
-var annoSetCounter = 0;
 
 var duration = function(startTime){
     var precision = 3; // 3 decimal places
@@ -90,21 +90,17 @@ function importFNData(lexUnitDir){
 
         var db;
         try{
-            db = yield MongoClient.connect('mongodb://localhost:27017/noframenet');
+            db = yield MongoClient.connect('mongodb://localhost:27017/noframenet'); //TODO externalize this
             logger.info('Connected to database');
 
-            annoSetCollection = db.collection('annotationSets');
-            labelCollection = db.collection('labels');
-            lexUnitCollection = db.collection('lexUnits');
+            lexUnitCollection = db.collection('lexunits');
+            valenceUnitCollection = db.collection('valenceunits');
             patternCollection = db.collection('patterns');
             sentenceCollection = db.collection('sentences');
-            valenceUnitCollection = db.collection('valenceUnits');
+            labelCollection = db.collection('labels');
+            annoSetCollection = db.collection('annotationsets');
             //TODO add all indexes here
             valenceUnitCollection.createIndex({FE: 1, PT: 1, GF: 1}, {unique: true});
-            valenceUnitCollection.createIndex({FE: 1}); //TODO is this necessary?
-            valenceUnitCollection.createIndex({PT: 1}); //TODO is this necessary?
-            valenceUnitCollection.createIndex({GF: 1}); //TODO is this necessary?
-
 
             for(let batch of slicedFileArray){
                 yield importAll(batch);
@@ -115,11 +111,11 @@ function importFNData(lexUnitDir){
             yield valenceUnitCollection.insertMany(valenceUnitSet.map((valenceUnit) => {return valenceUnit.toObject()}), {writeConcern: 0, j: false, ordered: false});
 
             logger.info('Total inserted to MongoDB: ');
+            logger.info('AnnotationSets = ' + annoSetCounter);
+            logger.info('Labels = ' + labelCounter);
             logger.info('LexUnits = ' + lexUnitCounter);
             logger.info('Patterns = ' + patternCounter);
             logger.info('Sentences = ' + sentenceCounter);
-            logger.info('Labels = ' + labelCounter);
-            logger.info('AnnotationSets = ' + annoSetCounter);
             logger.info('ValenceUnits = ' + valenceUnitSet.length);
 
         }catch(err){
@@ -157,7 +153,7 @@ function* importAll(files){
     lexUnitCollection.insertMany(lexUnits.map((lexUnit) => {return lexUnit.toObject()}), {w: 0, j: false, ordered: false}, (err) => {
         err !== null ? logger.error(err) : logger.silly('#lexunitCollection.insertMany');
     });
-    //FIXME depopulate: true here is causing an error
+    //FIXME {depopulate: true} throws error
     patternCollection.insertMany(patterns.map((pattern) => {return pattern.toObject()}), {w: 0, j: false, ordered: false}, (err) => {
         err !== null ? logger.error(err) : logger.silly('#patternCollection.insertMany');
     });
@@ -222,7 +218,7 @@ function getPatternsMap(jsonixLexUnit) {
         });
         patterns.push(pattern);
         JsonixUtils.toJsonixAnnoSetArray(jsonixPattern).forEach((jsonixAnnoSet) => {
-            if(map.has(jsonixAnnoSet.id)) {
+            if (map.has(jsonixAnnoSet.id)) {
                 logger.error('AnnoSet already exists');
             }
             map.set(jsonixAnnoSet.id, pattern);

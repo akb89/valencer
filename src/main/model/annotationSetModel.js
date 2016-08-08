@@ -11,10 +11,6 @@ var annoSetSchema = mongoose.Schema({
     labels: [{type: mongoose.Schema.Types.ObjectId, ref: 'Label'}]
 });
 
-annoSetSchema.static('findByFNId', function(fnId){
-   return AnnotationSet.findOne().where('fn_id').equals(fnId);
-});
-
-var AnnotationSet = mongoose.model('AnnotationSet', annoSetSchema, 'annotationSets');
+var AnnotationSet = mongoose.model('AnnotationSet', annoSetSchema);
 
 module.exports = AnnotationSet;
