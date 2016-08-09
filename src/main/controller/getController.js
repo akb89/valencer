@@ -1,6 +1,7 @@
 'use strict';
 
 const mongoose = require('mongoose');
+const MongoClient = require('mongodb').MongoClient;
 
 const PatternUtils = require('./../utils/patternUtils');
 const ValenceUnitUtils = require('./../utils/valenceUnitUtils');
@@ -20,24 +21,23 @@ require('./../utils/utils');
 
 const logger = require('./../logger');
 
-function* getAll(){
-    logger.info('Querying for all annotationSets with valence pattern matching: '+this.query.vp);
-    var tokenArray = ValenceUnitUtils.toTokenArray(PatternUtils.toValenceArray(this.query.vp));
+var _query;
 
+function* getAll(){
+    _query = this.query.vp;
+    logger.info('Querying for all annotationSets with valence pattern matching: '+_query);
+    var tokenArray = ValenceUnitUtils.toTokenArray(PatternUtils.toValenceArray(_query));
     try{
         yield mongoose.connect('mongodb://localhost:27017/noframenet');
     }catch(err){
         logger.error(err);
     }
+    var patternSet = yield getPatternSet(tokenArray);
+    //var annoSet = yield
+    // AnnotationSet.findOne().populate('pattern').populate('sentence').populate('lexUnit').populate('labels');
+    var annoSets = yield AnnotationSet.find().where('pattern').in(patternSet.toArray()).populate('pattern').populate('sentence').populate('lexUnit').populate('labels');
 
-    //var patternSet = yield getPatternSet(tokenArray);
-    logger.info('Done');
-    var annoSet = yield AnnotationSet.findOne().populate('pattern').populate('sentence').populate('lexUnit').populate('labels');
-    //var annoSets = yield AnnotationSet.find().where('pattern').in(patternSet.toArray());
-    //AnnotationSet.populate(annoSets);
-
-    //this.body = annoSets;
-    this.body = annoSet;
+    this.body = annoSets;
 }
 
 //FIXME for NP ... Obj queries
@@ -52,7 +52,7 @@ function* getPatternSet(tokenArray){
         var valenceUnitSet = yield getValenceUnitSet(unit);
         var _patterns = yield Pattern.find().where('valenceUnits').in(valenceUnitSet.toArray());
         if(_patterns.length === 0){
-            throw new NotFoundException('Could not find patters matching given input in FrameNet database: '+this.query.vp);
+            throw new NotFoundException('Could not find patters matching given input in FrameNet database: '+_query);
         }
         var _patternSet = new FastSet(_patterns, function (a, b) {
             return a._id.equals(b._id);

@@ -25,6 +25,7 @@ describe('getValenceUnitSet', function (){
     before(function* (done) {
         yield mockgoose(mongoose);
         yield mongoose.connect('mongodb://example.com/testDB');
+        mockgoose.reset();
 
         var aNPObj = new ValenceUnit({
             FE: 'A',

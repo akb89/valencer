@@ -93,12 +93,12 @@ function importFNData(lexUnitDir){
             db = yield MongoClient.connect('mongodb://localhost:27017/noframenet'); //TODO externalize this
             logger.info('Connected to database');
 
+            annoSetCollection = db.collection('annotationsets');
+            labelCollection = db.collection('labels');
             lexUnitCollection = db.collection('lexunits');
-            valenceUnitCollection = db.collection('valenceunits');
             patternCollection = db.collection('patterns');
             sentenceCollection = db.collection('sentences');
-            labelCollection = db.collection('labels');
-            annoSetCollection = db.collection('annotationsets');
+            valenceUnitCollection = db.collection('valenceunits');
             //TODO add all indexes here
             valenceUnitCollection.createIndex({FE: 1, PT: 1, GF: 1}, {unique: true});
 
@@ -108,6 +108,7 @@ function importFNData(lexUnitDir){
 
             logger.verbose('Inserting to MongoDB...');
             logger.verbose('ValenceUnits = ' + valenceUnitSet.length);
+
             yield valenceUnitCollection.insertMany(valenceUnitSet.map((valenceUnit) => {return valenceUnit.toObject()}), {writeConcern: 0, j: false, ordered: false});
 
             logger.info('Total inserted to MongoDB: ');
@@ -150,20 +151,20 @@ function* importAll(files){
      * all insertMany queries to be completed.
      */
 
-    lexUnitCollection.insertMany(lexUnits.map((lexUnit) => {return lexUnit.toObject()}), {w: 0, j: false, ordered: false}, (err) => {
+    lexUnitCollection.insertMany(lexUnits, {w: 0, j: false, ordered: false}, (err) => {
         err !== null ? logger.error(err) : logger.silly('#lexunitCollection.insertMany');
     });
     //FIXME {depopulate: true} throws error
-    patternCollection.insertMany(patterns.map((pattern) => {return pattern.toObject()}), {w: 0, j: false, ordered: false}, (err) => {
+    patternCollection.insertMany(patterns, {w: 0, j: false, ordered: false}, (err) => {
         err !== null ? logger.error(err) : logger.silly('#patternCollection.insertMany');
     });
-    sentenceCollection.insertMany(sentences.map((sentence) => {return sentence.toObject()}), {w: 0, j: false, ordered: false}, (err) => {
+    sentenceCollection.insertMany(sentences, {w: 0, j: false, ordered: false}, (err) => {
         err !== null ? logger.error(err) : logger.silly('#sentenceCollection.insertMany');
     });
-    labelCollection.insertMany(labels.map((label) => {return label.toObject()}), {w: 0, j: false, ordered: false}, (err) => {
+    labelCollection.insertMany(labels, {w: 0, j: false, ordered: false}, (err) => {
         err !== null ? logger.error(err) : logger.silly('#labelCollection.insertMany');
     });
-    annoSetCollection.insertMany(annotationSets.map((annoSet) => {return annoSet.toObject({depopulate: true})}), {w: 0, j: false, ordered: false}, (err) => {
+    annoSetCollection.insertMany(annotationSets, {w: 0, j: false, ordered: false}, (err) => {
         err !== null ? logger.error(err) : logger.silly('#annoSetCollection.insertMany');
     });
 }
@@ -192,7 +193,7 @@ function initLexUnit(jsonixLexUnit){
         frameId: jsonixLexUnit.value.frameId,
         totalAnnotated: jsonixLexUnit.value.totalAnnotated
     });
-    lexUnits.push(lexUnit); // There should not be duplicates
+    lexUnits.push(lexUnit.toObject()); // There should not be duplicates
     initSentences(JsonixUtils.toJsonixSentenceArray(jsonixLexUnit), lexUnit, getPatternsMap(jsonixLexUnit));
 }
 
@@ -216,7 +217,7 @@ function getPatternsMap(jsonixLexUnit) {
         var pattern = new Pattern({
             valenceUnits: patternVUs
         });
-        patterns.push(pattern);
+        patterns.push(pattern.toObject({depopulate: true}));
         JsonixUtils.toJsonixAnnoSetArray(jsonixPattern).forEach((jsonixAnnoSet) => {
             if (map.has(jsonixAnnoSet.id)) {
                 logger.error('AnnoSet already exists');
@@ -238,7 +239,7 @@ function initSentence(jsonixSentence, lexUnit, annoSetPatternsMap) {
         fn_id: jsonixSentence.id,
         text: jsonixSentence.text
     });
-    sentences.push(sentence);
+    sentences.push(sentence.toObject());
     initAnnoSets(JsonixUtils.toJsonixAnnotationSetArray(jsonixSentence), lexUnit, sentence, annoSetPatternsMap);
 }
 
@@ -267,7 +268,7 @@ function initAnnoSet(jsonixAnnoSet, lexUnit, sentence, annoSetPatternsMap) {
         labels: getLabels(jsonixAnnoSet),
         pattern: annoSetPatternsMap.get(jsonixAnnoSet.id)
     });
-    annotationSets.push(annoSet); // there should not be duplicates
+    annotationSets.push(annoSet.toObject({depopulate: true})); // there should not be duplicates
 }
 
 function getLabels(jsonixAnnoSet) {
@@ -280,7 +281,7 @@ function getLabels(jsonixAnnoSet) {
                 startPos: jsonixLabel.start,
                 endPos: jsonixLabel.end
             });
-            labels.push(label); // There will be duplicates but we don't care
+            labels.push(label.toObject()); // There will be duplicates but we don't care
             return label;
         });
     }).flatten();
