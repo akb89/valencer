@@ -4,13 +4,13 @@ This is a dev readme listing all the todos and required modifications to improve
 ## TODO
 ### Data import scripts
 First todos are related to the import scripts and the MongoDB (see scripts under src/main/framenet).
-1. Add script to import fulltext directory (and add related corpus/document models)
-2. Audit database and list all necessary indexes. Add index creation to scripts.
-3. Refactor scripts to ES67 (see below)
-4. Audit scripts and performances
-5. Add error handling on invalid directories (see more specific TODOs in scripts)
-6. Add behavior tests (and possibly unit tests)
-7. Audit *pattern* structure (see below)
+1. Add script to import fulltext directory (and add related corpus/document models)  
+2. Audit database and list all necessary indexes. Add index creation to scripts.  
+3. Refactor scripts to ES67 (see below)  
+4. Audit scripts and performances  
+5. Add error handling on invalid directories (see more specific TODOs in scripts)  
+6. Add behavior tests (and possibly unit tests)  
+7. Audit *pattern* structure (see below)  
 
 
 ### Pattern
