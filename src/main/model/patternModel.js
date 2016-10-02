@@ -1,12 +1,17 @@
 'use strict';
 
-const mongoose = require('mongoose');
-mongoose.Promise = require('bluebird');
+import mongoose from 'mongoose';
+import bluebird from 'bluebird';
+import './valenceUnitModel';
 
-var patternSchema = mongoose.Schema({
-    valenceUnits: [{type: mongoose.Schema.Types.ObjectId, ref: 'ValenceUnit'}]
-});
+mongoose.Promise = bluebird;
 
-var Pattern = mongoose.model('Pattern', patternSchema);
+class Pattern extends mongoose.Schema {
+    constructor() {
+        super({
+            valenceUnits: [{type: mongoose.Schema.Types.ObjectId, ref: 'ValenceUnit'}]
+        })
+    }
+}
 
-module.exports = Pattern;
+export default mongoose.model('Pattern', new Pattern);

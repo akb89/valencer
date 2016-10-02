@@ -19,7 +19,7 @@ function NotFoundException(message) {
 util.inherits(InvalidInputException, Error);
 util.inherits(NotFoundException, Error);
 
-module.exports = {
+export {
     InvalidInputException,
     NotFoundException
 };

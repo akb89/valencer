@@ -1,16 +1,23 @@
 'use strict';
 
-const mongoose = require('mongoose');
-mongoose.Promise = require('bluebird');
+import mongoose from 'mongoose';
+import bluebird from 'bluebird';
+import './sentenceModel';
+import './lexUnitModel';
+import './patternModel';
+import './labelModel';
 
-var annoSetSchema = mongoose.Schema({
-    fn_id: {type: Number, unique: true},
-    sentence: {type: mongoose.Schema.Types.ObjectId, ref: 'Sentence'},
-    lexUnit: {type: mongoose.Schema.Types.ObjectId, ref: 'LexUnit'},
-    pattern: {type: mongoose.Schema.Types.ObjectId, ref: 'Pattern'},
-    labels: [{type: mongoose.Schema.Types.ObjectId, ref: 'Label'}]
-});
+mongoose.Promise = bluebird;
 
-var AnnotationSet = mongoose.model('AnnotationSet', annoSetSchema);
+class AnnotationSet extends mongoose.Schema {
+    constructor() {
+        super({
+            sentence: {type: mongoose.Schema.Types.ObjectId, ref: 'Sentence'},
+            lexUnit: {type: mongoose.Schema.Types.ObjectId, ref: 'LexUnit'},
+            pattern: {type: mongoose.Schema.Types.ObjectId, ref: 'Pattern'},
+            labels: [{type: mongoose.Schema.Types.ObjectId, ref: 'Label'}]
+        })
+    }
+}
 
-module.exports = AnnotationSet;
+export default mongoose.model('AnnotationSet', new AnnotationSet);

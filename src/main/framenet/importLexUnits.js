@@ -56,11 +56,11 @@ var duration = function(startTime){
 
 var start = process.hrtime();
 
-importFNData(__directory).then(() => {logger.info('Import process completed in: '+ duration(start))});
+importFNData(__directory).then(() => {Logger.info('Import process completed in: '+ duration(start))});
 
 // TODO add error and exit on invalid directory
 function importFNData(lexUnitDir){
-    logger.info('Processing directory: '+lexUnitDir);
+    Logger.info('Processing directory: '+lexUnitDir);
     var filesPromise = new Promise((resolve, reject) => {
         filesystem.readdir(lexUnitDir, (error, files) => {
             if(error) return reject(error);
@@ -69,11 +69,11 @@ function importFNData(lexUnitDir){
     });
     return co(function*() {
         var files = yield filesPromise;
-        logger.info('Total number of files = ' + files.length);
-        logger.info('Filtered files: '+files.filter(JsonixUtils.isValidXml).length);
+        Logger.info('Total number of files = ' + files.length);
+        Logger.info('Filtered files: '+files.filter(JsonixUtils.isValidXml).length);
 
         var slicedFileArray = files.filter(JsonixUtils.isValidXml).chunk(chunkSize);
-        logger.info('Slice count: '+slicedFileArray.length);
+        Logger.info('Slice count: '+slicedFileArray.length);
 
         var db;
         try {
@@ -82,7 +82,7 @@ function importFNData(lexUnitDir){
             logger.error(err);
             process.exit(1);
         }
-        logger.info(`Connected to database: ${dbUri}`);
+        Logger.info(`Connected to database: ${dbUri}`);
 
         var annoSetCollection = db.collection('annotationsets');
         var labelCollection = db.collection('labels');
@@ -130,12 +130,12 @@ function importFNData(lexUnitDir){
             err !== null ? logger.error(err) : logger.silly('#valenceUnitCollection.insertMany');
         });
 
-        logger.info('Total inserted to MongoDB: ');
-        logger.info('AnnotationSets = ' + annoSetCounter);
-        logger.info('Labels = ' + labelCounter);
-        logger.info('Patterns = ' + patternCounter);
-        logger.info('Sentences = ' + sentenceCounter);
-        logger.info('ValenceUnits = ' + valenceUnitSet.length);
+        Logger.info('Total inserted to MongoDB: ');
+        Logger.info('AnnotationSets = ' + annoSetCounter);
+        Logger.info('Labels = ' + labelCounter);
+        Logger.info('Patterns = ' + patternCounter);
+        Logger.info('Sentences = ' + sentenceCounter);
+        Logger.info('ValenceUnits = ' + valenceUnitSet.length);
     });
 }
 
@@ -192,7 +192,7 @@ function initFile(file, annotationSets, labels, patterns, sentences, valenceUnit
 }
 
 function* initLexUnit(jsonixLexUnit, annotationSets, labels, patterns, sentences, valenceUnitSet, lexUnitCollection){
-    logger.info(
+    Logger.info(
         'Processing lexUnit with fn_id = ' + jsonixLexUnit.value.id + ' and name = ' + jsonixLexUnit.value.name);
 
     var lexUnit = yield lexUnitCollection.findOne({fn_id: jsonixLexUnit.value.id});

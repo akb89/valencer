@@ -268,4 +268,4 @@ class JsonixUtils{
     }
 }
 
-module.exports = JsonixUtils;
+export default JsonixUtils;

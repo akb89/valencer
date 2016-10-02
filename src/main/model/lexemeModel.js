@@ -1,16 +1,20 @@
 'use strict';
 
-const mongoose = require('mongoose');
-mongoose.Promise = require('bluebird');
+import mongoose from 'mongoose';
+import bluebird from 'bluebird';
 
-var lexemeSchema = mongoose.Schema({
-    name:   {type: String},
-    pos:    {type: String},
-    headword:   {type: String},
-    order:  {type: Number},
-    breakBefore:    {type: String},
-});
+mongoose.Promise = bluebird;
 
-var Lexeme = mongoose.model('Lexeme', lexemeSchema);
+class Lexeme extends mongoose.Schema {
+    constructor() {
+        super({
+            name:   {type: String},
+            pos:    {type: String},
+            headword:   {type: String},
+            order:  {type: Number},
+            breakBefore:    {type: String}
+        })
+    }
+}
 
-module.exports = Lexeme;
+export default mongoose.model('Lexeme', new Lexeme);

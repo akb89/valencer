@@ -1,15 +1,19 @@
 'use strict';
 
-const mongoose = require('mongoose');
-mongoose.Promise = require('bluebird');
+import mongoose from 'mongoose';
+import bluebird from 'bluebird';
 
-var labelSchema = mongoose.Schema({
-    name:  {type: String},
-    type:  {type: String},
-    startPos:   {type: Number},
-    endPos:     {type: Number}
-});
+mongoose.Promise = bluebird;
 
-var Label = mongoose.model('Label', labelSchema);
+class Label extends mongoose.Schema {
+    constructor() {
+        super({
+            name:  {type: String},
+            type:  {type: String},
+            startPos:   {type: Number},
+            endPos:     {type: Number}
+        })
+    }
+}
 
-module.exports = Label;
+export default mongoose.model('Label', new Label);

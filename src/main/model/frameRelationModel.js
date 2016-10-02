@@ -1,13 +1,18 @@
 'use strict';
 
-const mongoose = require('mongoose');
-mongoose.Promise = require('bluebird');
+import mongoose from 'mongoose';
+import bluebird from 'bluebird';
+import './frameModel';
 
-var frameRelationSchema = mongoose.Schema({
-    type: {type: String},
-    frames: [{type: mongoose.Schema.Types.ObjectId, ref: 'Frame'}]
-});
+mongoose.Promise = bluebird;
 
-var FrameRelation = mongoose.model('FrameRelation', frameRelationSchema);
+class FrameRelation extends mongoose.Schema {
+    constructor() {
+        super({
+            type: {type: String},
+            frames: [{type: mongoose.Schema.Types.ObjectId, ref: 'Frame'}]
+        })
+    }
+}
 
-module.exports = FrameRelation;
+export default mongoose.model('FrameRelation', new FrameRelation);

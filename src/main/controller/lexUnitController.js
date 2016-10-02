@@ -1,35 +1,30 @@
 'use strict';
 
-const getController = require('./getController');
-const AnnotationSet = require('./../model/annotationSetModel');
-const LexUnit = require('./../model/lexUnitModel');
+import AnnotationSet from '../model/annotationSetModel';
+import LexUnit from './../model/lexUnitModel';
+import {getPatternSet} from './getController';
+import config from './../server';
+import _ from 'lodash';
 
-const _ = require('lodash'); // TODO: clean this
+//const logger = config.logger // FIXME: doesn't work. And having to write config.logger all the time is not acceptable
 
-const logger = require('./../config/development').logger;
-
-var _query;
-
-function* getAll(){
-    _query = this.query.vp;
-    //FIXME logger
-    //logger.info('Querying for all distinct lexUnits with a valence pattern matching: '+_query);
-    var patternSet = yield getController.getPatternSet(_query);
-    var luIds = yield AnnotationSet
+async function getAll(context){
+    var query = context.query.vp;
+    config.logger.info('Querying for all distinct lexUnits with a valence pattern matching: '+ query);
+    var patternSet = await getPatternSet(query);
+    var luIds = await AnnotationSet
         .find()
         .where('pattern')
         .in(patternSet.toArray())
         .distinct('lexUnit');
-    var lexUnits = yield LexUnit
+    var lexUnits = await LexUnit
         .find()
         .where('_id')
         .in(luIds)
         .select('frame name -_id');
     lexUnits = _.sortBy(lexUnits, ['frame', 'name']);
-    logger.info(lexUnits.length + ' unique lexical units found for specified input');
-    this.body = lexUnits;
+    config.logger.info(lexUnits.length + ' unique lexical units found for specified input');
+    context.body = lexUnits;
 }
 
-module.exports = {
-    getAll
-};
+export default {getAll};

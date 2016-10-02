@@ -1,27 +1,23 @@
 'use strict';
 
-const ValenceUnit = require('./../model/valenceUnitModel');
-const getController = require('./getController');
-//const logger = require('./../server').logger; //FIXME
+import ValenceUnit from './../model/valenceUnitModel';
+import {getPatternSet} from './getController';
+import config from './../server';
 
-const logger = require('./../config/development').logger;
+//const logger = config.logger // FIXME: doesn't work. And having to write config.logger all the time is not acceptable
 
-var _query;
+async function getAll(context){
+    var query = context.query.vp;
+    config.logger.info('Querying for all valenceUnits with matching: '+ query);
+    var valenceUnitSet = await getValenceUnitSet(query);
 
-function* getAll(){
-    _query = this.query.vp;
-    logger.info('Querying for all valenceUnits with matching: '+_query);
-    var valenceUnitSet = yield getController.getValenceUnitSet(_query);
-
-    var valenceUnits = yield ValenceUnit
+    var valenceUnits = await ValenceUnit
         .find()
         .where('_id')
         .in(valenceUnitSet.toArray())
         .select('-_id');
-    logger.info(valenceUnits.length+' unique valenceUnits found for specified entry');
-    this.body = valenceUnits;
+    config.logger.info(valenceUnits.length+' unique valenceUnits found for specified entry');
+    context.body = valenceUnits;
 }
 
-module.exports = {
-    getAll
-};
+export default {getAll};

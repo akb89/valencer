@@ -1,21 +1,29 @@
 'use strict';
 
-const mongoose = require('mongoose');
-mongoose.Promise = require('bluebird');
+import mongoose from 'mongoose';
+import bluebird from 'bluebird';
+import './frameElementModel';
+import './frameRelationModel';
+import './lexUnitModel';
+import './semTypeModel';
 
-var frameSchema = mongoose.Schema({
-    fn_id: {type: Number, unique: true},
-    name: {type: String},
-    definition: {type: String},
-    cDate: {type: String},
-    cBy: {type: String},
-    frameElements: [{type: mongoose.Schema.Types.ObjectId, ref: 'FrameElement'}],
-    feCoreSets: [[{type: mongoose.Schema.Types.ObjectId, ref: 'FrameElement'}]],
-    frameRelations: [{type: mongoose.Schema.Types.ObjectId, ref: 'FrameRelation'}],
-    lexUnits: [{type: mongoose.Schema.Types.ObjectId, ref: 'LexUnit'}],
-    semTypes: [{type: mongoose.Schema.Types.ObjectId, ref: 'SemType'}]
-});
+mongoose.Promise = bluebird;
 
-var Frame = mongoose.model('Frame', frameSchema);
+class Frame extends mongoose.Schema {
+    constructor() {
+        super({
+            fn_id: {type: Number, unique: true},
+            name: {type: String},
+            definition: {type: String},
+            cDate: {type: String},
+            cBy: {type: String},
+            frameElements: [{type: mongoose.Schema.Types.ObjectId, ref: 'FrameElement'}],
+            feCoreSets: [[{type: mongoose.Schema.Types.ObjectId, ref: 'FrameElement'}]],
+            frameRelations: [{type: mongoose.Schema.Types.ObjectId, ref: 'FrameRelation'}],
+            lexUnits: [{type: mongoose.Schema.Types.ObjectId, ref: 'LexUnit'}],
+            semTypes: [{type: mongoose.Schema.Types.ObjectId, ref: 'SemType'}]
+        })
+    }
+}
 
-module.exports = Frame;
+export default mongoose.model('Frame', new Frame);

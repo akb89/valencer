@@ -35,4 +35,4 @@ function _isWhiteSpace(char){
     }
 }
 
-module.exports = PatternUtils;
+export default PatternUtils;

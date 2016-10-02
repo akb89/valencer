@@ -1,60 +1,47 @@
 'use strict';
 
-const mongoose = require('mongoose');
+import PatternUtils from './../utils/patternUtils';
+import ValenceUnitUtils from './../utils/valenceUnitUtils';
+import Pattern from'./../model/patternModel';
+import ValenceUnit from './../model/valenceUnitModel';
+import {NotFoundException} from './../exception/valencerException';
+import FastSet from 'collections/fast-set';
+import config from './../server';
+import './../utils/utils';
 
-const PatternUtils = require('./../utils/patternUtils');
-const ValenceUnitUtils = require('./../utils/valenceUnitUtils');
+// TODO: Ideally, I would want to have a class structure for this file, with private methods (maybe by defining them
+// outside of the class). To be discussed. Also, the exception handling needs to be revised.
 
-const AnnotationSet = require('./../model/annotationSetModel');
-const Frame = require('./../model/frameModel');
-const Label = require('./../model/labelModel');
-const Lexeme = require('./../model/lexemeModel');
-const LexUnit = require('./../model/lexUnitModel');
-const Pattern = require('./../model/patternModel');
-const Sentence = require('./../model/sentenceModel');
-const ValenceUnit = require('./../model/valenceUnitModel');
-
-const NotFoundException = require('./../exception/valencerException').NotFoundException;
-
-const FastSet = require('collections/fast-set');
-
-require('./../utils/utils');
-
-//const logger = require('./../server').logger; //FIXME
-const logger = require('./../logger').info;
-
-var _query;
-
-function* getPatternSet(query){
-    var patternSet = yield _getPatternSet(preProcess(query));
-    return patternSet;
+async function getPatternSet(query){
+    return await _getPatternSet(preProcess(query));
 }
 
-function* getValenceUnitSet(query){
-    var valenceUnitSet = yield _getValenceUnitSet(preProcess(query)[0]); //TODO: clean this. Point is to take first
-    // unit.
-    return valenceUnitSet;
+async function getValenceUnitSet(query){
+    return await _getValenceUnitSet(preProcess(query).tokenArray[0]); //TODO: clean this. Point is to take the first unit.
 }
 
 function preProcess(query){
-    return ValenceUnitUtils.toTokenArray(PatternUtils.toValenceArray(query));
+    return {
+        query: query,
+        tokenArray: ValenceUnitUtils.toTokenArray(PatternUtils.toValenceArray(query))
+    }
 }
 
-//FIXME for NP ... Obj queries
-function* _getPatternSet(tokenArray){
-    logger.debug('Fetching patterns for tokenArray: '+tokenArray.toString());
+// FIXME for NP ... Obj queries <-- This is a major concern
+async function _getPatternSet(preProcessedQuery){
+    config.logger.debug('Fetching patterns for tokenArray: '+preProcessedQuery.tokenArray.toString());
     var patternSet = new FastSet(null, function (a, b) {
         return a._id.equals(b._id);
     }, function (object) {
         return object._id.toString();
     });
-    for(let unit of tokenArray){
-        var valenceUnitSet = yield _getValenceUnitSet(unit);
-        logger.debug('ValenceUnitSet.length = '+valenceUnitSet.length);
-        var _patterns = yield Pattern.find().where('valenceUnits').in(valenceUnitSet.toArray());
-        logger.debug('Pattern.length = '+_patterns.length);
+    for (let unit of preProcessedQuery.tokenArray){
+        var valenceUnitSet = await _getValenceUnitSet(unit);
+        config.logger.debug('ValenceUnitSet.length = '+valenceUnitSet.length);
+        var _patterns = await Pattern.find().where('valenceUnits').in(valenceUnitSet.toArray());
+        config.logger.debug('Pattern.length = '+_patterns.length);
         if(_patterns.length === 0){
-            throw new NotFoundException('Could not find patters matching given input in FrameNet database: '+_query);
+            throw new NotFoundException('Could not find patters matching given input in FrameNet database: '+preProcessedQuery.query);
         }
         var _patternSet = new FastSet(_patterns, function (a, b) {
             return a._id.equals(b._id);
@@ -66,8 +53,8 @@ function* _getPatternSet(tokenArray){
     return patternSet;
 }
 
-function* _getValenceUnitSet(unit){
-    logger.debug('Fetching valence units for unit: '+unit);
+async function _getValenceUnitSet(unit){
+    config.logger.debug('Fetching valence units for unit: '+unit);
     var set = new FastSet(null, function (a, b) {
         return a._id.equals(b._id);
     }, function (object) {
@@ -79,9 +66,9 @@ function* _getValenceUnitSet(unit){
         gf: undefined
     };
     for(let token of unit){
-        logger.debug('Processing token: '+token);
+        config.logger.debug('Processing token: '+token);
         if(valenceUnit.fe === undefined){
-            var _FE = yield ValenceUnit.find().where('FE').equals(token);
+            var _FE = await ValenceUnit.find().where('FE').equals(token);
             if(_FE.length !== 0){
                 var FE = new FastSet(_FE, function (a, b) {
                     return a._id.equals(b._id);
@@ -94,7 +81,7 @@ function* _getValenceUnitSet(unit){
             }
         }
         if(valenceUnit.pt === undefined){
-            var _PT = yield ValenceUnit.find().where('PT').equals(token);
+            var _PT = await ValenceUnit.find().where('PT').equals(token);
             if(_PT.length !== 0){
                 var PT = new FastSet(_PT, function (a, b) {
                     return a._id.equals(b._id);
@@ -107,7 +94,7 @@ function* _getValenceUnitSet(unit){
             }
         }
         if(valenceUnit.gf === undefined){
-            var _GF = yield ValenceUnit.find().where('GF').equals(token);
+            var _GF = await ValenceUnit.find().where('GF').equals(token);
             if(_GF.length !== 0){
                 var GF = new FastSet(_GF, function (a, b) {
                     return a._id.equals(b._id);
@@ -124,7 +111,7 @@ function* _getValenceUnitSet(unit){
     return set;
 }
 
-module.exports = {
+export {
     preProcess,
     getPatternSet,
     getValenceUnitSet,

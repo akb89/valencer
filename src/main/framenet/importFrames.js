@@ -52,7 +52,7 @@ var duration = function(startTime){
 
 var start = process.hrtime();
 
-importFrames(__directory).then(() => {logger.info('Import process completed in: '+ duration(start))});
+importFrames(__directory).then(() => {Logger.info('Import process completed in: '+ duration(start))});
 
 // TODO question: should I keep those as global variables?
 var feRelationCounter = 0;
@@ -62,7 +62,7 @@ var lexUnitCounter = 0;
 
 // TODO add error and exit on invalid directory
 function importFrames(frameDir){
-    logger.info('Processing directory: '+frameDir);
+    Logger.info('Processing directory: '+frameDir);
     var filesPromise = new Promise((resolve, reject) => {
         filesystem.readdir(frameDir, (error, files) => {
             if(error) return reject(error);
@@ -71,11 +71,11 @@ function importFrames(frameDir){
     });
     return co(function*() {
         var files = yield filesPromise;
-        logger.info('Total number of files = ' + files.length);
-        logger.info('Filtered files: '+files.filter(JsonixUtils.isValidXml).length);
+        Logger.info('Total number of files = ' + files.length);
+        Logger.info('Filtered files: '+files.filter(JsonixUtils.isValidXml).length);
 
         var slicedFileArray = files.filter(JsonixUtils.isValidXml).chunk(chunkSize);
-        logger.info('Slice count: '+slicedFileArray.length);
+        Logger.info('Slice count: '+slicedFileArray.length);
 
         var db;
         try {
@@ -84,7 +84,7 @@ function importFrames(frameDir){
             logger.error(err);
             process.exit(1);
         }
-        logger.info(`Connected to database: ${dbUri}`);
+        Logger.info(`Connected to database: ${dbUri}`);
 
         var frameCollection = db.collection('frames');
         var frameElementCollection = db.collection('frameelements');
@@ -146,14 +146,14 @@ function importFrames(frameDir){
             err !== null ? logger.error(err) : logger.silly('#semTypeCollection.insertMany');
         });
 
-        logger.info('Total inserted to MongoDB: ');
-        logger.info('Frames = ' + frameSet.length);
-        logger.info('FrameElements = ' + frameElementSet.length);
-        logger.info('FERelations = ' + feRelationCounter);
-        logger.info('FrameRelations = ' + frameRelationCounter);
-        logger.info('Lexemes = ' + lexemeCounter);
-        logger.info('LexUnits = ' + lexUnitCounter);
-        logger.info('SemTypes = ' + semTypeSet.length);
+        Logger.info('Total inserted to MongoDB: ');
+        Logger.info('Frames = ' + frameSet.length);
+        Logger.info('FrameElements = ' + frameElementSet.length);
+        Logger.info('FERelations = ' + feRelationCounter);
+        Logger.info('FrameRelations = ' + frameRelationCounter);
+        Logger.info('Lexemes = ' + lexemeCounter);
+        Logger.info('LexUnits = ' + lexUnitCounter);
+        Logger.info('SemTypes = ' + semTypeSet.length);
     });
 }
 
@@ -197,7 +197,7 @@ function initFile(file, frameSet, frameElementSet, feRelations, frameRelations, 
 }
 
 function initFrame(jsonixFrame, frameSet, frameElementSet, feRelations, frameRelations, lexemes, lexUnits, semTypeSet){
-    logger.info('Processing frame with fn_id = ' + jsonixFrame.value.id + ' and name = ' + jsonixFrame.value.name);
+    Logger.info('Processing frame with fn_id = ' + jsonixFrame.value.id + ' and name = ' + jsonixFrame.value.name);
     var _frame = new Frame({
         fn_id: jsonixFrame.value.id,
     });

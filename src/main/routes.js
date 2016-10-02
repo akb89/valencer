@@ -1,13 +1,16 @@
 'use strict';
 
-const router = require('koa-router')();
+// TODO: validate all input queries
 
-const annoSetController = require('./controller/annoSetController');
-const frameController = require('./controller/frameController');
-const lexUnitController = require('./controller/lexUnitController');
-const patternController = require('./controller/patternController');
-const similarityController = require('./controller/similarityController');
-const valenceUnitController = require('./controller/valenceUnitController');
+import Router from 'koa-router';
+import annoSetController from './controller/annoSetController';
+import frameController from './controller/frameController';
+import lexUnitController from './controller/lexUnitController';
+import patternController from './controller/patternController';
+import similarityController from './controller/similarityController';
+import valenceUnitController from './controller/valenceUnitController';
+
+const router = Router();
 
 router.get('/annoSets', annoSetController.getAll);
 
@@ -21,4 +24,4 @@ router.get('/patterns', patternController.getAll);
 
 router.get('/valenceUnits', valenceUnitController.getAll);
 
-module.exports = router;
+export default router;

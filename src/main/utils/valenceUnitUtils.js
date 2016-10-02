@@ -36,4 +36,4 @@ function _isPeriod(char){
     }
 }
 
-module.exports = ValenceUnitUtils;
+export default ValenceUnitUtils;

@@ -1,15 +1,15 @@
 'use strict';
 
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 mongoose.Promise = require('bluebird');
 
-var sentenceSchema = mongoose.Schema({
-    fn_id: {type: Number},
-    text: {type: String}
-});
+class Sentence extends mongoose.Schema {
+    constructor() {
+        super({
+            fn_id: {type: Number},
+            text: {type: String}
+        })
+    }
+}
 
-//sentenceSchema.index({fn_id: 1}, {unique: true});
-
-var Sentence = mongoose.model('Sentence', sentenceSchema);
-
-module.exports = Sentence;
+export default mongoose.model('Sentence', new Sentence);

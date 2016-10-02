@@ -1,13 +1,17 @@
 'use strict';
 
-const mongoose = require('mongoose');
-mongoose.Promise = require('bluebird');
+import mongoose from 'mongoose';
+import bluebird from 'bluebird';
 
-var semTypeModelSchema = mongoose.Schema({
-    fn_id: {type: Number, unique: true},
-    name: {type: String}
-});
+mongoose.Promise = bluebird;
 
-var SemType = mongoose.model('SemType', semTypeModelSchema);
+class SemType extends mongoose.Schema {
+    constructor() {
+        super({
+            fn_id: {type: Number, unique: true},
+            name: {type: String}
+        })
+    }
+}
 
-module.exports = SemType;
+export default mongoose.model('SemType', new SemType);

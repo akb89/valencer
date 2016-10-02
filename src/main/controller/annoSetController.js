@@ -1,16 +1,17 @@
 'use strict';
 
-const AnnotationSet = require('./../model/annotationSetModel');
-const getController = require('./getController');
-const logger = require('./../server').logger; //FIXME
+import AnnotationSet from '../model/annotationSetModel';
+import {getPatternSet} from './getController';
+import config from './../server';
 
-var _query;
+//const logger = config.logger // FIXME: doesn't work. And having to write config.logger all the time is not acceptable
 
-function* getAll(){
-    _query = this.query.vp;
-    //logger.info('Querying for all annotationSets with a valence pattern matching: '+_query);
-    var patternSet = yield getController.getPatternSet(_query);
-    var annoSets = yield AnnotationSet
+// TODO : Discuss what should be populated
+async function getAll(context) {
+    var query = context.query.vp;
+    config.logger.info('Querying for all annotationSets with a valence pattern matching: '+query);
+    var patternSet = await getPatternSet(query);
+    context.body = await AnnotationSet
         .find()
         .where('pattern')
         .in(patternSet.toArray())
@@ -18,9 +19,6 @@ function* getAll(){
         .populate({path:'sentence'})
         .populate({path:'lexUnit', populate: {path: 'frame'}})
         .populate({path:'labels'});
-    this.body = annoSets;
 }
 
-module.exports = {
-    getAll
-};
+export default {getAll};

@@ -1,6 +1,6 @@
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
 
 if(!Array.prototype.flatten){
     Array.prototype.flatten = function(){

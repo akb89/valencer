@@ -1,15 +1,21 @@
 'use strict';
 
-const mongoose = require('mongoose');
-mongoose.Promise = require('bluebird');
+import mongoose from 'mongoose';
+import bluebird from 'bluebird';
 
-var valenceUnitSchema = mongoose.Schema({
-    FE: {type: String, index:true},
-    PT: {type: String, index:true},
-    GF: {type: String, index:true}
-});
-valenceUnitSchema.index({FE: 1, PT: 1, GF: 1}, {unique: true});
+mongoose.Promise = bluebird;
 
-var ValenceUnit = mongoose.model('ValenceUnit', valenceUnitSchema);
+class ValenceUnit extends mongoose.Schema {
+    constructor() {
+        super({
+            FE: {type: String, index:true},
+            PT: {type: String, index:true},
+            GF: {type: String, index:true}
+        })
+    }
+}
 
-module.exports = ValenceUnit;
+// TODO: add a unique index
+// valenceUnitSchema.index({FE: 1, PT: 1, GF: 1}, {unique: true});
+
+export default mongoose.model('ValenceUnit', new ValenceUnit);
