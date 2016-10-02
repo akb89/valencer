@@ -4,10 +4,21 @@ const winston = require('winston');
 
 // Logging in Console and File
 
-var logger = new (winston.Logger)({
+var info = new (winston.Logger)({
     transports: [
         new (winston.transports.Console)({level: 'info', colorize: true})//,
         //new (winston.transports.File)({filename: 'noFrameNet.log', level: 'error', colorize: true})
     ]
 });
-module.exports = logger;
+
+var debug = new (winston.Logger)({
+    transports: [
+        new (winston.transports.Console)({level: 'debug', colorize: true})//,
+        //new (winston.transports.File)({filename: 'noFrameNet.log', level: 'error', colorize: true})
+    ]
+});
+
+module.exports = {
+    info,
+    debug
+};

@@ -83,24 +83,24 @@ describe('getPatternSet', function (){
         mockgoose.reset();
     });
     it('#getPatternSet', function *(){
-        var patterns = yield getController.getPatternSet(preprocess('A.NP.Obj B.NP.Obj'));
+        var patterns = yield getController._getPatternSet(preprocess('A.NP.Obj B.NP.Obj'));
         patterns.length.should.equal(3);
     });
     it('#getPatternSet', function *(){
-        var patterns = yield getController.getPatternSet(preprocess('A NP.Ext'));
+        var patterns = yield getController._getPatternSet(preprocess('A NP.Ext'));
         patterns.length.should.equal(2);
     });
     //FIXME!
     it('#getPatternSet', function *(){
-        var patterns = yield getController.getPatternSet(preprocess('NP Obj'));
+        var patterns = yield getController._getPatternSet(preprocess('NP Obj'));
         patterns.length.should.equal(3);
     });
     it('#getPatternSet', function *(){
-        var patterns = yield getController.getPatternSet(preprocess('D A'));
+        var patterns = yield getController._getPatternSet(preprocess('D A'));
         patterns.length.should.equal(2);
     });
     it('#getPatternSet', function *(){
-        var patterns = yield getController.getPatternSet(preprocess('NP'));
+        var patterns = yield getController._getPatternSet(preprocess('NP'));
         patterns.length.should.equal(4);
     });
 });

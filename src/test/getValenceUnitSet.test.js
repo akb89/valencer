@@ -59,7 +59,7 @@ describe('getValenceUnitSet', function (){
         mockgoose.reset();
     });
     it('#getValenceUnit should be able to process FE.PT.GF', function *(){
-        var set = yield getController.getValenceUnitSet(['A', 'NP', 'Obj']);
+        var set = yield getController._getValenceUnitSet(['A', 'NP', 'Obj']);
         set.length.should.equal(1);
         set.toArray()[0].FE.should.equal('A');
         set.toArray()[0].PT.should.equal('NP');
@@ -67,33 +67,33 @@ describe('getValenceUnitSet', function (){
 
     });
     it('#getValenceUnit should be able to process PT.FE.GF', function *(){
-        var set = yield getController.getValenceUnitSet(['NP', 'A', 'Obj']);
+        var set = yield getController._getValenceUnitSet(['NP', 'A', 'Obj']);
         set.length.should.equal(1);
         set.toArray()[0].FE.should.equal('A');
         set.toArray()[0].PT.should.equal('NP');
         set.toArray()[0].GF.should.equal('Obj');
     });
     it('#getValenceUnit should be able to process GF.PT.FE', function *(){
-        var set = yield getController.getValenceUnitSet(['Obj', 'NP', 'A']);
+        var set = yield getController._getValenceUnitSet(['Obj', 'NP', 'A']);
         set.length.should.equal(1);
         set.toArray()[0].FE.should.equal('A');
         set.toArray()[0].PT.should.equal('NP');
         set.toArray()[0].GF.should.equal('Obj');
     });
     it('#getValenceUnit should be able to process FE', function *(){
-        var set = yield getController.getValenceUnitSet(['A']);
+        var set = yield getController._getValenceUnitSet(['A']);
         set.length.should.equal(1);
     });
     it('#getValenceUnit should be able to process PT', function *(){
-        var set = yield getController.getValenceUnitSet(['NP']);
+        var set = yield getController._getValenceUnitSet(['NP']);
         set.length.should.equal(3);
     });
     it('#getValenceUnit should be able to process PT.GF', function *(){
-        var set = yield getController.getValenceUnitSet(['NP', 'Obj']);
+        var set = yield getController._getValenceUnitSet(['NP', 'Obj']);
         set.length.should.equal(2);
     });
     it('#getValenceUnit should be able to process FE.GF', function *(){
-        var set = yield getController.getValenceUnitSet(['A', 'Obj']);
+        var set = yield getController._getValenceUnitSet(['A', 'Obj']);
         set.length.should.equal(1);
     });
 });

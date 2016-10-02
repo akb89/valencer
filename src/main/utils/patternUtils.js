@@ -1,6 +1,7 @@
 'use strict';
-
 // TODO throw error if length of valenceArray is > 3
+// TODO if query contains 'PP', points toward all PP[] variants: PP[about], PP[of], etc.
+// TODO do the same fo 'PPing' and distinguish 'PP' and 'PPing'.
 class PatternUtils{
     // A.B.C D.E.F G.H.I --> [A.B.C, D.E.F, G.H.I]
     static toValenceArray(string){
@@ -8,7 +9,7 @@ class PatternUtils{
         if(_containsWhiteSpace(string)){
             var array = [];
             var iterator = 0;
-            for(var i = 0; i < string.length; i++){
+            for(let i = 0; i < string.length; i++){
                 if(_isWhiteSpace(string.charAt(i))){
                     if(iterator !== i){
                         array.push(string.substring(iterator, i));

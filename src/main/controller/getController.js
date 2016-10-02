@@ -1,13 +1,14 @@
 'use strict';
 
 const mongoose = require('mongoose');
-const MongoClient = require('mongodb').MongoClient;
 
 const PatternUtils = require('./../utils/patternUtils');
 const ValenceUnitUtils = require('./../utils/valenceUnitUtils');
 
 const AnnotationSet = require('./../model/annotationSetModel');
+const Frame = require('./../model/frameModel');
 const Label = require('./../model/labelModel');
+const Lexeme = require('./../model/lexemeModel');
 const LexUnit = require('./../model/lexUnitModel');
 const Pattern = require('./../model/patternModel');
 const Sentence = require('./../model/sentenceModel');
@@ -19,38 +20,39 @@ const FastSet = require('collections/fast-set');
 
 require('./../utils/utils');
 
-const logger = require('./../logger');
+//const logger = require('./../server').logger; //FIXME
+const logger = require('./../logger').info;
 
 var _query;
 
-function* getAll(){
-    _query = this.query.vp;
-    logger.info('Querying for all annotationSets with valence pattern matching: '+_query);
-    var tokenArray = ValenceUnitUtils.toTokenArray(PatternUtils.toValenceArray(_query));
-    try{
-        yield mongoose.connect('mongodb://localhost:27017/noframenet');
-    }catch(err){
-        logger.error(err);
-    }
-    var patternSet = yield getPatternSet(tokenArray);
-    //var annoSet = yield
-    // AnnotationSet.findOne().populate('pattern').populate('sentence').populate('lexUnit').populate('labels');
-    var annoSets = yield AnnotationSet.find().where('pattern').in(patternSet.toArray()).populate('pattern').populate('sentence').populate('lexUnit').populate('labels');
+function* getPatternSet(query){
+    var patternSet = yield _getPatternSet(preProcess(query));
+    return patternSet;
+}
 
-    this.body = annoSets;
+function* getValenceUnitSet(query){
+    var valenceUnitSet = yield _getValenceUnitSet(preProcess(query)[0]); //TODO: clean this. Point is to take first
+    // unit.
+    return valenceUnitSet;
+}
+
+function preProcess(query){
+    return ValenceUnitUtils.toTokenArray(PatternUtils.toValenceArray(query));
 }
 
 //FIXME for NP ... Obj queries
-function* getPatternSet(tokenArray){
-    logger.info('Fetching patterns for tokenArray: '+tokenArray.toString());
+function* _getPatternSet(tokenArray){
+    logger.debug('Fetching patterns for tokenArray: '+tokenArray.toString());
     var patternSet = new FastSet(null, function (a, b) {
         return a._id.equals(b._id);
     }, function (object) {
         return object._id.toString();
     });
     for(let unit of tokenArray){
-        var valenceUnitSet = yield getValenceUnitSet(unit);
+        var valenceUnitSet = yield _getValenceUnitSet(unit);
+        logger.debug('ValenceUnitSet.length = '+valenceUnitSet.length);
         var _patterns = yield Pattern.find().where('valenceUnits').in(valenceUnitSet.toArray());
+        logger.debug('Pattern.length = '+_patterns.length);
         if(_patterns.length === 0){
             throw new NotFoundException('Could not find patters matching given input in FrameNet database: '+_query);
         }
@@ -64,8 +66,8 @@ function* getPatternSet(tokenArray){
     return patternSet;
 }
 
-function* getValenceUnitSet(unit){
-    logger.info('Fetching valence units for unit: '+unit);
+function* _getValenceUnitSet(unit){
+    logger.debug('Fetching valence units for unit: '+unit);
     var set = new FastSet(null, function (a, b) {
         return a._id.equals(b._id);
     }, function (object) {
@@ -77,6 +79,7 @@ function* getValenceUnitSet(unit){
         gf: undefined
     };
     for(let token of unit){
+        logger.debug('Processing token: '+token);
         if(valenceUnit.fe === undefined){
             var _FE = yield ValenceUnit.find().where('FE').equals(token);
             if(_FE.length !== 0){
@@ -121,4 +124,10 @@ function* getValenceUnitSet(unit){
     return set;
 }
 
-module.exports = {getValenceUnitSet, getPatternSet, getAll};
+module.exports = {
+    preProcess,
+    getPatternSet,
+    getValenceUnitSet,
+    _getValenceUnitSet,
+    _getPatternSet
+};

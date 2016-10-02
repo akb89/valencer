@@ -58,12 +58,79 @@ class JsonixUtils{
         var annoSetIterator = 0;
         if (jsonixSentence.hasOwnProperty('annotationSet')) {
             while (jsonixSentence.annotationSet[annoSetIterator] !== undefined) {
-                let annotationSet = jsonixSentence.annotationSet[annoSetIterator];
-                annotationSets.push(annotationSet);
+                annotationSets.push(jsonixSentence.annotationSet[annoSetIterator]);
                 annoSetIterator++;
             }
         }
         return annotationSets;
+    }
+
+    /**
+     * Extract all FEcoreSet elements from a Jsonix unmarshalled <frame>
+     * @param jsonixFrame
+     * @returns {Array}
+     */
+    static toJsonixFECoreSetArray(jsonixFrame){
+        var feCoreSets = [];
+        var feCoreSetIterator = 0;
+        if(jsonixFrame.value.hasOwnProperty('fEcoreSet')){
+            while(jsonixFrame.value.fEcoreSet[feCoreSetIterator] !== undefined){
+                feCoreSets.push(jsonixFrame.value.fEcoreSet[feCoreSetIterator]);
+                feCoreSetIterator++;
+            }
+        }
+        return feCoreSets;
+    }
+
+    /**
+     * Extract all memberFE elements from a Jsonix unmarshalled <FEcoreSet>
+     * @param jsonixFECoreSet
+     * @returns {Array}
+     */
+    static toJsonixFECoreSetMemberArray(jsonixFECoreSet){
+        var members = [];
+        var memberIterator = 0;
+        if(jsonixFECoreSet.hasOwnProperty('memberFE')){
+            while(jsonixFECoreSet.memberFE[memberIterator] !== undefined){
+                members.push(jsonixFECoreSet.memberFE[memberIterator]);
+                memberIterator++;
+            }
+        }
+        return members;
+    }
+
+    /**
+     * Extract all frameElement elements from a Jsonix unmarshalled <frame>
+     * @param jsonixFrame
+     * @returns {Array}
+     */
+    static toJsonixFrameElementArray(jsonixFrame){
+        var frameElements = [];
+        var frameElementIterator = 0;
+        if (jsonixFrame.value.hasOwnProperty('fe')) {
+            while (jsonixFrame.value.fe[frameElementIterator] !== undefined) {
+                frameElements.push(jsonixFrame.value.fe[frameElementIterator]);
+                frameElementIterator++;
+            }
+        }
+        return frameElements;
+    }
+
+    /**
+     * Extract all frameRelation elements from a Jsonix unmarshalled <frame>
+     * @param jsonixFrame
+     * @returns {Array}
+     */
+    static toJsonixFrameRelationArray(jsonixFrame){
+        var frameRelations = [];
+        var frameRelationIterator = 0;
+        if(jsonixFrame.value.hasOwnProperty('frameRelation')){
+            while(jsonixFrame.value.frameRelation[frameRelationIterator] !== undefined){
+                frameRelations.push(jsonixFrame.value.frameRelation[frameRelationIterator]);
+                frameRelationIterator++;
+            }
+        }
+        return frameRelations;
     }
 
     /**
@@ -101,6 +168,40 @@ class JsonixUtils{
     }
 
     /**
+     * Extract all lexeme elements from a Jsonix unmarshalled <lexUnit>
+     * @param jsonixLexUnit
+     * @returns {Array}
+     */
+    static toJsonixLexemeArray(jsonixLexUnit){
+        var lexemes = [];
+        var lexemeIterator = 0;
+        if(jsonixLexUnit.hasOwnProperty('lexeme')){
+            while(jsonixLexUnit.lexeme[lexemeIterator] !== undefined){
+                lexemes.push(jsonixLexUnit.lexeme[lexemeIterator]);
+                lexemeIterator++;
+            }
+        }
+        return lexemes;
+    }
+
+    /**
+     * Extract all lexUnit elements from a Jsonix unmarshalled <frame>
+     * @param jsonixFrame
+     * @returns {Array}
+     */
+    static toJsonixLexUnitArray(jsonixFrame){
+        var lexUnits = [];
+        var lexUnitIterator = 0;
+        if(jsonixFrame.value.hasOwnProperty('lexUnit')){
+            while(jsonixFrame.value.lexUnit[lexUnitIterator] !== undefined){
+                lexUnits.push(jsonixFrame.value.lexUnit[lexUnitIterator]);
+                lexUnitIterator++;
+            }
+        }
+        return lexUnits;
+    }
+
+    /**
      * Extract all pattern elements from a Jsonix unmarshalled <lexUnit>
      * @param jsonixLexUnit
      * @returns {Array}
@@ -125,6 +226,28 @@ class JsonixUtils{
             }
         }
         return patterns;
+    }
+
+    /**
+     * Extract all semType elements from a Jsonix unmarshalled <frame> or <fe> or <lexUnit>
+     * @param jsonixElement can be either a jsonixFrame, a jsonixFrameElement or a jsonixLexUnit
+     * @returns {Array}
+     */
+    static toJsonixSemTypeArray(jsonixElement){
+        var semTypes = [];
+        var semTypeIterator = 0;
+        if(jsonixElement.value !== undefined && jsonixElement.value.hasOwnProperty('semType')){
+            while(jsonixElement.value.semType[semTypeIterator] !== undefined){
+                semTypes.push(jsonixElement.value.semType[semTypeIterator]);
+                semTypeIterator++;
+            }
+        }else if (jsonixElement.hasOwnProperty('semType')){
+            while(jsonixElement.semType[semTypeIterator] !== undefined){
+                semTypes.push(jsonixElement.semType[semTypeIterator]);
+                semTypeIterator++;
+            }
+        }
+        return semTypes;
     }
 
     /**
