@@ -4,45 +4,40 @@
 
 'use strict';
 
-const env = process.env.NODE_ENV || 'development';
+import FastSet from 'collections/fast-set'
+import filesystem from 'fs';
+import mongodb from 'mongodb';
+import path from 'path';
+import jsonix from 'jsonix';
+import frameSchema from './../mapping/FrameSchema.js';
+import lexUnitSchema from './../mapping/LexUnitSchema';
+import Frame from './../model/frameModel';
+import FrameElement from './../model/frameElementModel';
+import FrameRelation from './../model/frameRelationModel';
+import FERelation from './../model/frameElementRelationModel';
+import Lexeme from './../model/lexemeModel';
+import LexUnit from './../model/lexUnitModel';
+import SemType from './../model/semTypeModel';
+import JsonixUtils from './../utils/jsonixUtils';
+import Promise from 'bluebird';
+import development from './../config/development';
+import testing from './../config/testing';
+import production from './../config/production';
+import './../utils/utils';
 
-var config;
-try{
-    config = require(`./../config/${env}`);
-}catch(err){
-    console.error(err);
-    console.error(`No specific configuration for env ${env}`);
-    process.exit(1);
-}
+const MongoClient = mongodb.MongoClient;
+const Jsonix = jsonix.Jsonix;
+const FrameSchema = frameSchema.FrameSchema;
+const LexUnitSchema = lexUnitSchema.LexUnitSchema;
+const context = new Jsonix.Context([FrameSchema, LexUnitSchema]);
+const unmarshaller = context.createUnmarshaller();
+// TODO: what about testing?
+const config = (process.env.NODE_ENV == 'production' ) ? production : development;
 const logger = config.logger;
 const dbUri = config.database;
 const __directory = config.frameDir;
 const feRelationTypes = config.feRelations;
 const chunkSize = config.frameChunkSize;
-
-const async = require('async');
-const co = require('co');
-const FastSet = require('collections/fast-set');
-const filesystem = require('fs');
-const MongoClient = require('mongodb').MongoClient;
-const path = require('path');
-
-const Jsonix = require('jsonix').Jsonix;
-const FrameSchema = require('./../mapping/FrameSchema.js').FrameSchema;
-const LexUnitSchema = require('./../mapping/LexUnitSchema').LexUnitSchema;
-const context = new Jsonix.Context([FrameSchema, LexUnitSchema]);
-const unmarshaller = context.createUnmarshaller();
-
-const Frame = require('./../model/frameModel');
-const FrameElement = require('./../model/frameElementModel');
-const FrameRelation = require('./../model/frameRelationModel');
-const FERelation = require('./../model/frameElementRelationModel');
-const Lexeme = require('./../model/lexemeModel');
-const LexUnit = require('./../model/lexUnitModel');
-const SemType = require('./../model/semTypeModel');
-
-const JsonixUtils = require('./../utils/jsonixUtils');
-require('./../utils/utils');
 
 var duration = function(startTime){
     var precision = 3; // 3 decimal places
@@ -52,7 +47,7 @@ var duration = function(startTime){
 
 var start = process.hrtime();
 
-importFrames(__directory).then(() => {Logger.info('Import process completed in: '+ duration(start))});
+importFrames(__directory).then(() => {logger.info('Import process completed in: '+ duration(start))});
 
 // TODO question: should I keep those as global variables?
 var feRelationCounter = 0;
@@ -61,105 +56,108 @@ var lexemeCounter = 0;
 var lexUnitCounter = 0;
 
 // TODO add error and exit on invalid directory
-function importFrames(frameDir){
-    Logger.info('Processing directory: '+frameDir);
+// TODO I'd like to remove Promises: is that possible?
+async function importFrames(frameDir){
+    logger.info('Processing directory: '+frameDir);
     var filesPromise = new Promise((resolve, reject) => {
         filesystem.readdir(frameDir, (error, files) => {
             if(error) return reject(error);
             return resolve(files);
         })
     });
-    return co(function*() {
-        var files = yield filesPromise;
-        Logger.info('Total number of files = ' + files.length);
-        Logger.info('Filtered files: '+files.filter(JsonixUtils.isValidXml).length);
+    var files = await filesPromise;
+    logger.info('Total number of files = ' + files.length);
+    logger.info('Filtered files: '+files.filter(JsonixUtils.isValidXml).length);
 
-        var slicedFileArray = files.filter(JsonixUtils.isValidXml).chunk(chunkSize);
-        Logger.info('Slice count: '+slicedFileArray.length);
+    var slicedFileArray = files.filter(JsonixUtils.isValidXml).chunk(chunkSize);
+    logger.info('Slice count: '+slicedFileArray.length);
+    var db;
+    try {
+        db = await MongoClient.connect(dbUri);
+    }catch(err){
+        logger.error(err);
+        process.exit(1);
+    }
+    logger.info(`Connected to database: ${dbUri}`);
 
-        var db;
-        try {
-            db = yield MongoClient.connect(dbUri);
-        }catch(err){
-            logger.error(err);
-            process.exit(1);
-        }
-        Logger.info(`Connected to database: ${dbUri}`);
+    var frameCollection = db.collection('frames');
+    var frameElementCollection = db.collection('frameelements');
+    var feRelationCollection = db.collection('ferelations');
+    var frameRelationCollection = db.collection('framerelations');
+    var lexemeCollection = db.collection('lexemes');
+    var lexUnitCollection = db.collection('lexunits');
+    var semTypeCollection = db.collection('semtypes');
 
-        var frameCollection = db.collection('frames');
-        var frameElementCollection = db.collection('frameelements');
-        var feRelationCollection = db.collection('ferelations');
-        var frameRelationCollection = db.collection('framerelations');
-        var lexemeCollection = db.collection('lexemes');
-        var lexUnitCollection = db.collection('lexunits');
-        var semTypeCollection = db.collection('semtypes');
+    // TODO add all indexes here
+    // TODO should I create unique indexes on fn_ids? What about impact on write performances?
+    frameCollection.createIndex({fn_id: 1}, {unique: true});
+    frameCollection.createIndex({name: 1});
+    frameElementCollection.createIndex({fn_id: 1}, {unique: true});
+    lexUnitCollection.createIndex({fn_id: 1}, {unique: true});
+    semTypeCollection.createIndex({fn_id: 1}, {unique: true});
 
-        // TODO add all indexes here
-        // TODO should I create unique indexes on fn_ids? What about impact on write performances?
-        frameCollection.createIndex({fn_id: 1}, {unique: true});
-        frameCollection.createIndex({name: 1});
-        frameElementCollection.createIndex({fn_id: 1}, {unique: true});
-        lexUnitCollection.createIndex({fn_id: 1}, {unique: true});
-        semTypeCollection.createIndex({fn_id: 1}, {unique: true});
-
-        // Sets of unique elements
-        // TODO: check if this is the right way to do this
-        var frameSet = new FastSet(null, function (a, b) { // We need this for frameRelations. Frames can be added
-            // before the corresponding file is parsed
-            return a.fn_id === b.fn_id;
-        }, function (object) {
-            return object.fn_id.toString();
-        });
-        var frameElementSet = new FastSet(null, function (a, b) {
-            return a.fn_id === b.fn_id;
-        }, function (object) {
-            return object.fn_id.toString();
-        });
-        var semTypeSet = new FastSet(null, function (a, b) {
-            return a.fn_id === b.fn_id;
-        }, function (object) {
-            return object.fn_id.toString();
-        });
-
-        for(let batch of slicedFileArray){
-            // TODO: check if this is the right way to do this
-            var feRelations = [];
-            var frameRelations = [];
-            /**
-             * Ideally this should be a set of unique lexemes identified by their names but here we also include
-             * info regarding headword, etc. so we just consider the lexeme as an extra documentation of the lexical
-             * unit. Hence no need to take care of uniqueness.
-             * @type {Array}
-             */
-            var lexemes = [];
-            var lexUnits = [];
-            yield importAll(batch, frameSet, frameElementSet, feRelations, frameRelations, lexemes, lexUnits, semTypeSet, feRelationCollection, frameRelationCollection, lexemeCollection, lexUnitCollection);
-        }
-
-        frameCollection.insertMany(frameSet.map((frame) => {return frame.toObject({depopulate: true})}), {writeConcern: 0, j: false, ordered: false}, (err) => {
-            err !== null ? logger.error(err) : logger.silly('#frameCollection.insertMany');
-        });
-        frameElementCollection.insertMany(frameElementSet.map((frameElement) => {return frameElement.toObject()}), {writeConcern: 0, j: false, ordered: false}, (err) => {
-            err !== null ? logger.error(err) : logger.silly('#frameElementCollection.insertMany');
-        });
-        semTypeCollection.insertMany(semTypeSet.map((semType) => {return semType.toObject()}), {writeConcern: 0, j: false, ordered: false}, (err) => {
-            err !== null ? logger.error(err) : logger.silly('#semTypeCollection.insertMany');
-        });
-
-        Logger.info('Total inserted to MongoDB: ');
-        Logger.info('Frames = ' + frameSet.length);
-        Logger.info('FrameElements = ' + frameElementSet.length);
-        Logger.info('FERelations = ' + feRelationCounter);
-        Logger.info('FrameRelations = ' + frameRelationCounter);
-        Logger.info('Lexemes = ' + lexemeCounter);
-        Logger.info('LexUnits = ' + lexUnitCounter);
-        Logger.info('SemTypes = ' + semTypeSet.length);
+    // Sets of unique elements
+    // TODO: check if this is the right way to do this
+    var frameSet = new FastSet(null, function (a, b) { // We need this for frameRelations. Frames can be added
+        // before the corresponding file is parsed
+        return a.fn_id === b.fn_id;
+    }, function (object) {
+        return object.fn_id.toString();
     });
+    var frameElementSet = new FastSet(null, function (a, b) {
+        return a.fn_id === b.fn_id;
+    }, function (object) {
+        return object.fn_id.toString();
+    });
+    var semTypeSet = new FastSet(null, function (a, b) {
+        return a.fn_id === b.fn_id;
+    }, function (object) {
+        return object.fn_id.toString();
+    });
+
+    for(let batch of slicedFileArray){
+        // TODO: check if this is the right way to do this
+        var feRelations = [];
+        var frameRelations = [];
+        /**
+         * Ideally this should be a set of unique lexemes identified by their names but here we also include
+         * info regarding headword, etc. so we just consider the lexeme as an extra documentation of the lexical
+         * unit. Hence no need to take care of uniqueness.
+         * @type {Array}
+         */
+        var lexemes = [];
+        var lexUnits = [];
+
+        await importAll(batch, frameSet, frameElementSet, feRelations, frameRelations, lexemes, lexUnits, semTypeSet,
+            feRelationCollection, frameRelationCollection, lexemeCollection, lexUnitCollection);
+    }
+
+    frameCollection.insertMany(frameSet.map((frame) => {return frame.toObject({depopulate: true})}), {writeConcern: 0, j: false, ordered: false}, (err) => {
+        err !== null ? logger.error(err) : logger.silly('#frameCollection.insertMany');
+    });
+    frameElementCollection.insertMany(frameElementSet.map((frameElement) => {return frameElement.toObject()}), {writeConcern: 0, j: false, ordered: false}, (err) => {
+        err !== null ? logger.error(err) : logger.silly('#frameElementCollection.insertMany');
+    });
+    semTypeCollection.insertMany(semTypeSet.map((semType) => {return semType.toObject()}), {writeConcern: 0, j: false, ordered: false}, (err) => {
+        err !== null ? logger.error(err) : logger.silly('#semTypeCollection.insertMany');
+    });
+
+    logger.info('Total inserted to MongoDB: ');
+    logger.info('Frames = ' + frameSet.length);
+    logger.info('FrameElements = ' + frameElementSet.length);
+    logger.info('FERelations = ' + feRelationCounter);
+    logger.info('FrameRelations = ' + frameRelationCounter);
+    logger.info('Lexemes = ' + lexemeCounter);
+    logger.info('LexUnits = ' + lexUnitCounter);
+    logger.info('SemTypes = ' + semTypeSet.length);
 }
 
-function* importAll(files, frameSet, frameElementSet, feRelations, frameRelations, lexemes, lexUnits, semTypeSet, feRelationCollection, frameRelationCollection, lexemeCollection, lexUnitCollection){
+async function importAll(files, frameSet, frameElementSet, feRelations, frameRelations, lexemes, lexUnits, semTypeSet,
+                         feRelationCollection, frameRelationCollection, lexemeCollection, lexUnitCollection){
 
-    yield files.map((file) => initFile(file, frameSet, frameElementSet, feRelations, frameRelations, lexemes, lexUnits, semTypeSet));
+    await Promise.all(files.map((file) =>
+        initFile(file, frameSet, frameElementSet, feRelations, frameRelations, lexemes, lexUnits, semTypeSet)
+    )); //FIXME weird bug here: curly brackets break the code...
 
     feRelationCounter += feRelations.length;
     frameRelationCounter += frameRelations.length;
@@ -197,7 +195,7 @@ function initFile(file, frameSet, frameElementSet, feRelations, frameRelations, 
 }
 
 function initFrame(jsonixFrame, frameSet, frameElementSet, feRelations, frameRelations, lexemes, lexUnits, semTypeSet){
-    Logger.info('Processing frame with fn_id = ' + jsonixFrame.value.id + ' and name = ' + jsonixFrame.value.name);
+    logger.info('Processing frame with fn_id = ' + jsonixFrame.value.id + ' and name = ' + jsonixFrame.value.name);
     var _frame = new Frame({
         fn_id: jsonixFrame.value.id,
     });
