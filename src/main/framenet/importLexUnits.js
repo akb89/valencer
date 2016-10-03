@@ -196,6 +196,8 @@ async function initLexUnit(jsonixLexUnit, annotationSets, labels, patterns, sent
 
 function getPatternsMap(jsonixLexUnit, patterns, valenceUnitSet) {
     var map = new Map();
+    //Corentin if there is no dependence between the ith step and i+1th step,
+    //you can definitely promisify everything and run it in paralell.
     JsonixUtils.toJsonixPatternArray(jsonixLexUnit).forEach((jsonixPattern) => {
         var patternVUs = JsonixUtils.toJsonixValenceUnitArray(jsonixPattern).map((jsonixValenceUnit) => {
             var _valenceUnit = new ValenceUnit({
@@ -301,6 +303,8 @@ function getLabels(jsonixAnnoSet, labels) {
                 endPos: jsonixLabel.end
             });
             labels.push(label.toObject()); // There will be duplicates but we don't care
+            //Corentin we care if the number of duplicates is huge, because the size
+            //of your DB will grow quickly. If not, then we don't care, you're right.
             return label;
         });
     }).flatten();
