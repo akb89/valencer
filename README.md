@@ -36,7 +36,7 @@ However, accessing the number of unique elements in the collection, performance 
 
 ### ES67 proposals
 1. Class-based Mongoose models: src/main/model/annotationSetModel_es67 vs. src/main/mode/annotationSetModel  
-2. In getController.js I would like to turn for let ... of ... to a forEach(async (...) => ). I tried but so far it didn't work  
+2. In getController.js I would like to turn for let ... of ... to a forEach(async (...) => ). I tried but so far it didn't work 
 
 ### Documentation
 1. Swagger.io + JSDocs  
@@ -46,3 +46,9 @@ However, accessing the number of unique elements in the collection, performance 
 1. Add a paragraph on literature review (comparable programs and softwares)  
 2. Add a paragraph on architectural considerations: more motivations for MongoDB and underlying JS techno  
 3. Add a paragraph on performances (import, queries execution time)  
+
+### Corentin Ribeyre comments
+1. I don't see the point of using class-based mongoose models. Is there a rational behind it? See this Stackoverflow [http://stackoverflow.com/questions/34560235/how-to-write-a-mongoose-model-in-es6-es2015](post) with wich I definitely agree. I won't use Mongoose models and schemas with classes.
+2. In utils, you are using classes with static functions. This is a way to do it in Java, but Javascript has no problem with free functions. Just use free functions in modules, this is way more idiomatic.
+3. I've changed the way config works to have a file where you put everything that is environment independent.
+4. Exporting the config in server and reimporting server as config is not the way to go. You break the semantics behind server (and you are considering that your main entry point is not a real one)

@@ -20,9 +20,7 @@ import LexUnit from './../model/lexUnitModel';
 import SemType from './../model/semTypeModel';
 import JsonixUtils from './../utils/jsonixUtils';
 import Promise from 'bluebird';
-import development from './../config/development';
-import testing from './../config/testing';
-import production from './../config/production';
+import config from '../config';
 import './../utils/utils';
 
 const MongoClient = mongodb.MongoClient;
@@ -31,8 +29,6 @@ const FrameSchema = frameSchema.FrameSchema;
 const LexUnitSchema = lexUnitSchema.LexUnitSchema;
 const context = new Jsonix.Context([FrameSchema, LexUnitSchema]);
 const unmarshaller = context.createUnmarshaller();
-// TODO: what about testing?
-const config = (process.env.NODE_ENV == 'production' ) ? production : development;
 const logger = config.logger;
 const dbUri = config.database;
 const __directory = config.frameDir;

@@ -3,15 +3,15 @@
 import Pattern from './../model/patternModel';
 import {getPatternSet} from './getController';
 import FastSet from 'collections/fast-set';
-import config from './../server';
+import config from '../config';
 import _ from 'lodash';
 import './../utils/utils'; // for hashcode
 
-//const logger = config.logger // FIXME: doesn't work. And having to write config.logger all the time is not acceptable
+const logger = config.logger
 
 async function getAll(context){
     var query = context.query.vp;
-    config.logger.info('Querying for all patterns with a valence pattern matching: '+query);
+    logger.info('Querying for all patterns with a valence pattern matching: '+query);
     var patternSet = await getPatternSet(query);
     var patterns = await Pattern
         .find()
@@ -30,8 +30,8 @@ async function getAll(context){
         })
     });
     var uniquePatterns = _.uniqWith(cleanPatterns, _.isEqual); // Will remove duplicate patterns in cleanPatterns
-    config.logger.info(uniquePatterns.length+' unique patterns found for specified entry');
-    config.logger.info(cleanPatterns.length+' exemplifying sentences found for specified entry');
+    logger.info(uniquePatterns.length+' unique patterns found for specified entry');
+    logger.info(cleanPatterns.length+' exemplifying sentences found for specified entry');
     context.body = uniquePatterns;
 }
 

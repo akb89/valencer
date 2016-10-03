@@ -2,14 +2,14 @@
 
 import AnnotationSet from '../model/annotationSetModel';
 import {getPatternSet} from './getController';
-import config from './../server';
+import config from '../config';
 
-//const logger = config.logger // FIXME: doesn't work. And having to write config.logger all the time is not acceptable
+const logger = config.logger
 
 // TODO : Discuss what should be populated
 async function getAll(context) {
     var query = context.query.vp;
-    config.logger.info('Querying for all annotationSets with a valence pattern matching: '+query);
+    logger.info('Querying for all annotationSets with a valence pattern matching: '+query);
     var patternSet = await getPatternSet(query);
     context.body = await AnnotationSet
         .find()

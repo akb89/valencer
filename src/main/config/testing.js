@@ -7,4 +7,4 @@ const testing = {
     chunkLength: 20
 };
 
-export default testing;
+module.exports = testing;

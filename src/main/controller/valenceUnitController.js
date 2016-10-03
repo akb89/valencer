@@ -2,13 +2,13 @@
 
 import ValenceUnit from './../model/valenceUnitModel';
 import {getPatternSet} from './getController';
-import config from './../server';
+import config from '../config';
 
-//const logger = config.logger // FIXME: doesn't work. And having to write config.logger all the time is not acceptable
+const logger = config.logger
 
 async function getAll(context){
     var query = context.query.vp;
-    config.logger.info('Querying for all valenceUnits with matching: '+ query);
+    logger.info('Querying for all valenceUnits with matching: '+ query);
     var valenceUnitSet = await getValenceUnitSet(query);
 
     var valenceUnits = await ValenceUnit
@@ -16,7 +16,7 @@ async function getAll(context){
         .where('_id')
         .in(valenceUnitSet.toArray())
         .select('-_id');
-    config.logger.info(valenceUnits.length+' unique valenceUnits found for specified entry');
+    logger.info(valenceUnits.length+' unique valenceUnits found for specified entry');
     context.body = valenceUnits;
 }
 

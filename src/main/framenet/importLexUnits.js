@@ -19,10 +19,8 @@ import Sentence from './../model/sentenceModel';
 import ValenceUnit from './../model/valenceUnitModel';
 import JsonixUtils from './../utils/jsonixUtils';
 import Promise from 'bluebird';
-import development from './../config/development';
-import testing from './../config/testing';
-import production from './../config/production';
 import './../utils/utils';
+import config from '../config';
 
 const MongoClient = mongodb.MongoClient;
 const Jsonix = jsonix.Jsonix;
@@ -30,8 +28,6 @@ const FrameSchema = frameSchema.FrameSchema;
 const LexUnitSchema = lexUnitSchema.LexUnitSchema;
 const context = new Jsonix.Context([FrameSchema, LexUnitSchema]);
 const unmarshaller = context.createUnmarshaller();
-// TODO: what about testing?
-const config = (process.env.NODE_ENV == 'production' ) ? production : development;
 const logger = config.logger;
 const dbUri = config.database;
 const __directory = config.lexUnitDir;

@@ -1,0 +1,11 @@
+node_modules/
+bower_components/
+public/fonts/
+public/css/
+public/js/*bundle*
+public/js/*vendor*
+public/img/uploads/*
+*.swp
+*.pyc
+*.o
+*.log
