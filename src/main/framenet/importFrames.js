@@ -158,6 +158,7 @@ async function importAll(files, frameSet, frameElementSet, feRelations, frameRel
     await Promise.all(files.map((file) =>
         initFile(file, frameSet, frameElementSet, feRelations, frameRelations, lexemes, lexUnits, semTypeSet)
     )); //FIXME weird bug here: curly brackets break the code...
+    //TODO : Is Promise.all necessary?
 
     feRelationCounter += feRelations.length;
     frameRelationCounter += frameRelations.length;

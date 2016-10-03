@@ -1,46 +1,42 @@
 /**
  * Standalone script to import FrameNet lexical units data to MongoDB.
  */
-
 'use strict';
 
-const env = process.env.NODE_ENV || 'development';
+import async from 'async'
+import co from 'co'
+import FastSet from 'collections/fast-set'
+import filesystem from 'fs';
+import mongodb from 'mongodb';
+import path from 'path';
+import jsonix from 'jsonix';
+import frameSchema from './../mapping/FrameSchema.js';
+import lexUnitSchema from './../mapping/LexUnitSchema';
+import AnnotationSet from './../model/annotationSetModel';
+import Label from './../model/labelModel';
+import Pattern from './../model/patternModel';
+import Sentence from './../model/sentenceModel';
+import ValenceUnit from './../model/valenceUnitModel';
+import JsonixUtils from './../utils/jsonixUtils';
+import Promise from 'bluebird';
+import development from './../config/development';
+import testing from './../config/testing';
+import production from './../config/production';
+import './../utils/utils';
 
-var config;
-try{
-    config = require(`./../config/${env}`);
-}catch(err){
-    console.error(err);
-    console.error(`No specific configuration for env ${env}`);
-    process.exit(1);
-}
+const MongoClient = mongodb.MongoClient;
+const Jsonix = jsonix.Jsonix;
+const FrameSchema = frameSchema.FrameSchema;
+const LexUnitSchema = lexUnitSchema.LexUnitSchema;
+const context = new Jsonix.Context([FrameSchema, LexUnitSchema]);
+const unmarshaller = context.createUnmarshaller();
+// TODO: what about testing?
+const config = (process.env.NODE_ENV == 'production' ) ? production : development;
 const logger = config.logger;
 const dbUri = config.database;
 const __directory = config.lexUnitDir;
 const frameNetLayers = config.frameNetLayers;
 const chunkSize = config.lexUnitChunkSize;
-
-const async = require('async'); // TODO : not sure this brings significant performance improvements
-const co = require('co');
-const FastSet = require('collections/fast-set');
-const filesystem = require('fs');
-const MongoClient = require('mongodb').MongoClient;
-const path = require('path');
-
-const Jsonix = require('jsonix').Jsonix;
-const FrameSchema = require('./../mapping/FrameSchema.js').FrameSchema;
-const LexUnitSchema = require('./../mapping/LexUnitSchema').LexUnitSchema;
-const context = new Jsonix.Context([FrameSchema, LexUnitSchema]);
-const unmarshaller = context.createUnmarshaller();
-
-const AnnotationSet = require('./../model/annotationSetModel');
-const Label = require('./../model/labelModel');
-const Pattern = require('./../model/patternModel');
-const Sentence = require('./../model/sentenceModel');
-const ValenceUnit = require('./../model/valenceUnitModel');
-
-const JsonixUtils = require('./../utils/jsonixUtils');
-require('./../utils/utils');
 
 // TODO : keep as global variables ?
 var annoSetCounter = 0;
@@ -56,94 +52,97 @@ var duration = function(startTime){
 
 var start = process.hrtime();
 
-importFNData(__directory).then(() => {Logger.info('Import process completed in: '+ duration(start))});
+importFNData(__directory).then(() => {logger.info('Import process completed in: '+ duration(start))});
 
 // TODO add error and exit on invalid directory
-function importFNData(lexUnitDir){
-    Logger.info('Processing directory: '+lexUnitDir);
+async function importFNData(lexUnitDir){
+    logger.info('Processing directory: '+lexUnitDir);
     var filesPromise = new Promise((resolve, reject) => {
         filesystem.readdir(lexUnitDir, (error, files) => {
             if(error) return reject(error);
             return resolve(files);
         })
     });
-    return co(function*() {
-        var files = yield filesPromise;
-        Logger.info('Total number of files = ' + files.length);
-        Logger.info('Filtered files: '+files.filter(JsonixUtils.isValidXml).length);
 
-        var slicedFileArray = files.filter(JsonixUtils.isValidXml).chunk(chunkSize);
-        Logger.info('Slice count: '+slicedFileArray.length);
+    var files = await filesPromise;
+    logger.info('Total number of files = ' + files.length);
+    logger.info('Filtered files: '+files.filter(JsonixUtils.isValidXml).length);
 
-        var db;
-        try {
-            db = yield MongoClient.connect(dbUri);
-        }catch(err){
-            logger.error(err);
-            process.exit(1);
-        }
-        Logger.info(`Connected to database: ${dbUri}`);
+    var slicedFileArray = files.filter(JsonixUtils.isValidXml).chunk(chunkSize);
+    logger.info('Slice count: '+slicedFileArray.length);
 
-        var annoSetCollection = db.collection('annotationsets');
-        var labelCollection = db.collection('labels');
-        var lexUnitCollection = db.collection('lexunits');
-        var patternCollection = db.collection('patterns');
-        var sentenceCollection = db.collection('sentences');
-        var valenceUnitCollection = db.collection('valenceunits');
+    var db;
+    try {
+        db = await MongoClient.connect(dbUri);
+    }catch(err){
+        logger.error(err);
+        process.exit(1);
+    }
+    logger.info(`Connected to database: ${dbUri}`);
 
-        //TODO add all indexes here
-        valenceUnitCollection.createIndex({FE: 1, PT: 1, GF: 1}, {unique: true});
+    var annoSetCollection = db.collection('annotationsets');
+    var labelCollection = db.collection('labels');
+    var lexUnitCollection = db.collection('lexunits');
+    var patternCollection = db.collection('patterns');
+    var sentenceCollection = db.collection('sentences');
+    var valenceUnitCollection = db.collection('valenceunits');
 
-        var valenceUnitSet = new FastSet(null, function (a, b) {
-            return a.FE === b.FE
-                && a.PT === b.PT
-                && a.GF === b.GF;
-        }, function (object) {
-            var result = object.FE != null ? object.FE.hashCode() : 0;
-            result = 31 * result + (object.PT != null ? object.PT.hashCode() : 0);
-            result = 31 * result + (object.GF != null ? object.GF.hashCode() : 0);
-            return result.toString();
-        });
+    //TODO add all indexes here
+    valenceUnitCollection.createIndex({FE: 1, PT: 1, GF: 1}, {unique: true});
 
-        for(let batch of slicedFileArray){
-            var annotationSets = [];
-            var labels = [];
-            var patterns = [];
-            var sentences = [];
-
-            yield importAll(
-                batch,
-                annotationSets,
-                labels,
-                patterns,
-                sentences,
-                valenceUnitSet,
-                annoSetCollection,
-                labelCollection,
-                lexUnitCollection,
-                patternCollection,
-                sentenceCollection
-            );
-        }
-
-        valenceUnitCollection.insertMany(valenceUnitSet.map((valenceUnit) => {return valenceUnit.toObject()}), {writeConcern: 0, j: false, ordered: false}, (err) => {
-            err !== null ? logger.error(err) : logger.silly('#valenceUnitCollection.insertMany');
-        });
-
-        Logger.info('Total inserted to MongoDB: ');
-        Logger.info('AnnotationSets = ' + annoSetCounter);
-        Logger.info('Labels = ' + labelCounter);
-        Logger.info('Patterns = ' + patternCounter);
-        Logger.info('Sentences = ' + sentenceCounter);
-        Logger.info('ValenceUnits = ' + valenceUnitSet.length);
+    var valenceUnitSet = new FastSet(null, function (a, b) {
+        return a.FE === b.FE
+            && a.PT === b.PT
+            && a.GF === b.GF;
+    }, function (object) {
+        var result = object.FE != null ? object.FE.hashCode() : 0;
+        result = 31 * result + (object.PT != null ? object.PT.hashCode() : 0);
+        result = 31 * result + (object.GF != null ? object.GF.hashCode() : 0);
+        return result.toString();
     });
+
+    for(let batch of slicedFileArray){
+        var annotationSets = [];
+        var labels = [];
+        var patterns = [];
+        var sentences = [];
+        await importAll(
+            batch,
+            annotationSets,
+            labels,
+            patterns,
+            sentences,
+            valenceUnitSet,
+            annoSetCollection,
+            labelCollection,
+            lexUnitCollection,
+            patternCollection,
+            sentenceCollection
+        );
+    }
+
+    valenceUnitCollection.insertMany(valenceUnitSet.map((valenceUnit) => {return valenceUnit.toObject()}), {writeConcern: 0, j: false, ordered: false}, (err) => {
+        err !== null ? logger.error(err) : logger.silly('#valenceUnitCollection.insertMany');
+    });
+
+    logger.info('Total inserted to MongoDB: ');
+    logger.info('AnnotationSets = ' + annoSetCounter);
+    logger.info('Labels = ' + labelCounter);
+    logger.info('Patterns = ' + patternCounter);
+    logger.info('Sentences = ' + sentenceCounter);
+    logger.info('ValenceUnits = ' + valenceUnitSet.length);
+
 }
 
-function* importAll(files, annotationSets, labels, patterns, sentences, valenceUnitSet, annoSetCollection, labelCollection, lexUnitCollection, patternCollection, sentenceCollection){
-
-    yield files.map((file) =>
-        initFile(file, annotationSets, labels, patterns, sentences, valenceUnitSet, lexUnitCollection)
-    ); // FIXME Putting curly brakets here breaks the code!!
+async function importAll(files, annotationSets, labels, patterns, sentences, valenceUnitSet, annoSetCollection,
+                         labelCollection, lexUnitCollection, patternCollection, sentenceCollection){
+    await Promise.all(files.map(async (file) => {
+            var unmarshalledFile = await initFile(file, annotationSets, labels, patterns, sentences, valenceUnitSet,
+                lexUnitCollection);
+            await initLexUnit(unmarshalledFile, annotationSets, labels, patterns, sentences, valenceUnitSet,
+                lexUnitCollection);
+        }
+    )); // FIXME Putting curly brackets here breaks the code!!
 
     annoSetCounter += annotationSets.length;
     labelCounter += labels.length;
@@ -154,6 +153,7 @@ function* importAll(files, annotationSets, labels, patterns, sentences, valenceU
      * Launching mongodb insertMany queries asynchronously so that init of next batch can start without waiting for
      * all insertMany queries to be completed.
      */
+
     annoSetCollection.insertMany(annotationSets, {w: 0, j: false, ordered: false}, (err) => {
         err !== null ? logger.error(err) : logger.silly('#annoSetCollection.insertMany');
     });
@@ -172,18 +172,9 @@ function initFile(file, annotationSets, labels, patterns, sentences, valenceUnit
     return new Promise((resolve, reject) => {
         try{
             unmarshaller.unmarshalFile(path.join(__directory, file), (unmarshalledFile) => {
-                return resolve(co(function* (){
-                    yield initLexUnit(
-                        unmarshalledFile,
-                        annotationSets,
-                        labels,
-                        patterns,
-                        sentences,
-                        valenceUnitSet,
-                        lexUnitCollection
-                    )
-                })); // TODO : cleanup...
-
+                logger.info(
+                    `Processing lexUnit with fn_id = ${unmarshalledFile.value.id} and name = ${unmarshalledFile.value.name}`);
+                return resolve(unmarshalledFile);
             });
         }catch(err){
             return reject(err);
@@ -191,11 +182,11 @@ function initFile(file, annotationSets, labels, patterns, sentences, valenceUnit
     });
 }
 
-function* initLexUnit(jsonixLexUnit, annotationSets, labels, patterns, sentences, valenceUnitSet, lexUnitCollection){
-    Logger.info(
-        'Processing lexUnit with fn_id = ' + jsonixLexUnit.value.id + ' and name = ' + jsonixLexUnit.value.name);
+async function initLexUnit(jsonixLexUnit, annotationSets, labels, patterns, sentences, valenceUnitSet, lexUnitCollection){
+    //logger.info(
+    //    'Processing lexUnit with fn_id = ' + jsonixLexUnit.value.id + ' and name = ' + jsonixLexUnit.value.name);
 
-    var lexUnit = yield lexUnitCollection.findOne({fn_id: jsonixLexUnit.value.id});
+    var lexUnit = await lexUnitCollection.findOne({fn_id: jsonixLexUnit.value.id});
 
     initSentences(
         JsonixUtils.toJsonixSentenceArray(jsonixLexUnit),
@@ -318,8 +309,3 @@ function getLabels(jsonixAnnoSet, labels) {
         });
     }).flatten();
 }
-
-
-
-
-

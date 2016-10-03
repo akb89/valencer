@@ -3,10 +3,10 @@
 import Logger from './../logger';
 
 const development = {
-    database: 'mongodb://localhost:27017/dev',
+    database: 'mongodb://localhost:27017/valencer_dev',
     port: 3030,
     logger: Logger.info,
-    lexUnitDir: '/Users/AKB/Desktop/fndata-1.6/tmp/lu1000',
+    lexUnitDir: '/Users/AKB/Desktop/fndata-1.6/lu',
     frameDir: '/Users/AKB/Desktop/fndata-1.6/frame',
     frameNetLayers: ['FE', 'PT', 'GF'], // Configured this way for scalability, as other languages may use additional
     // specific layers
@@ -14,7 +14,7 @@ const development = {
     // way for scalability. As of September 2016, FrameNet book Section 3.2.2.4 tells us feRelations may eventually
     // be expended.
     frameChunkSize: 500, //
-    lexUnitChunkSize: 100
+    lexUnitChunkSize: 250
 };
 
 export default development;
