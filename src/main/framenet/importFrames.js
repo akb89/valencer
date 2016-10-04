@@ -20,9 +20,7 @@ import LexUnit from './../model/lexUnitModel';
 import SemType from './../model/semTypeModel';
 import JsonixUtils from './../utils/jsonixUtils';
 import Promise from 'bluebird';
-import development from './../config/development';
-import testing from './../config/testing';
-import production from './../config/production';
+import config from '../config';
 import './../utils/utils';
 
 const MongoClient = mongodb.MongoClient;
@@ -31,9 +29,11 @@ const FrameSchema = frameSchema.FrameSchema;
 const LexUnitSchema = lexUnitSchema.LexUnitSchema;
 const context = new Jsonix.Context([FrameSchema, LexUnitSchema]);
 const unmarshaller = context.createUnmarshaller();
-// TODO: what about testing?
-const config = (process.env.NODE_ENV == 'production' ) ? production : development;
 const logger = config.logger;
+
+//Corentin This should be directly integrated into the functions (I was wondering where
+//chunkSize was defined, if I had seen config.frameChunkSize, I would have understood
+//right away
 const dbUri = config.database;
 const __directory = config.frameDir;
 const feRelationTypes = config.feRelations;
@@ -50,6 +50,7 @@ var start = process.hrtime();
 importFrames(__directory).then(() => {logger.info('Import process completed in: '+ duration(start))});
 
 // TODO question: should I keep those as global variables?
+// Corentin NEVER use global variables
 var feRelationCounter = 0;
 var frameRelationCounter = 0;
 var lexemeCounter = 0;
@@ -57,6 +58,7 @@ var lexUnitCounter = 0;
 
 // TODO add error and exit on invalid directory
 // TODO I'd like to remove Promises: is that possible?
+// Using reactive programming yes, but why do you want to remove promises?
 async function importFrames(frameDir){
     logger.info('Processing directory: '+frameDir);
     var filesPromise = new Promise((resolve, reject) => {
@@ -90,6 +92,8 @@ async function importFrames(frameDir){
 
     // TODO add all indexes here
     // TODO should I create unique indexes on fn_ids? What about impact on write performances?
+    // Corentin Indexes should be defined at model level and not here in this part of
+    // the code
     frameCollection.createIndex({fn_id: 1}, {unique: true});
     frameCollection.createIndex({name: 1});
     frameElementCollection.createIndex({fn_id: 1}, {unique: true});
@@ -158,12 +162,21 @@ async function importAll(files, frameSet, frameElementSet, feRelations, frameRel
     await Promise.all(files.map((file) =>
         initFile(file, frameSet, frameElementSet, feRelations, frameRelations, lexemes, lexUnits, semTypeSet)
     )); //FIXME weird bug here: curly brackets break the code...
+
+    //Corentin your FIXME can be a bug in babel, I've already seen some strange behaviour sometimes
+
     //TODO : Is Promise.all necessary?
+    //Corentin If you want to run the initFile function in parallel, I think so.
 
     feRelationCounter += feRelations.length;
     frameRelationCounter += frameRelations.length;
     lexemeCounter += lexemes.length;
     lexUnitCounter += lexUnits.length;
+
+    //Corentin I don't know about memory consumption, but unless necessary
+    //maybe you should import into mongo by chunk and not all at once.
+    //By doing so, you empty your arrays (or sets) and the garbage collector will
+    //release some memory
 
     /**
      * Launching mongodb insertMany queries asynchronously so that init of next batch can start without waiting for
@@ -207,6 +220,8 @@ function initFrame(jsonixFrame, frameSet, frameElementSet, feRelations, frameRel
         frame.definition = jsonixFrame.value.definition;
         frame.cDate = jsonixFrame.value.cDate;
         frame.cBy = jsonixFrame.value.cBy;
+        //Corentin all these steps are done sequentially. Would it be possible to do it
+        //in parallel (using async / await and promises)?
         frame.frameElements = getFrameElements(jsonixFrame, frameElementSet, feRelations, semTypeSet);
         frame.frameRelations = getFrameRelations(jsonixFrame, frameSet, frameRelations);
         frame.feCoreSets = getFECoreSets(jsonixFrame, frameElementSet);

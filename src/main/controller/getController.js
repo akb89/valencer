@@ -6,8 +6,10 @@ import Pattern from'./../model/patternModel';
 import ValenceUnit from './../model/valenceUnitModel';
 import {NotFoundException} from './../exception/valencerException';
 import FastSet from 'collections/fast-set';
-import config from './../server';
+import config from '../config';
 import './../utils/utils';
+
+const logger = config.logger;
 
 // TODO: Ideally, I would want to have a class structure for this file, with private methods (maybe by defining them
 // outside of the class). To be discussed. Also, the exception handling needs to be revised.
@@ -29,7 +31,7 @@ function preProcess(query){
 
 // FIXME for NP ... Obj queries <-- This is a major concern
 async function _getPatternSet(preProcessedQuery){
-    config.logger.debug('Fetching patterns for tokenArray: '+preProcessedQuery.tokenArray.toString());
+    logger.debug('Fetching patterns for tokenArray: '+preProcessedQuery.tokenArray.toString());
     var patternSet = new FastSet(null, function (a, b) {
         return a._id.equals(b._id);
     }, function (object) {
@@ -37,9 +39,9 @@ async function _getPatternSet(preProcessedQuery){
     });
     for (let unit of preProcessedQuery.tokenArray){
         var valenceUnitSet = await _getValenceUnitSet(unit);
-        config.logger.debug('ValenceUnitSet.length = '+valenceUnitSet.length);
+        logger.debug('ValenceUnitSet.length = '+valenceUnitSet.length);
         var _patterns = await Pattern.find().where('valenceUnits').in(valenceUnitSet.toArray());
-        config.logger.debug('Pattern.length = '+_patterns.length);
+        logger.debug('Pattern.length = '+_patterns.length);
         if(_patterns.length === 0){
             throw new NotFoundException('Could not find patters matching given input in FrameNet database: '+preProcessedQuery.query);
         }
@@ -54,7 +56,7 @@ async function _getPatternSet(preProcessedQuery){
 }
 
 async function _getValenceUnitSet(unit){
-    config.logger.debug('Fetching valence units for unit: '+unit);
+    logger.debug('Fetching valence units for unit: '+unit);
     var set = new FastSet(null, function (a, b) {
         return a._id.equals(b._id);
     }, function (object) {
@@ -66,7 +68,7 @@ async function _getValenceUnitSet(unit){
         gf: undefined
     };
     for(let token of unit){
-        config.logger.debug('Processing token: '+token);
+        logger.debug('Processing token: '+token);
         if(valenceUnit.fe === undefined){
             var _FE = await ValenceUnit.find().where('FE').equals(token);
             if(_FE.length !== 0){

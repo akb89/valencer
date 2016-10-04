@@ -17,4 +17,4 @@ const development = {
     lexUnitChunkSize: 250
 };
 
-export default development;
+module.exports = development;

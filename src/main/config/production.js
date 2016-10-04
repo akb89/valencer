@@ -7,4 +7,4 @@ const production = {
     chunkLength: 20
 };
 
-export default production;
+module.exports = production;

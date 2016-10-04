@@ -4,12 +4,13 @@ import Koa from 'koa';
 import winstonKoaLogger from 'winston-koa-logger';
 import mongoose from 'mongoose';
 import router from './routes';
-import development from './config/development';
+import config from './config';
 import testing from './config/testing';
 import production from './config/production';
 
 // TODO: what about testing?
-const config = (process.env.NODE_ENV == 'production' ) ? production : development;
+// Corentin: Testing is properly handled in config/index.js
+//const config = (process.env.NODE_ENV == 'production' ) ? production : development;
 /*
  var _config;
  try{
@@ -53,5 +54,3 @@ function connectToDatabase(uri) {
         mongoose.connect(uri);
     });
 }
-
-export default config;
