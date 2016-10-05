@@ -10,13 +10,15 @@ import patternController from './controller/patternController';
 import similarityController from './controller/similarityController';
 import valenceUnitController from './controller/valenceUnitController';
 
+import authMiddleware from './auth/auth';
+
 const router = Router();
 
 //Corentin middlewares validating sent data should be put here
 //We need to create a new directory with validators and make them as small functions
 //that fullfill only one goal.
 
-router.get('/annoSets', annoSetController.getAll);
+router.get('/annoSets', authMiddleware.auth, annoSetController.getAll);
 
 router.get('/frames', frameController.getAll);
 

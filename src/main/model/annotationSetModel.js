@@ -2,10 +2,6 @@
 
 import mongoose from 'mongoose';
 import bluebird from 'bluebird';
-import './sentenceModel';
-import './lexUnitModel';
-import './patternModel';
-import './labelModel';
 
 mongoose.Promise = bluebird;
 

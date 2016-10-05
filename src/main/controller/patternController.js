@@ -5,7 +5,7 @@ import {getPatternSet} from './getController';
 import FastSet from 'collections/fast-set';
 import config from '../config';
 import _ from 'lodash';
-import './../utils/utils'; // for hashcode
+//import './../utils/utils'; // for hashcode
 
 const logger = config.logger;
 
