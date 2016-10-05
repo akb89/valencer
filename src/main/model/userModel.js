@@ -11,14 +11,14 @@ import moment from 'moment';
 mongoose.Promise = bluebird;
 
 function generate_key() {
-    var key = uuid.v4() + shortid.generate();
+    let key = uuid.v4() + shortid.generate();
     return key;
 }
 
 function generate_secret() {
-    var key = shortid.generate() + shortid.generate() + shortid.generate();
-    var time = +moment();
-    var hash = crypto.createHmac('sha256', `${time}`).update(key).digest('hex');
+    let key = shortid.generate() + shortid.generate() + shortid.generate();
+    let time = +moment();
+    let hash = crypto.createHmac('sha256', `${time}`).update(key).digest('hex');
     return hash;
 }
 

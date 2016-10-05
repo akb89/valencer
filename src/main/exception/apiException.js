@@ -15,11 +15,11 @@ module.exports = {
         new Error('API Key does not exist.'),
     403),
 
-    "InvalidSignature": new GenericException('InvalidSignature', 5,
+    "InvalidSignature": new GenericException('InvalidSignature', 4,
         new Error('The signature does not match.'),
     403),
 
-    "InvalidTimestamp": new GenericException('InvalidTimestamp', 6,
+    "InvalidTimestamp": new GenericException('InvalidTimestamp', 5,
         new Error('Invalid timestamp.'),
     403)
 }

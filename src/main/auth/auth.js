@@ -6,6 +6,12 @@ import config from '../config';
 
 async function verify_api_signature(ctx, next) {
     const req = ctx.request;
+    const host = req.header['host']
+
+    if(host.indexOf('localhost') !== -1 || host.indexOf('127.0.0.1') !== -1){
+        return await next();
+    }
+
     var authorization = req.header['authorization'];
     if(!authorization){
         throw ApiErrors.NoAuthorizationHeaderError;
