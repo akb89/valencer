@@ -8,7 +8,7 @@ import './semTypeModel';
 mongoose.Promise = bluebird;
 
 var frameElementSchema = mongoose.Schema({
-    //fn_id: {type: Number, unique: true},
+    _id: {type: Number},
     name: {type: String},
     definition: {type: String},
     coreType: {type: String},
@@ -18,7 +18,7 @@ var frameElementSchema = mongoose.Schema({
     bgColor: {type: String},
     abbrev: {type: String},
     feRelations: [{type: mongoose.Schema.Types.ObjectId, ref: 'FERelation'}],
-    semTypes: [{type: mongoose.Schema.Types.ObjectId, ref: 'SemType'}]
+    semTypes: [{type: Number, ref: 'SemType'}]
 });
 
 export default mongoose.model('FrameElement', frameElementSchema);

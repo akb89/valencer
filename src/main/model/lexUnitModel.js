@@ -9,16 +9,16 @@ import './semTypeModel';
 mongoose.Promise = bluebird;
 
 var lexUnitSchema = mongoose.Schema({
-    //fn_id: {type: Number, unique: true},
+    _id: {type: Number},
     name: {type: String, index: true},
     pos: {type: String},
     definition: {type: String},
-    frame: {type: mongoose.Schema.Types.ObjectId, ref: 'Frame'},
+    frame: {type: Number, ref: 'Frame'},
     status: {type: String},
     totalAnnotated: {type: Number},
     lemma_id: {type: Number},
     lexemes: [{type: mongoose.Schema.Types.ObjectId, ref: 'Lexeme'}],
-    semTypes: [{type: mongoose.Schema.Types.ObjectId, ref: 'SemType'}]
+    semTypes: [{type: Number, ref: 'SemType'}]
 });
 
 export default mongoose.model('LexUnit', lexUnitSchema);

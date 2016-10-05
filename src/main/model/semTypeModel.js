@@ -6,7 +6,7 @@ import bluebird from 'bluebird';
 mongoose.Promise = bluebird;
 
 var semTypeModelSchema = mongoose.Schema({
-    //fn_id: {type: Number, unique: true},
+    _id: {type: Number},
     name: {type: String}
 });
 

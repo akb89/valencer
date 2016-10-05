@@ -8,7 +8,7 @@ mongoose.Promise = bluebird;
 
 var frameRelationSchema = mongoose.Schema({
     type: {type: String},
-    frames: [{type: mongoose.Schema.Types.ObjectId, ref: 'Frame'}]
+    frames: [{type: Number, ref: 'Frame'}]
 });
 
 export default mongoose.model('FrameRelation', frameRelationSchema);

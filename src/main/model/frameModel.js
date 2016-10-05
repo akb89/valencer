@@ -10,17 +10,16 @@ import './semTypeModel';
 mongoose.Promise = bluebird;
 
 var frameSchema = mongoose.Schema({
-    //fn_id: {type: Number, unique: true},
-    //_id: {type: mongoose.Schema.Types.ObjectId},
+    _id: {type: Number},
     name: {type: String},
     definition: {type: String},
     cDate: {type: String},
     cBy: {type: String},
-    frameElements: [{type: mongoose.Schema.Types.ObjectId, ref: 'FrameElement'}],
-    feCoreSets: [[{type: mongoose.Schema.Types.ObjectId, ref: 'FrameElement'}]],
+    frameElements: [{type: Number, ref: 'FrameElement'}],
+    feCoreSets: [[{type: Number, ref: 'FrameElement'}]],
     frameRelations: [{type: mongoose.Schema.Types.ObjectId, ref: 'FrameRelation'}],
-    lexUnits: [{type: mongoose.Schema.Types.ObjectId, ref: 'LexUnit'}],
-    semTypes: [{type: mongoose.Schema.Types.ObjectId, ref: 'SemType'}]
+    lexUnits: [{type: Number, ref: 'LexUnit'}],
+    semTypes: [{type: Number, ref: 'SemType'}]
 });
 
 export default mongoose.model('Frame', frameSchema);

@@ -6,10 +6,10 @@ import bluebird from 'bluebird';
 mongoose.Promise = bluebird;
 
 var documentSchema = mongoose.Schema({
-    //fn_id: {type: Number, unique: true},
+    _id: {type: Number},
     name: {type: String},
     description: {type: String},
-    sentences: [{type: mongoose.Schema.Types.ObjectId, ref: 'Sentence'}]
+    sentences: [{type: Number, ref: 'Sentence'}]
 });
 
 export default mongoose.model('Document', documentSchema);

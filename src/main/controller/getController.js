@@ -7,7 +7,6 @@ import ValenceUnit from './../model/valenceUnitModel';
 import {NotFoundException} from './../exception/valencerException';
 import FastSet from 'collections/fast-set';
 import config from '../config';
-import './../utils/utils';
 
 const logger = config.logger;
 
@@ -32,11 +31,7 @@ function preProcess(query){
 // FIXME for NP ... Obj queries <-- This is a major concern
 async function _getPatternSet(preProcessedQuery){
     logger.debug('Fetching patterns for tokenArray: '+preProcessedQuery.tokenArray.toString());
-    var patternSet = new FastSet(null, function (a, b) {
-        return a._id.equals(b._id);
-    }, function (object) {
-        return object._id.toString();
-    });
+    var patternSet = new PatternSet();
     for (let unit of preProcessedQuery.tokenArray){
         var valenceUnitSet = await _getValenceUnitSet(unit);
         logger.debug('ValenceUnitSet.length = '+valenceUnitSet.length);
@@ -45,11 +40,7 @@ async function _getPatternSet(preProcessedQuery){
         if(_patterns.length === 0){
             throw new NotFoundException('Could not find patters matching given input in FrameNet dbUri: '+preProcessedQuery.query);
         }
-        var _patternSet = new FastSet(_patterns, function (a, b) {
-            return a._id.equals(b._id);
-        }, function (object) {
-            return object._id.toString();
-        });
+        var _patternSet = new PatternSet();
         patternSet = patternSet.length === 0 ? _patternSet : patternSet.intersection(_patternSet);
     }
     return patternSet;
