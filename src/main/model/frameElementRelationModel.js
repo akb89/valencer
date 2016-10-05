@@ -6,13 +6,9 @@ import './frameElementModel';
 
 mongoose.Promise = bluebird;
 
-class FERelation extends mongoose.Schema {
-    constructor() {
-        super({
-            type: {type: String},
-            frameElements: [{type: mongoose.Schema.Types.ObjectId, ref: 'FrameElement'}]
-        })
-    }
-}
+var frameElementRelationSchema = mongoose.Schema({
+    type: {type: String},
+    frameElements: [{type: mongoose.Schema.Types.ObjectId, ref: 'FrameElement'}]
+});
 
-export default mongoose.model('FERelation', new FERelation);
+export default mongoose.model('FERelation', frameElementRelationSchema);

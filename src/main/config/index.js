@@ -1,7 +1,7 @@
 'use strict';
 
 //Because of the export default works with babel, we need to use classic require
-const baseConfig = require('./all');
+import {all as baseConfig} from './all';
 
 import _ from 'lodash';
 import Logger from './../logger';

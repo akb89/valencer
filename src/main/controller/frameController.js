@@ -5,7 +5,7 @@ import LexUnit from './../model/lexUnitModel';
 import {getPatternSet} from './getController';
 import config from '../config';
 
-const logger = config.logger
+const logger = config.logger;
 
 async function getAll(context){
     var query = context.query.vp;

@@ -5,16 +5,12 @@ import bluebird from 'bluebird';
 
 mongoose.Promise = bluebird;
 
-class Lexeme extends mongoose.Schema {
-    constructor() {
-        super({
-            name:   {type: String},
-            pos:    {type: String},
-            headword:   {type: String},
-            order:  {type: Number},
-            breakBefore:    {type: String}
-        })
-    }
-}
+var lexemeSchema = mongoose.Schema({
+    name:   {type: String},
+    pos:    {type: String},
+    headword:   {type: String},
+    order:  {type: Number},
+    breakBefore:    {type: String},
+});
 
-export default mongoose.model('Lexeme', new Lexeme);
+export default mongoose.model('Lexeme', lexemeSchema);

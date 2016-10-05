@@ -3,13 +3,12 @@
 import mongoose from 'mongoose';
 mongoose.Promise = require('bluebird');
 
-class Sentence extends mongoose.Schema {
-    constructor() {
-        super({
-            fn_id: {type: Number},
-            text: {type: String}
-        })
-    }
-}
+var sentenceSchema = mongoose.Schema({
+    //fn_id: {type: Number},
+    text: {type: String},
+    paragraphNumber: {type: Number},
+    sentenceNumber: {type: Number},
+    aPos: {type: Number}
+});
 
-export default mongoose.model('Sentence', new Sentence);
+export default mongoose.model('Sentence', sentenceSchema);

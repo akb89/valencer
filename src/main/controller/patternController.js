@@ -7,7 +7,7 @@ import config from '../config';
 import _ from 'lodash';
 import './../utils/utils'; // for hashcode
 
-const logger = config.logger
+const logger = config.logger;
 
 async function getAll(context){
     var query = context.query.vp;

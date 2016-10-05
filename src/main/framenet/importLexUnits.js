@@ -3,203 +3,146 @@
  */
 'use strict';
 
-import async from 'async'
-import co from 'co'
-import FastSet from 'collections/fast-set'
-import filesystem from 'fs';
-import mongodb from 'mongodb';
+import async from 'async';
 import path from 'path';
 import jsonix from 'jsonix';
-import frameSchema from './../mapping/FrameSchema.js';
+import preProcessor from './preProcessor';
 import lexUnitSchema from './../mapping/LexUnitSchema';
 import AnnotationSet from './../model/annotationSetModel';
 import Label from './../model/labelModel';
 import Pattern from './../model/patternModel';
 import Sentence from './../model/sentenceModel';
 import ValenceUnit from './../model/valenceUnitModel';
-import JsonixUtils from './../utils/jsonixUtils';
+import jsonixUtils from './utils/jsonixUtils';
 import Promise from 'bluebird';
-import './../utils/utils';
+import {ValenceUnitSet} from './utils/fnUtils';
+import './utils/utils';
 import config from '../config';
 
-const MongoClient = mongodb.MongoClient;
 const Jsonix = jsonix.Jsonix;
-const FrameSchema = frameSchema.FrameSchema;
 const LexUnitSchema = lexUnitSchema.LexUnitSchema;
-const context = new Jsonix.Context([FrameSchema, LexUnitSchema]);
+const context = new Jsonix.Context([LexUnitSchema]);
 const unmarshaller = context.createUnmarshaller();
 const logger = config.logger;
-const dbUri = config.database;
-const __directory = config.lexUnitDir;
-const frameNetLayers = config.frameNetLayers;
-const chunkSize = config.lexUnitChunkSize;
+const startTime = process.hrtime();
 
-// TODO : keep as global variables ?
-var annoSetCounter = 0;
-var labelCounter = 0;
-var patternCounter = 0;
-var sentenceCounter = 0;
-
-var duration = function(startTime){
-    var precision = 3; // 3 decimal places
-    var elapsed = process.hrtime(startTime)[1] / 1000000; // divide by a million to get nano to milli
-    return process.hrtime(startTime)[0] + 's ';
-};
-
-var start = process.hrtime();
-
-importFNData(__directory).then(() => {logger.info('Import process completed in: '+ duration(start))});
+if(require.main === module){
+    importLexUnits(config.lexUnitDir, config.dbUri, config.lexUnitChunkSize, config.frameNetLayers);
+    logger.info(`Import process completed in ${process.hrtime(startTime)[0]}s`)
+}
 
 // TODO add error and exit on invalid directory
-async function importFNData(lexUnitDir){
-    logger.info('Processing directory: '+lexUnitDir);
-    var filesPromise = new Promise((resolve, reject) => {
-        filesystem.readdir(lexUnitDir, (error, files) => {
-            if(error) return reject(error);
-            return resolve(files);
-        })
-    });
-
-    var files = await filesPromise;
-    logger.info('Total number of files = ' + files.length);
-    logger.info('Filtered files: '+files.filter(JsonixUtils.isValidXml).length);
-
-    var slicedFileArray = files.filter(JsonixUtils.isValidXml).chunk(chunkSize);
-    logger.info('Slice count: '+slicedFileArray.length);
-
-    var db;
-    try {
-        db = await MongoClient.connect(dbUri);
-    }catch(err){
-        logger.error(err);
-        process.exit(1);
-    }
-    logger.info(`Connected to database: ${dbUri}`);
-
-    var annoSetCollection = db.collection('annotationsets');
-    var labelCollection = db.collection('labels');
-    var lexUnitCollection = db.collection('lexunits');
-    var patternCollection = db.collection('patterns');
-    var sentenceCollection = db.collection('sentences');
-    var valenceUnitCollection = db.collection('valenceunits');
-
-    //TODO add all indexes here
-    valenceUnitCollection.createIndex({FE: 1, PT: 1, GF: 1}, {unique: true});
-
-    var valenceUnitSet = new FastSet(null, function (a, b) {
-        return a.FE === b.FE
-            && a.PT === b.PT
-            && a.GF === b.GF;
-    }, function (object) {
-        var result = object.FE != null ? object.FE.hashCode() : 0;
-        result = 31 * result + (object.PT != null ? object.PT.hashCode() : 0);
-        result = 31 * result + (object.GF != null ? object.GF.hashCode() : 0);
-        return result.toString();
-    });
-
-    for(let batch of slicedFileArray){
+// FIXME: breaks on bulk size of 1 or 2
+async function importLexUnits(lexUnitDir, dbUri, chunkSize, frameNetLayers) {
+    var batchSet = await preProcessor.getFilteredArrayOfFiles(lexUnitDir, chunkSize);
+    var db = await preProcessor.connectToDatabase(dbUri);
+    var valenceUnitSet = new ValenceUnitSet();
+    var counter = {
+        batch: 1,
+        annoSet: 0,
+        label: 0,
+        pattern: 0,
+        sentence: 0
+    };
+    for (let batch of batchSet) {
         var annotationSets = [];
         var labels = [];
         var patterns = [];
         var sentences = [];
+        logger.info(`Importing lexUnit batch ${counter.batch} out of ${batchSet.length}...`);
+        counter.batch++;
         await importAll(
             batch,
+            db,
+            lexUnitDir,
             annotationSets,
             labels,
             patterns,
             sentences,
             valenceUnitSet,
-            annoSetCollection,
-            labelCollection,
-            lexUnitCollection,
-            patternCollection,
-            sentenceCollection
+            frameNetLayers,
+            counter
         );
     }
+    //await saveSetToDb(db, valenceUnitSet);
+    logOutputStats(valenceUnitSet, counter);
+}
 
-    valenceUnitCollection.insertMany(valenceUnitSet.map((valenceUnit) => {return valenceUnit.toObject()}), {writeConcern: 0, j: false, ordered: false}, (err) => {
-        err !== null ? logger.error(err) : logger.silly('#valenceUnitCollection.insertMany');
-    });
+async function saveSetToDb(db, valenceUnitSet) {
+    await db.collection('valenceunits').insertMany(valenceUnitSet.map((valenceUnit) => {
+            return valenceUnit.toObject()
+        }),
+        {writeConcern: 0, j: false, ordered: false});
+}
 
+function logOutputStats(valenceUnitSet, counter) {
+    logger.info('Import completed');
     logger.info('Total inserted to MongoDB: ');
-    logger.info('AnnotationSets = ' + annoSetCounter);
-    logger.info('Labels = ' + labelCounter);
-    logger.info('Patterns = ' + patternCounter);
-    logger.info('Sentences = ' + sentenceCounter);
-    logger.info('ValenceUnits = ' + valenceUnitSet.length);
-
+    logger.info(`AnnotationSets = ${counter.annoSet}`);
+    logger.info(`Labels = ${counter.label}`);
+    logger.info(`Patterns = ${counter.pattern}`);
+    logger.info(`Sentences = ${counter.sentence}`);
+    logger.info(`ValenceUnits = ${valenceUnitSet.length}`);
 }
 
-async function importAll(files, annotationSets, labels, patterns, sentences, valenceUnitSet, annoSetCollection,
-                         labelCollection, lexUnitCollection, patternCollection, sentenceCollection){
-    await Promise.all(files.map(async (file) => {
-            var unmarshalledFile = await initFile(file, annotationSets, labels, patterns, sentences, valenceUnitSet,
-                lexUnitCollection);
-            await initLexUnit(unmarshalledFile, annotationSets, labels, patterns, sentences, valenceUnitSet,
-                lexUnitCollection);
+async function importAll(files, db, lexUnitDir, annotationSets, labels, patterns, sentences, valenceUnitSet,
+                         frameNetLayers, counter) {
+
+    await Promise.all(files.map(async(file) => {
+            var unmarshalledFile = await initFile(file, lexUnitDir, annotationSets, labels, patterns, sentences,
+                valenceUnitSet);
+            await initLexUnit(unmarshalledFile, db, annotationSets, labels, patterns, sentences, valenceUnitSet,
+                frameNetLayers);
         }
-    )); // FIXME Putting curly brackets here breaks the code!!
+    ));
 
-    annoSetCounter += annotationSets.length;
-    labelCounter += labels.length;
-    patternCounter += patterns.length;
-    sentenceCounter += sentences.length;
+    counter.annoSet += annotationSets.length;
+    counter.label += labels.length;
+    counter.pattern += patterns.length;
+    counter.sentence += sentences.length;
 
-    /**
-     * Launching mongodb insertMany queries asynchronously so that init of next batch can start without waiting for
-     * all insertMany queries to be completed.
-     */
-
-    annoSetCollection.insertMany(annotationSets, {w: 0, j: false, ordered: false}, (err) => {
-        err !== null ? logger.error(err) : logger.silly('#annoSetCollection.insertMany');
-    });
-    labelCollection.insertMany(labels, {w: 0, j: false, ordered: false}, (err) => {
-        err !== null ? logger.error(err) : logger.silly('#labelCollection.insertMany');
-    });
-    patternCollection.insertMany(patterns, {w: 0, j: false, ordered: false}, (err) => {
-        err !== null ? logger.error(err) : logger.silly('#patternCollection.insertMany');
-    });
-    sentenceCollection.insertMany(sentences, {w: 0, j: false, ordered: false}, (err) => {
-        err !== null ? logger.error(err) : logger.silly('#sentenceCollection.insertMany');
-    });
+    //await saveArraysToDb(db, annotationSets, labels, patterns, sentences);
 }
 
-function initFile(file, annotationSets, labels, patterns, sentences, valenceUnitSet, lexUnitCollection){
+async function saveArraysToDb(db, annotationSets, labels, patterns, sentences) {
+    await db.collection('annotationsets').insertMany(annotationSets, {w: 0, j: false, ordered: false});
+    await db.collection('labels').insertMany(labels, {w: 0, j: false, ordered: false});
+    await db.collection('patterns').insertMany(patterns, {w: 0, j: false, ordered: false});
+    await db.collection('sentences').insertMany(sentences, {w: 0, j: false, ordered: false});
+}
+
+function initFile(file, lexUnitDir) {
     return new Promise((resolve, reject) => {
-        try{
-            unmarshaller.unmarshalFile(path.join(__directory, file), (unmarshalledFile) => {
-                logger.info(
-                    `Processing lexUnit with fn_id = ${unmarshalledFile.value.id} and name = ${unmarshalledFile.value.name}`);
+        try {
+            unmarshaller.unmarshalFile(path.join(lexUnitDir, file), (unmarshalledFile) => {
                 return resolve(unmarshalledFile);
             });
-        }catch(err){
+        } catch (err) {
             return reject(err);
         }
     });
 }
 
-async function initLexUnit(jsonixLexUnit, annotationSets, labels, patterns, sentences, valenceUnitSet, lexUnitCollection){
-    //logger.info(
-    //    'Processing lexUnit with fn_id = ' + jsonixLexUnit.value.id + ' and name = ' + jsonixLexUnit.value.name);
-
-    var lexUnit = await lexUnitCollection.findOne({fn_id: jsonixLexUnit.value.id});
-
+async function initLexUnit(jsonixLexUnit, db, annotationSets, labels, patterns, sentences, valenceUnitSet,
+                           frameNetLayers) {
+    logger.debug(
+        `Processing lexUnit with id = ${jsonixLexUnit.value.id} and name = ${jsonixLexUnit.value.name}`);
+    var lexUnit = await db.collection('lexunits').findOne({_id: jsonixLexUnit.value.id});
     initSentences(
-        JsonixUtils.toJsonixSentenceArray(jsonixLexUnit),
+        jsonixUtils.toJsonixSentenceArray(jsonixLexUnit),
         lexUnit,
-        getPatternsMap(jsonixLexUnit, patterns, valenceUnitSet), // TODO optimize this?
+        getPatternsMap(jsonixLexUnit, patterns, valenceUnitSet),
         annotationSets,
         labels,
-        sentences
+        sentences,
+        frameNetLayers
     );
 }
 
 function getPatternsMap(jsonixLexUnit, patterns, valenceUnitSet) {
     var map = new Map();
-    //Corentin if there is no dependence between the ith step and i+1th step,
-    //you can definitely promisify everything and run it in paralell.
-    JsonixUtils.toJsonixPatternArray(jsonixLexUnit).forEach((jsonixPattern) => {
-        var patternVUs = JsonixUtils.toJsonixValenceUnitArray(jsonixPattern).map((jsonixValenceUnit) => {
+    jsonixUtils.toJsonixPatternArray(jsonixLexUnit).forEach((jsonixPattern) => {
+        var patternVUs = jsonixUtils.toJsonixValenceUnitArray(jsonixPattern).map((jsonixValenceUnit) => {
             var _valenceUnit = new ValenceUnit({
                 FE: jsonixValenceUnit.fe,
                 PT: jsonixValenceUnit.pt,
@@ -217,7 +160,7 @@ function getPatternsMap(jsonixLexUnit, patterns, valenceUnitSet) {
             valenceUnits: patternVUs
         });
         patterns.push(pattern.toObject({depopulate: true}));
-        JsonixUtils.toJsonixAnnoSetArray(jsonixPattern).forEach((jsonixAnnoSet) => {
+        jsonixUtils.toJsonixAnnoSetArray(jsonixPattern).forEach((jsonixAnnoSet) => {
             if (map.has(jsonixAnnoSet.id)) {
                 logger.error('AnnoSet already exists');
             }
@@ -227,7 +170,8 @@ function getPatternsMap(jsonixLexUnit, patterns, valenceUnitSet) {
     return map;
 }
 
-function initSentences(jsonixSentences, lexUnit, annoSetPatternsMap, annotationSets, labels, sentences) {
+function initSentences(jsonixSentences, lexUnit, annoSetPatternsMap, annotationSets, labels, sentences,
+                       frameNetLayers) {
     async.each(jsonixSentences, (jsonixSentence) => {
         initSentence(
             jsonixSentence,
@@ -235,31 +179,35 @@ function initSentences(jsonixSentences, lexUnit, annoSetPatternsMap, annotationS
             annoSetPatternsMap,
             annotationSets,
             labels,
-            sentences
+            sentences,
+            frameNetLayers
         );
     });
 }
 
-function initSentence(jsonixSentence, lexUnit, annoSetPatternsMap, annotationSets, labels, sentences) {
+function initSentence(jsonixSentence, lexUnit, annoSetPatternsMap, annotationSets, labels, sentences, frameNetLayers) {
     var sentence = new Sentence({
-        fn_id: jsonixSentence.id,
-        text: jsonixSentence.text
+        _id: jsonixSentence.id,
+        text: jsonixSentence.text,
+        paragraphNumber: jsonixSentence.paragNo,
+        sentenceNumber: jsonixSentence.sentNo,
+        aPos: jsonixSentence.aPos
     });
     sentences.push(sentence.toObject());
-
     initAnnoSets(
-        JsonixUtils.toJsonixAnnotationSetArray(jsonixSentence),
+        jsonixUtils.toJsonixAnnotationSetArray(jsonixSentence),
         lexUnit,
         sentence,
         annoSetPatternsMap,
         annotationSets,
-        labels
+        labels,
+        frameNetLayers
     );
 }
 
-function initAnnoSets(jsonixAnnoSets, lexUnit, sentence, annoSetPatternsMap, annotationSets, labels) {
+function initAnnoSets(jsonixAnnoSets, lexUnit, sentence, annoSetPatternsMap, annotationSets, labels, frameNetLayers) {
     async.each(jsonixAnnoSets, (jsonixAnnoSet) => {
-        if(isFrameNetSpecific(JsonixUtils.toJsonixLayerArray(jsonixAnnoSet))) {
+        if (isFrameNetSpecific(jsonixUtils.toJsonixLayerArray(jsonixAnnoSet), frameNetLayers)) {
             initAnnoSet(
                 jsonixAnnoSet,
                 lexUnit,
@@ -272,9 +220,9 @@ function initAnnoSets(jsonixAnnoSets, lexUnit, sentence, annoSetPatternsMap, ann
     });
 }
 
-function isFrameNetSpecific(jsonixLayers) {
-    for(let jsonixLayer of jsonixLayers){
-        if(frameNetLayers.includes(jsonixLayer.name)) {
+function isFrameNetSpecific(jsonixLayers, frameNetLayers) {
+    for (let jsonixLayer of jsonixLayers) {
+        if (frameNetLayers.includes(jsonixLayer.name)) {
             return true;
         }
     }
@@ -283,7 +231,7 @@ function isFrameNetSpecific(jsonixLayers) {
 
 function initAnnoSet(jsonixAnnoSet, lexUnit, sentence, annoSetPatternsMap, annotationSets, labels) {
     var annoSet = new AnnotationSet({
-        fn_id: jsonixAnnoSet.id,
+        _id: jsonixAnnoSet.id,
         sentence: sentence,
         lexUnit: lexUnit,
         labels: getLabels(jsonixAnnoSet, labels),
@@ -294,8 +242,8 @@ function initAnnoSet(jsonixAnnoSet, lexUnit, sentence, annoSetPatternsMap, annot
 
 function getLabels(jsonixAnnoSet, labels) {
     // AnnoSet is already filtered: it's already FrameNet-specific (i.e. only FE/PT/GF/Target)
-    return JsonixUtils.toJsonixLayerArray(jsonixAnnoSet).map((jsonixLayer) => {
-        return JsonixUtils.toJsonixLabelArray(jsonixLayer).map((jsonixLabel) => {
+    return jsonixUtils.toJsonixLayerArray(jsonixAnnoSet).map((jsonixLayer) => {
+        return jsonixUtils.toJsonixLabelArray(jsonixLayer).map((jsonixLabel) => {
             var label = new Label({
                 name: jsonixLabel.name,
                 type: jsonixLayer.name,
@@ -303,8 +251,6 @@ function getLabels(jsonixAnnoSet, labels) {
                 endPos: jsonixLabel.end
             });
             labels.push(label.toObject()); // There will be duplicates but we don't care
-            //Corentin we care if the number of duplicates is huge, because the size
-            //of your DB will grow quickly. If not, then we don't care, you're right.
             return label;
         });
     }).flatten();

@@ -6,9 +6,9 @@
   "dependencies": {
     "async": "^2.0.1",
     "bluebird": "^3.4.1",
-    "co": "^4.6.0",
     "collections": "^5.0.4",
     "debug": "^2.2.0",
+    "hash-jenkins": "^1.0.1",
     "immutable": "^3.8.1",
     "isomorphic-fetch": "^2.2.1",
     "jade": "^1.11.0",
@@ -22,6 +22,8 @@
     "lodash": "^4.14.1",
     "mongodb": "^2.2.5",
     "mongoose": "^4.5.8",
+    "murmur": "0.0.2",
+    "murmur-hash-js": "^1.0.0",
     "path": "^0.12.7",
     "winston": "^2.2.0",
     "winston-koa-logger": "0.0.2"

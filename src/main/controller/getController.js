@@ -43,7 +43,7 @@ async function _getPatternSet(preProcessedQuery){
         var _patterns = await Pattern.find().where('valenceUnits').in(valenceUnitSet.toArray());
         logger.debug('Pattern.length = '+_patterns.length);
         if(_patterns.length === 0){
-            throw new NotFoundException('Could not find patters matching given input in FrameNet database: '+preProcessedQuery.query);
+            throw new NotFoundException('Could not find patters matching given input in FrameNet dbUri: '+preProcessedQuery.query);
         }
         var _patternSet = new FastSet(_patterns, function (a, b) {
             return a._id.equals(b._id);
@@ -108,7 +108,7 @@ async function _getValenceUnitSet(unit){
                 continue;
             }
         }
-        throw new NotFoundException('Could not find token in FrameNet database: '+token);
+        throw new NotFoundException('Could not find token in FrameNet dbUri: '+token);
     }
     return set;
 }

@@ -1,7 +1,5 @@
 'use strict';
 
-const all = {
+export const all = {
 
-}
-
-module.exports = all;
+};

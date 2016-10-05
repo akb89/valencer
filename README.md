@@ -43,8 +43,8 @@ However, accessing the number of unique elements in the collection, performance 
 2. Final version of the README  
 
 ### Final Demo Paper
-1. Add a paragraph on literature review (comparable programs and softwares)  
-2. Add a paragraph on architectural considerations: more motivations for MongoDB and underlying JS techno  
+1. Add a paragraph on literature review (comparable programs and softwares)     
+2. Add a paragraph on architectural considerations: more motivations for MongoDB and underlying JS techno    
 3. Add a paragraph on performances (import, queries execution time)  
 
 ### Corentin Ribeyre comments

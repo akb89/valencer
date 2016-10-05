@@ -6,12 +6,8 @@ import './valenceUnitModel';
 
 mongoose.Promise = bluebird;
 
-class Pattern extends mongoose.Schema {
-    constructor() {
-        super({
-            valenceUnits: [{type: mongoose.Schema.Types.ObjectId, ref: 'ValenceUnit'}]
-        })
-    }
-}
+var patternSchema = mongoose.Schema({
+    valenceUnits: [{type: mongoose.Schema.Types.ObjectId, ref: 'ValenceUnit'}]
+});
 
-export default mongoose.model('Pattern', new Pattern);
+export default mongoose.model('Pattern', patternSchema);

@@ -9,15 +9,12 @@ import './labelModel';
 
 mongoose.Promise = bluebird;
 
-class AnnotationSet extends mongoose.Schema {
-    constructor() {
-        super({
-            sentence: {type: mongoose.Schema.Types.ObjectId, ref: 'Sentence'},
-            lexUnit: {type: mongoose.Schema.Types.ObjectId, ref: 'LexUnit'},
-            pattern: {type: mongoose.Schema.Types.ObjectId, ref: 'Pattern'},
-            labels: [{type: mongoose.Schema.Types.ObjectId, ref: 'Label'}]
-        })
-    }
-}
+var annoSetSchema = mongoose.Schema({
+    //fn_id: {type: Number, unique: true},
+    sentence: {type: mongoose.Schema.Types.ObjectId, ref: 'Sentence'},
+    lexUnit: {type: mongoose.Schema.Types.ObjectId, ref: 'LexUnit'},
+    pattern: {type: mongoose.Schema.Types.ObjectId, ref: 'Pattern'},
+    labels: [{type: mongoose.Schema.Types.ObjectId, ref: 'Label'}]
+});
 
-export default mongoose.model('AnnotationSet', new AnnotationSet);
+export default mongoose.model('AnnotationSet', annoSetSchema);

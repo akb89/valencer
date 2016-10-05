@@ -34,10 +34,10 @@ app.use(router.allowedMethods());
 
 (async() => {
     try {
-        const db = await connectToDatabase(config.database);
+        const db = await connectToDatabase(config.dbUri);
         logger.info(`Connected to MongoDB on ${db.host}:${db.port}/${db.name}`);
     } catch (err) {
-        logger.error(`Unable to connect to database at uri: ${config.database}`);
+        logger.error(`Unable to connect to database at uri: ${config.dbUri}`);
         logger.error(err);
     }
     await app.listen(config.port);
