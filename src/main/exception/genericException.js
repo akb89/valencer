@@ -1,3 +1,5 @@
+'use strict';
+
 function GenericError (name, code, error, status) {
   Error.call(this, error.message);
   Error.captureStackTrace(this, this.constructor);

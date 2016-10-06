@@ -6,7 +6,7 @@ import config from '../config';
 
 async function verify_api_signature(ctx, next) {
     const req = ctx.request;
-    const host = req.header['host']
+    const host = req.header['host'];
 
     if(host.indexOf('localhost') !== -1 || host.indexOf('127.0.0.1') !== -1){
         return await next();
@@ -32,8 +32,8 @@ async function verify_api_signature(ctx, next) {
 
 
     var timestamp = parseInt(req.header['x-val-timestamp']);
-    var test_signature = req.method + ctx.originalUrl + timestamp
-    var hash = crypto.createHmac('sha1', api_info.secret).update(test_signature).digest('hex')
+    var test_signature = req.method + ctx.originalUrl + timestamp;
+    var hash = crypto.createHmac('sha1', api_info.secret).update(test_signature).digest('hex');
 
     if(hash !== sign){
         throw ApiErrors.InvalidSignature;
@@ -45,7 +45,7 @@ async function verify_api_signature(ctx, next) {
 
     //Give an interval of 3 secondes
     var interval_is_okay = (timestamp >= api_info.timestamp) ||
-        (timestamp >= legit_interval[0] && timestamp <= legit_interval[1])
+        (timestamp >= legit_interval[0] && timestamp <= legit_interval[1]);
 
     if(!interval_is_okay) {
         throw ApiErrors.InvalidTimestamp;
