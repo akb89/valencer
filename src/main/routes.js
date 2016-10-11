@@ -3,12 +3,12 @@
 // TODO: validate all input queries
 
 import Router from 'koa-router';
-import annoSetController from './controller/annoSetController';
-import frameController from './controller/frameController';
-import lexUnitController from './controller/lexUnitController';
-import patternController from './controller/patternController';
-import similarityController from './controller/similarityController';
-import valenceUnitController from './controller/valenceUnitController';
+import annoSetController from './controllers/annoSetController';
+import frameController from './controllers/frameController';
+import lexUnitController from './controllers/lexUnitController';
+import patternController from './controllers/patternController';
+import similarityController from './controllers/similarityController';
+import valenceUnitController from './controllers/valenceUnitController';
 
 import authMiddleware from './auth/auth';
 

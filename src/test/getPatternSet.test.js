@@ -16,10 +16,10 @@ const expect = chai.expect;
 
 const FastSet = require('collections/fast-set');
 
-const Pattern = require('./../main/model/patternModel');
-const ValenceUnit = require('./../main/model/valenceUnitModel');
+const Pattern = require('././patternModel');
+const ValenceUnit = require('././valenceUnitModel');
 
-const getController = require('./../main/controller/getController');
+const getController = require('././getController');
 
 const PatternUtils = require('./../main/utils/patternUtils');
 const ValenceUnitUtils = require('./../main/utils/valenceUnitUtils');

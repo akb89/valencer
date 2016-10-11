@@ -4,10 +4,10 @@ import mongoose from 'mongoose';
 mongoose.Promise = require('bluebird');
 
 var sentenceSchema = mongoose.Schema({
-    _id: {type: Number},
+    _id: {type: Number, unique: true},
     text: {type: String},
-    paragraphNumber: {type: Number},
-    sentenceNumber: {type: Number},
+    paragraphNumber: {type: Number, index: true},
+    sentenceNumber: {type: Number, index: true},
     aPos: {type: Number}
 });
 

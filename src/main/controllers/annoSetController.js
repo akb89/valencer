@@ -1,6 +1,6 @@
 'use strict';
 
-import AnnotationSet from '../model/annotationSetModel';
+import AnnotationSet from '../models/annotationSet';
 import {getPatternSet} from './getController';
 import config from '../config';
 

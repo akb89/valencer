@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import moment from 'moment';
-import ApiErrors from '../exception/apiException';
-import User from '../model/userModel';
+import ApiErrors from '../exceptions/apiException';
+import User from '../models/user';
 import config from '../config';
 
 async function verify_api_signature(ctx, next) {

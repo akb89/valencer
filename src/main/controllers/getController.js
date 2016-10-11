@@ -2,16 +2,16 @@
 
 import PatternUtils from './../utils/patternUtils';
 import ValenceUnitUtils from './../utils/valenceUnitUtils';
-import Pattern from'./../model/patternModel';
-import ValenceUnit from './../model/valenceUnitModel';
-import {NotFoundException} from './../exception/valencerException';
+import Pattern from'../models/pattern';
+import ValenceUnit from '../models/valenceUnit';
+import {NotFoundException} from '../exceptions/valencerException';
 import FastSet from 'collections/fast-set';
 import config from '../config';
 
 const logger = config.logger;
 
 // TODO: Ideally, I would want to have a class structure for this file, with private methods (maybe by defining them
-// outside of the class). To be discussed. Also, the exception handling needs to be revised.
+// outside of the class). To be discussed. Also, the exceptions handling needs to be revised.
 
 async function getPatternSet(query){
     return await _getPatternSet(preProcess(query));

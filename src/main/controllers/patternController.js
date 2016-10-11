@@ -1,6 +1,6 @@
 'use strict';
 
-import Pattern from './../model/patternModel';
+import Pattern from '../models/pattern';
 import {getPatternSet} from './getController';
 import config from '../config';
 import _ from 'lodash';

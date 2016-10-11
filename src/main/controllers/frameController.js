@@ -1,7 +1,7 @@
 'use strict';
 
-import AnnotationSet from '../model/annotationSetModel';
-import LexUnit from './../model/lexUnitModel';
+import AnnotationSet from '../models/annotationSet';
+import LexUnit from '../models/lexUnit';
 import {getPatternSet} from './getController';
 import config from '../config';
 

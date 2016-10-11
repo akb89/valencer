@@ -16,9 +16,9 @@ const expect = chai.expect;
 
 const FastSet = require('collections/fast-set');
 
-const ValenceUnit = require('./../main/model/valenceUnitModel');
+const ValenceUnit = require('././valenceUnitModel');
 
-const getController = require('./../main/controller/getController');
+const getController = require('././getController');
 
 
 describe('getValenceUnitSet', function (){
