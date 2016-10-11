@@ -6,6 +6,7 @@ import Pattern from'../models/pattern';
 import ValenceUnit from '../models/valenceUnit';
 import {NotFoundException} from '../exceptions/valencerException';
 import FastSet from 'collections/fast-set';
+import {PatternSet} from './../utils/framenetUtils';
 import config from '../config';
 
 const logger = config.logger;
@@ -30,17 +31,19 @@ function preProcess(query){
 
 // FIXME for NP ... Obj queries <-- This is a major concern
 async function _getPatternSet(preProcessedQuery){
-    logger.debug('Fetching patterns for tokenArray: '+preProcessedQuery.tokenArray.toString());
+    logger.debug(`Fetching patterns for tokenArray: ${preProcessedQuery.tokenArray.toString()}`);
     var patternSet = new PatternSet();
     for (let unit of preProcessedQuery.tokenArray){
         var valenceUnitSet = await _getValenceUnitSet(unit);
-        logger.debug('ValenceUnitSet.length = '+valenceUnitSet.length);
+        logger.debug(`ValenceUnitSet.length = ${valenceUnitSet.length}`);
         var _patterns = await Pattern.find().where('valenceUnits').in(valenceUnitSet.toArray());
-        logger.debug('Pattern.length = '+_patterns.length);
+        logger.debug(`Pattern.length = ${_patterns.length}`);
         if(_patterns.length === 0){
-            throw new NotFoundException('Could not find patters matching given input in FrameNet dbUri: '+preProcessedQuery.query);
+            throw new NotFoundException(`Could not find patters matching given input in FrameNet database:
+                ${preProcessedQuery.query}`);
         }
-        var _patternSet = new PatternSet();
+        var _patternSet = new PatternSet(_patterns);
+        logger.debug(`PatternSet.length = ${_patternSet.length}`);
         patternSet = patternSet.length === 0 ? _patternSet : patternSet.intersection(_patternSet);
     }
     return patternSet;
@@ -99,7 +102,7 @@ async function _getValenceUnitSet(unit){
                 continue;
             }
         }
-        throw new NotFoundException('Could not find token in FrameNet dbUri: '+token);
+        throw new NotFoundException('Could not find token in FrameNet database: '+token);
     }
     return set;
 }

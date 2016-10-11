@@ -9,8 +9,8 @@ import lexUnitController from './controllers/lexUnitController';
 import patternController from './controllers/patternController';
 import similarityController from './controllers/similarityController';
 import valenceUnitController from './controllers/valenceUnitController';
-
 import authMiddleware from './auth/auth';
+import './models' // TODO : check this
 
 const router = Router();
 

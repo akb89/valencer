@@ -1,7 +1,8 @@
 'use strict';
 
 import mongoose from 'mongoose';
-mongoose.Promise = require('bluebird');
+import bluebird from 'bluebird';
+mongoose.Promise = bluebird;
 
 var sentenceSchema = mongoose.Schema({
     _id: {type: Number, unique: true},
