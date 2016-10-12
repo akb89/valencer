@@ -43,7 +43,7 @@ async function verify_api_signature(ctx, next) {
     var now = +moment();
     var legit_interval = [ now - config.api.interval[0], now + config.api.interval[1] ];
 
-    //Give an interval of 3 secondes
+    //Give an interval of 3 seconds
     var interval_is_okay = (timestamp >= api_info.timestamp) ||
         (timestamp >= legit_interval[0] && timestamp <= legit_interval[1]);
 
