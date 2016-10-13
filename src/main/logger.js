@@ -1,24 +1,24 @@
 'use strict';
 
-const winston = require('winston');
+import winston from 'winston';
 
-// Logging in Console and File
+class Logger {
+    static get info(){
+        return new (winston.Logger)({
+            transports: [
+                new (winston.transports.Console)({level: 'info', colorize: true})//,
+                //new (winston.transports.File)({filename: 'noFrameNet.log', level: 'error', colorize: true})
+            ]
+        });
+    }
+    static get debug() {
+        return new (winston.Logger)({
+            transports: [
+                new (winston.transports.Console)({level: 'debug', colorize: true})//,
+                //new (winston.transports.File)({filename: 'noFrameNet.log', level: 'error', colorize: true})
+            ]
+        });
+    }
+}
 
-var info = new (winston.Logger)({
-    transports: [
-        new (winston.transports.Console)({level: 'info', colorize: true})//,
-        //new (winston.transports.File)({filename: 'noFrameNet.log', level: 'error', colorize: true})
-    ]
-});
-
-var debug = new (winston.Logger)({
-    transports: [
-        new (winston.transports.Console)({level: 'debug', colorize: true})//,
-        //new (winston.transports.File)({filename: 'noFrameNet.log', level: 'error', colorize: true})
-    ]
-});
-
-module.exports = {
-    info,
-    debug
-};
+export default Logger;

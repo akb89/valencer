@@ -1,46 +1,56 @@
 'use strict';
 
-const koa = require('koa');
-const app = koa();
-const winstonKoaLogger = require('winston-koa-logger');
-const router = require('./routes');
-const mongoose = require('mongoose');
-const env = process.env.NODE_ENV || 'development';
+import Koa from 'koa';
+import winstonKoaLogger from 'winston-koa-logger';
+import mongoose from 'mongoose';
+import router from './routes';
+import config from './config';
+import testing from './config/testing';
+import production from './config/production';
 
-var _config;
-try{
-    _config = require(`./config/${env}`);
-}catch(err){
-    console.error(err);
-    console.error(`No specific configuration for env ${env}`);
-    process.exit(1);
-}
+// TODO: what about testing?
+// Corentin: Testing is properly handled in config/index.js
+//const config = (process.env.NODE_ENV == 'production' ) ? production : development;
+/*
+ var _config;
+ try{
+ _config = require(`./config/${env}`);
+ }catch(err){
+ console.error(err);
+ console.error(`No specific configuration for env ${env}`);
+ process.exit(1);
+ }
+ */
 
-const logger = _config.logger;
+const logger = config.logger;
+const app = new Koa();
 
 app.use(winstonKoaLogger(logger));
-
-// TODO the connection to mongodb should be set upon startup, not at the first request
-app.use(function*(next){
-    if(mongoose.connection.readyState === 0){
-        try {
-            yield mongoose.connect(_config.database);
-            const db = mongoose.connection;
-            logger.info(`Connected to ${db.host}:${db.port}/${db.name}`);
-        } catch (err) {
-            logger.error(err);
-            logger.error(`Unable to connect to database at uri: ${_config.database}`);
-            process.exit(1);
-        }
-    }
-    yield next;
-});
+//app.keys = ['my-secret-key'];
+//app.use(auth());
 app.use(router.routes());
 app.use(router.allowedMethods());
-app.listen(_config.port);
-logger.info(`Valencer API started on port ${_config.port}`);
+//app.use(ctx => ctx.status = 404);
 
-//FIXME
-module.exports = {
-    config: _config
-};
+(async() => {
+    try {
+        const db = await connectToDatabase(config.dbUri);
+        logger.info(`Connected to MongoDB on ${db.host}:${db.port}/${db.name}`);
+    } catch (err) {
+        logger.error(`Unable to connect to database at uri: ${config.dbUri}`);
+        logger.error(err);
+    }
+    await app.listen(config.port);
+    logger.info(`Valencer API started on port ${config.port}`);
+})();
+
+function connectToDatabase(uri) {
+    return new Promise((resolve, reject) => {
+        mongoose.connection
+            .on('error', error => reject(error))
+            .on('close', () => logger.info('Database connection closed.'))
+            .once('open', () => resolve(mongoose.connections[0]));
+
+        mongoose.connect(uri);
+    });
+}
