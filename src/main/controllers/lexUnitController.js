@@ -21,6 +21,7 @@ async function getAll(context){
         .find()
         .where('_id')
         .in(luIds)
+        .populate({path: 'frame', select: 'name'})
         .select('frame name -_id');
     lexUnits = _.sortBy(lexUnits, ['frame', 'name']);
     logger.info(lexUnits.length + ' unique lexical units found for specified input');

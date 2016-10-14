@@ -30,12 +30,16 @@ async function getAll(context) {
     //console.log(patternSet);
     context.body = await AnnotationSet
         .find()
-        .where('pattern')
-        .in(patternSet.toArray());
-        //.populate({path:'pattern', populate: {path: 'valenceUnits'}})
-        //.populate({path:'sentence'})
-        //.populate({path:'lexUnit', populate: {path: 'frame'}})
-        //.populate({path:'labels'});
+        //.where('pattern')
+        //.in(patternSet.toArray())
+        .where('_id')
+        .equals(1632555)
+        .populate({path:'pattern', populate: {path: 'valenceUnits'}})
+        .populate({path:'sentence'})
+        //.select('sentence')
+        .populate({path:'lexUnit', populate: {path: 'frame', populate: [{path: 'lexUnits', select: 'name'}, {path:
+         'frameElements'}]}})
+        .populate({path:'labels'});
     logger.info(`Patterns retrieved from db in ${process.hrtime(startTime)[1]/1000000}ms`);
 }
 

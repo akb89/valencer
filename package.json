@@ -1,18 +1,15 @@
 {
   "name": "valencer",
   "version": "1.0.0",
-  "description": "server-side nodejs api to query FrameNet valence patterns",
+  "description": "server-side Node.js api to query valence patterns in FrameNet",
   "main": "server.js",
   "dependencies": {
-    "async": "^2.0.1",
     "bluebird": "^3.4.1",
     "collections": "^5.0.4",
     "debug": "^2.2.0",
-    "hash-jenkins": "^1.0.1",
     "immutable": "^3.8.1",
     "isomorphic-fetch": "^2.2.1",
     "jade": "^1.11.0",
-    "jsonix": "^2.4.1",
     "koa": "^2.0.0",
     "koa-add-to-context": "^1.0.0",
     "koa-compose": "^2.4.0",
@@ -23,8 +20,6 @@
     "moment": "^2.15.1",
     "mongodb": "^2.2.5",
     "mongoose": "^4.5.8",
-    "murmur": "0.0.2",
-    "murmur-hash-js": "^1.0.0",
     "node-uuid": "^1.4.7",
     "path": "^0.12.7",
     "shortid": "^2.2.6",
@@ -83,7 +78,7 @@
   "homepage": "https://bitbucket.org/akb89/valencer#readme",
   "keywords": [
     "FrameNet",
-    "NodeJS",
+    "Node",
     "Koa2",
     "MongoDB"
   ]
