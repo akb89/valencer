@@ -1,5 +1,6 @@
 # Valencer
-RESTful API to search for annotated sentences matching a given combination of syntactic realizations of the arguments of a predicate -- aka *valence patterns* -- in the FrameNet database.
+## A REST API to search for valence patterns in FrameNet
+
 
 ## HowTo
 MongoDB data are available in valencer_data.zip  
