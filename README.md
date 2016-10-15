@@ -1,9 +1,11 @@
 # Valencer
 ## A REST API to search for valence patterns in FrameNet
 [![GitHub release](https://img.shields.io/github/release/qubyte/rubidium.svg?style=flat-square)]()
-[![Build Status](https://img.shields.io/travis/)](https://travis-ci.org/)
+[![Build Status](https://img.shields.io/travis/riot/riot.svg?style=flat-square)](https://travis-ci.org/riot/riot)
 [![MIT License](http://img.shields.io/badge/license-MIT-000000.svg?style=flat-square)](LICENSE.txt)
 [![node](https://img.shields.io/node/v/gh-badges.svg?style=flat-square)](https://nodejs.org/en/download/current/)
+[![Coverage Status](https://img.shields.io/coveralls/riot/riot/dev.svg?style=flat-square)](https://coveralls.io/r/riot/riot?branch=dev)
+[![Code Quality](https://img.shields.io/codeclimate/github/riot/riot.svg?style=flat-square)](https://codeclimate.com/github/riot/riot)
 
 ## HowTo
 MongoDB data are available in valencer_data.zip  
