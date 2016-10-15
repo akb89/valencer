@@ -6,6 +6,7 @@
 [![node](https://img.shields.io/node/v/gh-badges.svg?style=flat-square)](https://nodejs.org/en/download/current/)
 [![Coverage Status](https://img.shields.io/coveralls/riot/riot/dev.svg?style=flat-square)](https://coveralls.io/r/riot/riot?branch=dev)
 [![Code Quality](https://img.shields.io/codeclimate/github/riot/riot.svg?style=flat-square)](https://codeclimate.com/github/riot/riot)
+[![FrameNet](https://img.shields.io/badge/framenet-1.6-blue.svg?style=flat-square)](https://framenet.icsi.berkeley.edu/fndrupal/)
 
 ## HowTo
 MongoDB data are available in valencer_data.zip  
