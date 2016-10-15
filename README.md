@@ -1,8 +1,8 @@
 # Valencer
 ## A REST API to search for valence patterns in FrameNet
 [![GitHub release](https://img.shields.io/github/release/qubyte/rubidium.svg?style=flat-square)]()
-[![Build Status](https://img.shields.io/travis/)(https://travis-ci.org/)
-[![MIT License](http://img.shields.io/badge/license-MIT-000000.svg?style=flat-square)(LICENSE.txt)
+[![Build Status](https://img.shields.io/travis/)](https://travis-ci.org/)
+[![MIT License](http://img.shields.io/badge/license-MIT-000000.svg?style=flat-square)](LICENSE.txt)
 [![node](https://img.shields.io/node/v/gh-badges.svg?style=flat-square)](https://nodejs.org/en/download/current/)
 
 ## HowTo
