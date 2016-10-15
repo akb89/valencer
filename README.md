@@ -3,7 +3,7 @@
 [![Build Status][travis-image]][travis-url]
 [![MIT License][license-image]][license-url]
 
-[travis-image]:https://img.shields.io/travis/riot/riot.svg?style=flat-square
+[travis-image]:https://img.shields.io/travis/
 [travis-url]:https://travis-ci.org/
 
 [license-image]:http://img.shields.io/badge/license-MIT-000000.svg?style=flat-square
