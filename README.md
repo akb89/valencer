@@ -1,13 +1,9 @@
 # Valencer
 ## A REST API to search for valence patterns in FrameNet
-[![Build Status][travis-image]][travis-url]
-[![MIT License][license-image]][license-url]
-
-[travis-image]:https://img.shields.io/travis/
-[travis-url]:https://travis-ci.org/
-
-[license-image]:http://img.shields.io/badge/license-MIT-000000.svg?style=flat-square
-[license-url]:LICENSE.txt
+[![GitHub release](https://img.shields.io/github/release/qubyte/rubidium.svg?style=flat-square)]()
+[![Build Status](https://img.shields.io/travis/)(https://travis-ci.org/)
+[![MIT License](http://img.shields.io/badge/license-MIT-000000.svg?style=flat-square)(LICENSE.txt)
+[![node](https://img.shields.io/node/v/gh-badges.svg?style=flat-square)](https://nodejs.org/en/download/current/)
 
 ## HowTo
 MongoDB data are available in valencer_data.zip  
