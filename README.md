@@ -5,6 +5,7 @@
 [![node](https://img.shields.io/node/v/gh-badges.svg?style=flat-square)](https://nodejs.org/en/download/current/)
 [![Coverage Status](https://img.shields.io/coveralls/akb89/valencer/dev.svg?style=flat-square)](https://coveralls.io/r/akb89/valencer?branch=master)
 [![Code Quality](https://img.shields.io/codeclimate/github/akb89/valencer.svg?style=flat-square)](https://codeclimate.com/github/akb89/valencer)
+[![David](https://img.shields.io/david/akb89/valencer.svg?style=flat-square)]()
 [![FrameNet](https://img.shields.io/badge/framenet-1.6-blue.svg?style=flat-square)](https://framenet.icsi.berkeley.edu/fndrupal/)
 
 Welcome to **Valencer**, a RESTful API to search for annotated sentences matching a given combination of syntactic realizations of the arguments of a predicate &ndash; aka *valence pattern* &ndash; in the FrameNet database.
@@ -22,7 +23,7 @@ This is a major shortcoming of the API. Querying for NP.Obj NP Obj does not retu
 See the detailed implementation under getController#_getPatternSet
 
 ### Documentation
-1. Swagger.io + JSDocs  
+1. JSDoc + APIDoc + apidoc-swagger + SwaggeUI 
 2. Final version of the README  
 
 ### Tests
