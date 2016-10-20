@@ -1,3 +1,12 @@
+/***
+ *                 _
+ *     /\   /\__ _| | ___ _ __   ___ ___ _ __
+ *     \ \ / / _` | |/ _ \ '_ \ / __/ _ \ '__|
+ *      \ V / (_| | |  __/ | | | (_|  __/ |
+ *       \_/ \__,_|_|\___|_| |_|\___\___|_|
+ *
+ */
+
 'use strict';
 
 import Koa from 'koa';
@@ -34,6 +43,7 @@ app.use(router.allowedMethods());
 
 (async() => {
     try {
+        printLogo();
         const db = await connectToDatabase(config.dbUri);
         logger.info(`Connected to MongoDB on ${db.host}:${db.port}/${db.name}`);
     } catch (err) {
@@ -53,4 +63,13 @@ function connectToDatabase(uri) {
 
         mongoose.connect(uri);
     });
+}
+
+function printLogo(){
+    console.log('                 _                                 ');
+    console.log('     /\\   /\\__ _| | ___ _ __   ___ ___ _ __      ');
+    console.log('     \\ \\ / / _` | |/ _ \\ \'_ \\ / __/ _ \\ \'__|');
+    console.log('      \\ V / (_| | |  __/ | | | (_|  __/ |         ');
+    console.log('       \\_/ \\__,_|_|\\___|_| |_|\\___\\___|_|     ');
+    console.log('                                                   ');
 }
