@@ -10,3 +10,5 @@ public/img/uploads/*
 *.pyc
 *.o
 *.log
+.gitignore
+*.zip
