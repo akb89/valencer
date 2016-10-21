@@ -15,20 +15,6 @@ import mongoose from 'mongoose';
 import router from './routes';
 import config from './config';
 
-// TODO: what about testing?
-// Corentin: Testing is properly handled in config/index.js
-// const config = (process.env.NODE_ENV == 'production' ) ? production : development;
-/*
- var _config;
- try{
- _config = require(`./config/${env}`);
- }catch(err){
- console.error(err);
- console.error(`No specific configuration for env ${env}`);
- process.exit(1);
- }
- */
-
 const logger = config.logger;
 const app = new Koa();
 
@@ -51,23 +37,26 @@ function connectToDatabase(uri) {
 }
 
 function printLogo() {
-  logger.info('                 _                                 ');
-  logger.info('     /\\   /\\__ _| | ___ _ __   ___ ___ _ __      ');
-  logger.info('     \\ \\ / / _` | |/ _ \\ \'_ \\ / __/ _ \\ \'__|');
-  logger.info('      \\ V / (_| | |  __/ | | | (_|  __/ |         ');
-  logger.info('       \\_/ \\__,_|_|\\___|_| |_|\\___\\___|_|     ');
-  logger.info('                                                   ');
+  logger.info('            _                                 ');
+  logger.info('/\\   /\\__ _| | ___ _ __   ___ ___ _ __      ');
+  logger.info('\\ \\ / / _` | |/ _ \\ \'_ \\ / __/ _ \\ \'__|');
+  logger.info(' \\ V / (_| | |  __/ | | | (_|  __/ |         ');
+  logger.info('  \\_/ \\__,_|_|\\___|_| |_|\\___\\___|_|     ');
+  logger.info('                                              ');
 }
 
 (async() => {
   try {
+    logger.info('Starting Valencer server...');
     printLogo();
+    logger.info('Connecting to MongoDB...');
     const db = await connectToDatabase(config.dbUri);
     logger.info(`Connected to MongoDB on ${db.host}:${db.port}/${db.name}`);
+    await app.listen(config.port);
+    logger.info(`Valencer API started on port ${config.port}`);
   } catch (err) {
-    logger.error(`Unable to connect to database at uri: ${config.dbUri}`);
-    logger.error(err);
+    logger.error(`Unable to connect to database at: ${config.dbUri}`);
+    logger.debug(err);
+    process.exit(1);
   }
-  await app.listen(config.port);
-  logger.info(`Valencer API started on port ${config.port}`);
 })();

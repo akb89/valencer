@@ -5,11 +5,11 @@ import bluebird from 'bluebird';
 
 mongoose.Promise = bluebird;
 
-var frameElementRelationSchema = mongoose.Schema({
-    type: {type: String, index: true},
-    frameElements: [{type: Number, ref: 'FrameElement'}]
+const frameElementRelationSchema = mongoose.Schema({ // eslint-disable-line new-cap
+  type: { type: String, index: true },
+  frameElements: [{ type: Number, ref: 'FrameElement' }],
 });
 
-frameElementRelationSchema.index({frameElements: 1});
+frameElementRelationSchema.index({ frameElements: 1 });
 
 export default mongoose.model('FERelation', frameElementRelationSchema);

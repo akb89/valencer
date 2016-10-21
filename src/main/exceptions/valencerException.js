@@ -21,5 +21,5 @@ util.inherits(NotFoundException, Error);
 
 export {
     InvalidInputException,
-    NotFoundException
+    NotFoundException,
 };

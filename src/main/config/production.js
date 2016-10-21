@@ -1,7 +1,7 @@
 'use strict';
 
 const production = {
-    database: '',
+  database: '',
 };
 
 module.exports = production;

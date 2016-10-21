@@ -6,7 +6,6 @@ import ValenceUnitUtils from './../utils/valenceUnitUtils';
 import Pattern from '../models/pattern';
 import ValenceUnit from '../models/valenceUnit';
 import { NotFoundException } from '../exceptions/valencerException';
-import { PatternSet } from './../utils/framenetUtils';
 import config from '../config';
 
 const logger = config.logger;

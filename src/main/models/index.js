@@ -17,19 +17,19 @@ import user from './user';
 import valenceUnit from './valenceUnit';
 
 export default {
-    annotationSet,
-    corpus,
-    document,
-    frame,
-    frameElement,
-    frameElementRelation,
-    frameRelation,
-    label,
-    lexeme,
-    lexUnit,
-    pattern,
-    semTypes,
-    sentence,
-    user,
-    valenceUnit
-}
+  annotationSet,
+  corpus,
+  document,
+  frame,
+  frameElement,
+  frameElementRelation,
+  frameRelation,
+  label,
+  lexeme,
+  lexUnit,
+  pattern,
+  semTypes,
+  sentence,
+  user,
+  valenceUnit,
+};

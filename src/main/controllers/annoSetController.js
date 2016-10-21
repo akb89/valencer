@@ -6,19 +6,20 @@ import config from '../config';
 
 const logger = config.logger;
 
+/*
 var duration = function (startTime) {
   var precision = 3; // 3 decimal places
   var elapsed = process.hrtime(startTime)[1] / 1000000; // divide by a million to get nano to milli
   return process.hrtime(startTime)[0] + 's ';
 };
-
+*/
 
 // TODO : Discuss what should be populated
 async function getAll(context) {
   const query = context.query.vp;
   logger.info(`Querying for all annotationSets with a valence pattern matching: ${query}`);
   let startTime = process.hrtime();
-  let patternSet = await getPatternSet(query);
+  // let patternSet = await getPatternSet(query);
   logger.info(`PatternSet created in ${process.hrtime(startTime)[1] / 1000000}ms`);
   startTime = process.hrtime();
   // console.log(patternSet);

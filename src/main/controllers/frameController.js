@@ -22,7 +22,7 @@ async function getAll(context) {
       .in(luIds)
       .distinct('frame');
   // .select('name frame -_id');
-  logger.info(`{lexUnits.length} unique frames found for specified input`);
+  logger.info(`${lexUnits.length} unique frames found for specified input`);
   context.body = lexUnits.sort();
 }
 

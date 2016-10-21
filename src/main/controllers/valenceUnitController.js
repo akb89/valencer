@@ -1,5 +1,6 @@
 'use strict';
 
+import { getValenceUnitSet } from './getController';
 import ValenceUnit from '../models/valenceUnit';
 import config from '../config';
 
