@@ -6,7 +6,6 @@ import ApiErrors from '../exceptions/apiException';
 import User from '../models/user';
 import config from '../config';
 
-
 async function verifyApiSignature(ctx, next) {
   const req = ctx.request;
   const host = req.header.host;
@@ -61,5 +60,5 @@ async function verifyApiSignature(ctx, next) {
 }
 
 export default {
-  auth: verifyApiSignature,
+  authenticate: verifyApiSignature,
 };

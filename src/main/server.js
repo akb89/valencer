@@ -20,7 +20,7 @@ const app = new Koa();
 
 app.use(winstonKoaLogger(logger));
 // app.keys = ['my-secret-key'];
-// app.use(auth());
+// app.use(authenticate());
 app.use(router.routes());
 app.use(router.allowedMethods());
 // app.use(ctx => ctx.status = 404);

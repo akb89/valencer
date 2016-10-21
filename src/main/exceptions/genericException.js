@@ -1,6 +1,6 @@
 'use strict';
 
-function GenericError(name, code, error, status) {
+function GenericException(name, code, error, status) {
   Error.call(this, error.message);
   Error.captureStackTrace(this, this.constructor);
   this.name = name;
@@ -9,7 +9,7 @@ function GenericError(name, code, error, status) {
   this.status = status || 500;
   this.inner = error;
 }
-GenericError.prototype = Object.create(Error.prototype);
-GenericError.prototype.constructor = GenericError;
+GenericException.prototype = Object.create(Error.prototype);
+GenericException.prototype.constructor = GenericException;
 
-module.exports = GenericError;
+module.exports = GenericException;

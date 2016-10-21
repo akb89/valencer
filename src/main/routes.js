@@ -1,14 +1,14 @@
 'use strict';
 
-// TODO: validate all input queries
-
 import Router from 'koa-router';
 import annoSetController from './controllers/annoSetController';
 import frameController from './controllers/frameController';
 import lexUnitController from './controllers/lexUnitController';
 import patternController from './controllers/patternController';
 import valenceUnitController from './controllers/valenceUnitController';
-import authMiddleware from './auth/auth';
+import authenticator from './middlewares/authenticator';
+import validator from './middlewares/validator';
+import processor from './middlewares/processor';
 import './models'; // TODO : check this
 
 const router = new Router();
@@ -19,7 +19,8 @@ const router = new Router();
  * that fullfill only one goal.
  */
 
-router.get('/annoSets', authMiddleware.auth, annoSetController.getAll);
+router.get('/annoSets', authenticator.authenticate, validator.validate, processor.process,
+    annoSetController.getAll);
 
 router.get('/frames', frameController.getAll);
 

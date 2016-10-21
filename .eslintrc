@@ -1,9 +1,14 @@
 {
   "extends": "airbnb",
+  "env": {
+    "node": true,
+    "mocha": true
+  },
   "rules": {
     "strict": "off", // TODO: set policy on 'use strict'. Currently: disallowing strict mode directives
     "no-underscore-dangle": ["error", { "allow": ["_id"] }], // Allow _id on mongo id attributes
     "no-extend-native": ["error", { "exceptions": ["String"] }], // Tolerate String extension for hashcode needed for Set
-    "no-bitwise": ["error", { "allow": ["<<", "|="] }] // Those are not typose and are used for hashcode definition
+    "no-bitwise": ["error", { "allow": ["<<", "|="] }], // Those are not typose and are used for hashcode definition
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*.test.js"]}] // Allow devDependencies for tests
   }
 }
