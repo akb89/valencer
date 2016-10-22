@@ -8,8 +8,7 @@ import config from '../config';
 
 const logger = config.logger;
 
-async function getValenceUnitSet(processedQuery) {
-  const unit = processedQuery.tokenArray[0];
+async function getValenceUnitSet(unit) {
   logger.debug(`Fetching valence units for unit: ${unit}`);
   let set = new FastSet(null, (a, b) => {
     return a._id.equals(b._id);
@@ -88,6 +87,6 @@ async function getPatternSet(processedQuery) {
 }
 
 export {
-    getValenceUnitSet,
-    getPatternSet,
+  getValenceUnitSet,
+  getPatternSet,
 };

@@ -5,10 +5,44 @@
     "mocha": true
   },
   "rules": {
-    "strict": "off", // TODO: set policy on 'use strict'. Currently: disallowing strict mode directives
-    "no-underscore-dangle": ["error", { "allow": ["_id"] }], // Allow _id on mongo id attributes
-    "no-extend-native": ["error", { "exceptions": ["String"] }], // Tolerate String extension for hashcode needed for Set
-    "no-bitwise": ["error", { "allow": ["<<", "|="] }], // Those are not typose and are used for hashcode definition
-    "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*.test.js"]}] // Allow devDependencies for tests
+    // TODO: set policy on 'use strict'. Currently: disallowing strict mode directives
+    "strict": "off",
+    // Allow _id on mongo id attributes
+    "no-underscore-dangle": [
+      "error",
+      {
+        "allow": [
+          "_id"
+        ]
+      }
+    ],
+    // Tolerate String extension for hashcode needed for Set
+    "no-extend-native": [
+      "error",
+      {
+        "exceptions": [
+          "String"
+        ]
+      }
+    ],
+    // Those are not typos and are used for hashcode definition
+    "no-bitwise": [
+      "error",
+      {
+        "allow": [
+          "<<",
+          "|="
+        ]
+      }
+    ],
+    // Allow devDependencies for tests
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": [
+          "**/*.test.js"
+        ]
+      }
+    ]
   }
 }
