@@ -75,7 +75,7 @@ describe('getController', () => {
   mochAsync(async() => {
     const pQuery = {
       query: 'A NP.Ext',
-      tokenArray: ['A, NP.Ext'],
+      tokenArray: [['A'], ['NP', 'Ext']],
     };
     const patterns = await getPatternSet(pQuery);
     patterns.length.should.equal(2);
@@ -84,7 +84,7 @@ describe('getController', () => {
   mochAsync(async() => {
     const pQuery = {
       query: 'NP Obj',
-      tokenArray: ['NP, Obj'],
+      tokenArray: [['NP'], ['Obj']],
     };
     const patterns = await getPatternSet(pQuery);
     patterns.length.should.equal(3);
@@ -93,7 +93,7 @@ describe('getController', () => {
   ' combinations', mochAsync(async() => {
     const pQuery = {
       query: 'D A',
-      tokenArray: ['D, A'],
+      tokenArray: [['D'], ['A']],
     };
     const patterns = await getPatternSet(pQuery);
     patterns.length.should.equal(2);
@@ -102,7 +102,7 @@ describe('getController', () => {
   mochAsync(async() => {
     const pQuery = {
       query: 'NP',
-      tokenArray: ['NP'],
+      tokenArray: [['NP']],
     };
     const patterns = await getPatternSet(pQuery);
     patterns.length.should.equal(4);
