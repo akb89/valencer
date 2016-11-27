@@ -21,11 +21,11 @@ async function getAll(context) {
     .populate({
       path: 'pattern',
       populate: {
-        path: 'valenceUnits'
-      }
+        path: 'valenceUnits',
+      },
     })
     .populate({
-      path: 'sentence'
+      path: 'sentence',
     })
     // .select('sentence')
     .populate({
@@ -34,18 +34,18 @@ async function getAll(context) {
         path: 'frame',
         populate: [{
           path: 'lexUnits',
-          select: 'name'
+          select: 'name',
         }, {
           path: 'frameElements',
         }],
       },
     })
     .populate({
-      path: 'labels'
+      path: 'labels',
     });
   logger.info(`Patterns retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
 }
 
 export default {
-  getAll
+  getAll,
 };

@@ -1,5 +1,5 @@
-import { getValenceUnitSet } from './getController';
 import { ValenceUnit } from 'noframenet-core';
+import { getValenceUnitSet } from './getController';
 import config from '../config';
 
 const logger = config.logger;
@@ -19,5 +19,5 @@ async function getAll(context) {
 }
 
 export default {
-  getAll
+  getAll,
 };

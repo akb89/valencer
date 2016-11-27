@@ -20,7 +20,7 @@ async function getAll(context) {
     .in(luIds)
     .populate({
       path: 'frame',
-      select: 'name'
+      select: 'name',
     })
     .select('frame name -_id');
   lexUnits = _.sortBy(lexUnits, ['frame', 'name']);

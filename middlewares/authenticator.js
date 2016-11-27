@@ -25,7 +25,7 @@ async function verifyApiSignature(ctx, next) {
   const apiKey = twoPartAuth[0];
   const sign = twoPartAuth[1];
   let apiInfo = await User.find({
-    key: apiKey
+    key: apiKey,
   });
   if (apiInfo.length === 0) {
     throw ApiErrors.InvalidAPIKey;

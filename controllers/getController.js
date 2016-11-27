@@ -116,4 +116,4 @@ async function getPatternSet(processedQuery) {
   return patternSet;
 }
 
-export { getValenceUnitSet, getPatternSet, getValenceUnits, };
+export { getValenceUnitSet, getPatternSet, getValenceUnits };

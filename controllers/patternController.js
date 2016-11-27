@@ -14,7 +14,7 @@ async function getAll(context) {
     .where('_id')
     .in(patternSet.toArray())
     .populate({
-      path: 'valenceUnits'
+      path: 'valenceUnits',
     });
 
   // Patterns with no _id
@@ -35,5 +35,5 @@ async function getAll(context) {
 }
 
 export default {
-  getAll
+  getAll,
 };

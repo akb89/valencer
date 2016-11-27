@@ -24,5 +24,5 @@ async function getAll(context) {
 }
 
 export default {
-  getAll
+  getAll,
 };
