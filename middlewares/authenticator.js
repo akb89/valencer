@@ -1,8 +1,8 @@
 import crypto from 'crypto';
 import moment from 'moment';
 import ApiErrors from './../exceptions/apiException';
-import User from '../models/user';
-import config from '../config';
+import User from './../models/user';
+import config from './../config';
 
 async function verifyApiSignature(ctx, next) {
   const req = ctx.request;
@@ -24,7 +24,9 @@ async function verifyApiSignature(ctx, next) {
 
   const apiKey = twoPartAuth[0];
   const sign = twoPartAuth[1];
-  let apiInfo = await User.find({ key: apiKey });
+  let apiInfo = await User.find({
+    key: apiKey
+  });
   if (apiInfo.length === 0) {
     throw ApiErrors.InvalidAPIKey;
   }
@@ -46,7 +48,7 @@ async function verifyApiSignature(ctx, next) {
 
   // Give an interval of 3 seconds
   const intervalIsOkay = (timestamp >= apiInfo.timestamp) ||
-      (timestamp >= legitInterval[0] && timestamp <= legitInterval[1]);
+    (timestamp >= legitInterval[0] && timestamp <= legitInterval[1]);
 
   if (!intervalIsOkay) {
     throw ApiErrors.InvalidTimestamp;

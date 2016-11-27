@@ -1,7 +1,5 @@
-'use strict';
-
 import { getValenceUnitSet } from './getController';
-import ValenceUnit from '../models/valenceUnit';
+import { ValenceUnit } from 'noframenet-core';
 import config from '../config';
 
 const logger = config.logger;
@@ -12,12 +10,14 @@ async function getAll(context) {
   const valenceUnitSet = await getValenceUnitSet(query);
 
   const valenceUnits = await ValenceUnit
-      .find()
-      .where('_id')
-      .in(valenceUnitSet.toArray())
-      .select('-_id');
+    .find()
+    .where('_id')
+    .in(valenceUnitSet.toArray())
+    .select('-_id');
   logger.info(`${valenceUnits.length} unique valenceUnits found for specified entry`);
   context.body = valenceUnits;
 }
 
-export default { getAll };
+export default {
+  getAll
+};

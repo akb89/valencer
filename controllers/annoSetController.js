@@ -1,4 +1,4 @@
-import {AnnotationSet} from 'noframenet-core';
+import { AnnotationSet } from 'noframenet-core';
 import { getPatternSet } from './getController';
 import config from '../config';
 
@@ -13,25 +13,39 @@ async function getAll(context) {
   startTime = process.hrtime();
   // console.log(patternSet);
   context.body = await AnnotationSet
-      .find()
-      // .where('pattern')
-      // .in(patternSet.toArray())
-      .where('_id')
-      .equals(1632555)
-      .populate({ path: 'pattern', populate: { path: 'valenceUnits' } })
-      .populate({ path: 'sentence' })
-      // .select('sentence')
-      .populate({
-        path: 'lexUnit',
-        populate: {
-          path: 'frame',
-          populate: [{ path: 'lexUnits', select: 'name' }, {
-            path: 'frameElements',
-          }],
-        },
-      })
-      .populate({ path: 'labels' });
+    .find()
+    // .where('pattern')
+    // .in(patternSet.toArray())
+    .where('_id')
+    .equals(1632555)
+    .populate({
+      path: 'pattern',
+      populate: {
+        path: 'valenceUnits'
+      }
+    })
+    .populate({
+      path: 'sentence'
+    })
+    // .select('sentence')
+    .populate({
+      path: 'lexUnit',
+      populate: {
+        path: 'frame',
+        populate: [{
+          path: 'lexUnits',
+          select: 'name'
+        }, {
+          path: 'frameElements',
+        }],
+      },
+    })
+    .populate({
+      path: 'labels'
+    });
   logger.info(`Patterns retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
 }
 
-export default { getAll };
+export default {
+  getAll
+};

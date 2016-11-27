@@ -10,7 +10,6 @@ import testController from './controllers/testController';
 import authenticator from './middlewares/authenticator';
 import validator from './middlewares/validator';
 import processor from './middlewares/processor';
-import './models'; // TODO : check this
 
 const router = new Router();
 

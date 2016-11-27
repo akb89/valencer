@@ -43,13 +43,13 @@ function printLogo() {
 
 (async() => {
   try {
-    logger.info('Starting Valencer server...');
+    logger.info('Starting Valencer...');
     printLogo();
     logger.info('Connecting to MongoDB...');
     const db = await connectToDatabase(config.dbUri);
     logger.info(`Connected to MongoDB on ${db.host}:${db.port}/${db.name}`);
     await app.listen(config.port);
-    logger.info(`Valencer API started on port ${config.port}`);
+    logger.info(`Valencer started on port ${config.port}`);
   } catch (err) {
     logger.error(`Unable to connect to database at: ${config.dbUri}`);
     logger.debug(err);

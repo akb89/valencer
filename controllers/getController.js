@@ -1,6 +1,5 @@
-import { Pattern, ValenceUnit } from 'noframenet-core';
+import { Pattern, ValenceUnit, Set } from 'noframenet-core';
 import { NotFoundException } from '../exceptions/valencerException';
-import { Set } from './../utils/setUtils';
 import config from '../config';
 
 const logger = config.logger;
