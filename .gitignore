@@ -10,3 +10,4 @@ public/img/uploads/*
 *.pyc
 *.o
 *.zip
+*.log

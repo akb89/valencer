@@ -19,8 +19,9 @@
     "lodash": "^4.16.4",
     "moment": "^2.15.1",
     "mongodb": "^2.2.11",
-    "mongoose": "^4.5.8",
+    "mongoose": "^4.7.0",
     "node-uuid": "^1.4.7",
+    "noframenet-core": "^0.12.0",
     "path": "^0.12.7",
     "shortid": "^2.2.6",
     "winston": "^2.2.0",
@@ -55,10 +56,9 @@
     "karma-phantomjs-launcher": "^1.0.1",
     "karma-requirejs": "^1.0.0",
     "karma-safari-launcher": "^1.0.0",
-    "mocha": "^3.0.1",
+    "mocha": "^3.2.0",
     "mocha-generators": "^1.2.0",
     "mockgoose": "^6.0.6",
-    "mongoose": "^4.6.4",
     "requirejs": "^2.2.0",
     "should": "^11.1.1",
     "sinon": "^1.17.5",
@@ -66,13 +66,10 @@
     "sinon-es6": "0.0.3"
   },
   "scripts": {
-    "babelify": "babel-node",
-    "test": "mocha --compilers js:babel-core/register --require babel-polyfill '*/test/**/*.@(js|jsx)' --reporter spec",
-    "test:watch": "npm run test -- --watch",
-    "lint": "`npm bin`/eslint . --ext .js --ext .jsx",
-    "deploy": "NODE_ENV=production `npm bin`/webpack -p",
-    "start": "npm run dev",
-    "clean": "rm -rf app/dist app/build"
+    "lint": "./node_modules/.bin/eslint . --ext .js",
+    "test": "NODE_ENV=testing ./node_modules/mocha/bin/mocha --compilers js:babel-core/register --require babel-polyfill './tests/**/*.@(js)' --reporter spec",
+    "debug": "NODE_ENV=development ./node_modules/babel-cli/bin/babel-node.js server.js",
+    "start": "NODE_ENV=production ./node_modules/babel-cli/bin/babel-node.js server.js"
   },
   "repository": {
     "type": "git",
@@ -80,7 +77,10 @@
   },
   "author": "Alexandre Kabbach",
   "license": "MIT",
-  "homepage": "https://github.com/akb89/valencer",
+  "homepage": "https://github.com/akb89/valencer#readme",
+  "bugs": {
+    "url": "https://github.com/akb89/valencer/issues"
+  },
   "keywords": [
     "FrameNet",
     "Node",
