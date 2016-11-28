@@ -1,14 +1,16 @@
 import { Pattern, ValenceUnit, Set } from 'noframenet-core';
-import { NotFoundException } from '../exceptions/valencerException';
-import config from '../config';
+import { NotFoundException } from './../exceptions/valencerException';
+import config from './../config';
 
 const logger = config.logger;
 
 /**
- * Retrieve valenceUnit objects from the db matching any combination of FE.PT.GF, in any order,
+ * Retrieve valenceUnit objects from the db matching any combination of
+ * FE.PT.GF, in any order,
  * and with potentially unspecified elements:
  * FE.PT.GF / PT.FE.GF / PT.GF / GF.FE / FE / GF etc.
- * @param unit an array of FE/PT/GF tags: ['FE', 'PT', 'GF'] corresponding to a single
+ * @param unit an array of FE/PT/GF tags: ['FE', 'PT', 'GF'] corresponding to a
+ * single
  * valenceUnit inside a tokenArray pattern (@see processor:process)
  */
 async function getValenceUnitSet(unit) {
@@ -54,7 +56,8 @@ async function getValenceUnitSet(unit) {
 }
 
 /**
- * Fetch all the valenceUnits sets corresponding to the elements of a tokenArray, e.g.:
+ * Fetch all the valenceUnits sets corresponding to the elements of a
+ * tokenArray, e.g.:
  * ['A', 'B', 'C'] in [['A', 'B', 'C'], ['D', 'E', 'F']]
  * @param tokenArray of a processed query
  * @returns an array of sets of valenceUnit objects
@@ -69,35 +72,36 @@ async function getValenceUnits(tokenArray) {
 }
 
 // FIXME for NP ... Obj queries <-- This is a major concern
-async function getPatternSet(processedQuery) {
-  logger.debug(`Fetching patterns for tokenArray: ${processedQuery.tokenArray.toString()}`);
+async function getPatternSet(preprocessedQuery) {
+  logger.debug(`Fetching patterns for tokenArray: ${preprocessedQuery.toString()}`);
   let patternSet = new Set(null);
-  const tokenArray = processedQuery.tokenArray;
-  const valenceUnits = await getValenceUnits(tokenArray);
+  const valenceUnits = await getValenceUnits(preprocessedQuery);
+  /*
   logger.debug('valenceUnits: ' + valenceUnits.length);
   logger.debug('NP: ' + valenceUnits[0].length);
-  logger.debug('Obj: ' + valenceUnits[1].length);
+  logger.debug('Obj: ' + valenceUnits[1].length);*/
   for (let i = 0; i < valenceUnits.length; i += 1) {
     let diffVUSet = new Set(valenceUnits[i]);
     let j = 0;
     while (j < i) {
+      /*
       logger.debug('i = ' + i);
       logger.debug('j = ' + j);
       logger.debug('diffVUSet before: ' + diffVUSet.length);
       logger.debug(diffVUSet.toArray());
       logger.debug('valenceUnits[j]: ' + valenceUnits[j].length);
-      logger.debug(valenceUnits[j].toArray());
+      logger.debug(valenceUnits[j].toArray());*/
       diffVUSet = diffVUSet.difference(valenceUnits[j]);
-      logger.debug('diffVUSet after: ' + diffVUSet.length);
-      logger.debug(diffVUSet.toArray());
+      //logger.debug('diffVUSet after: ' + diffVUSet.length);
+      //logger.debug(diffVUSet.toArray());
       j += 1;
     }
     const dbPatterns = await Pattern.find().where('valenceUnits').in(diffVUSet.toArray());
-    logger.debug('dbPatterns: ' + dbPatterns.length);
+    //logger.debug('dbPatterns: ' + dbPatterns.length);
     const dbPatternSet = new Set(dbPatterns);
-    logger.debug('patternSet before: ' + patternSet.length);
+    //logger.debug('patternSet before: ' + patternSet.length);
     patternSet = patternSet.length === 0 ? dbPatternSet : patternSet.intersection(dbPatternSet);
-    logger.debug('patternSet after: ' + patternSet.length);
+  //logger.debug('patternSet after: ' + patternSet.length);
   }
   /*
    for (const unit of processedQuery.tokenArray) {
@@ -116,4 +120,8 @@ async function getPatternSet(processedQuery) {
   return patternSet;
 }
 
-export { getValenceUnitSet, getPatternSet, getValenceUnits };
+export default {
+  getValenceUnitSet,
+  getPatternSet,
+  getValenceUnits,
+};

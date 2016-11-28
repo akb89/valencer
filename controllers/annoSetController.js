@@ -1,23 +1,19 @@
 import { AnnotationSet } from 'noframenet-core';
-import { getPatternSet } from './getController';
+import getController from './getController';
 import config from '../config';
 
 const logger = config.logger;
 // TODO : Discuss what should be populated
 async function getAll(context) {
-  const query = context.query.vp;
-  logger.info(`Querying for all annotationSets with a valence pattern matching: ${query}`);
+  logger.info(`Querying for all annotationSets with a valence pattern matching: ${context.query.vp}`);
   let startTime = process.hrtime();
-  // let patternSet = await getPatternSet(query);
-  logger.info(`PatternSet created in ${process.hrtime(startTime)[1] / 1000000}ms`);
+  const patternSet = await getController.getPatternSet(context.query.preprocessed);
+  logger.debug(`PatternSet created in ${process.hrtime(startTime)[1] / 1000000}ms`);
   startTime = process.hrtime();
-  // console.log(patternSet);
   context.body = await AnnotationSet
     .find()
-    // .where('pattern')
-    // .in(patternSet.toArray())
-    .where('_id')
-    .equals(1632555)
+    .where('pattern')
+    .in(patternSet.toArray())
     .populate({
       path: 'pattern',
       populate: {
@@ -27,7 +23,6 @@ async function getAll(context) {
     .populate({
       path: 'sentence',
     })
-    // .select('sentence')
     .populate({
       path: 'lexUnit',
       populate: {
@@ -43,7 +38,7 @@ async function getAll(context) {
     .populate({
       path: 'labels',
     });
-  logger.info(`Patterns retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+  logger.debug(`Patterns retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
 }
 
 export default {
