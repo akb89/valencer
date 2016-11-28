@@ -3,7 +3,7 @@ import chai from 'chai';
 import mongoose from 'mongoose';
 import mockgoose from 'mockgoose';
 import { Pattern, ValenceUnit } from 'noframenet-core';
-import { getPatternSet } from './../../controllers/getController';
+import getController from './../../controllers/getController';
 
 mongoose.Promise = bluebird;
 const should = chai.should(); // eslint-disable-line no-unused-vars
@@ -58,48 +58,24 @@ describe('getController#getPatternSet', () => {
     mongoose.disconnect();
     mockgoose.reset();
   });
-  /*
-  it('#getPatternSet should return the correct number of patterns when processing FE.PT.GF' +
-  ' combinations', mochAsync(async() => {
-    const pQuery = {
-      query: 'A.NP.Obj B.NP.Obj',
-      tokenArray: [['A', 'NP', 'Obj'], ['B', 'NP', 'Obj']],
-    };
-    const patterns = await getPatternSet(pQuery);
+  it('#getPatternSet should return the correct number of patterns when processing FE.PT.GF combinations', async () => {
+    const patterns = await getController.getPatternSet([['A', 'NP', 'Obj'], ['B', 'NP', 'Obj']]);
     patterns.length.should.equal(3);
-  }));
-  it('#getPatternSet should return the correct number of patterns when processing FE PT.GF',
-  mochAsync(async() => {
-    const pQuery = {
-      query: 'A NP.Ext',
-      tokenArray: [['A'], ['NP', 'Ext']],
-    };
-    const patterns = await getPatternSet(pQuery);
+  });
+  it('#getPatternSet should return the correct number of patterns when processing FE PT.GF', async () => {
+    const patterns = await getController.getPatternSet([['A'], ['NP', 'Ext']]);
     patterns.length.should.equal(2);
-  }));
-  it('#getPatternSet should return the correct number of patterns when processing FE' +
-  ' combinations', mochAsync(async() => {
-    const pQuery = {
-      query: 'D A',
-      tokenArray: [['D'], ['A']],
-    };
-    const patterns = await getPatternSet(pQuery);
+  });
+  it('#getPatternSet should return the correct number of patterns when processing FE combinations', async () => {
+    const patterns = await getController.getPatternSet([['D'], ['A']]);
     patterns.length.should.equal(2);
-  }));*/
+  });
   it('#getPatternSet should return the correct number of patterns when processing PT GF', async () => {
-    const pQuery = {
-      query: 'NP Obj',
-      tokenArray: [['NP'], ['Obj']],
-    };
-    const patterns = await getPatternSet(pQuery);
+    const patterns = await getController.getPatternSet([['NP'], ['Obj']]);
     patterns.length.should.equal(3);
   });
   it('#getPatternSet should return the correct number of patterns when processing single PT', async () => {
-    const pQuery = {
-      query: 'NP',
-      tokenArray: [['NP']],
-    };
-    const patterns = await getPatternSet(pQuery);
+    const patterns = await getController.getPatternSet([['NP']]);
     patterns.length.should.equal(4);
   });
 });
