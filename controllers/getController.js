@@ -14,7 +14,7 @@ const logger = config.logger;
  * valenceUnit inside a tokenArray pattern (@see processor:process)
  */
 async function getValenceUnitSet(unit) {
-  logger.debug(`Fetching valence units for unit: ${unit}`);
+  console.log(`Fetching valence units for unit: ${unit}`);
   let set = new Set(null);
   const valenceUnit = {
     fe: undefined,
@@ -22,7 +22,7 @@ async function getValenceUnitSet(unit) {
     gf: undefined,
   };
   for (const token of unit) {
-    logger.debug(`Processing token: ${token}`);
+    console.log(`Processing token: ${token}`);
     if (valenceUnit.fe === undefined) {
       const dbFE = await ValenceUnit.find().where('FE').equals(token);
       if (dbFE.length !== 0) {
@@ -73,50 +73,24 @@ async function getValenceUnits(tokenArray) {
 
 // FIXME for NP ... Obj queries <-- This is a major concern
 async function getPatternSet(preprocessedQuery) {
-  logger.debug(`Fetching patterns for tokenArray: ${preprocessedQuery.toString()}`);
+  console.log(`Fetching patterns for tokenArray: ${preprocessedQuery.toString()}`);
   let patternSet = new Set(null);
-  const valenceUnits = await getValenceUnits(preprocessedQuery);
-  /*
-  logger.debug('valenceUnits: ' + valenceUnits.length);
-  logger.debug('NP: ' + valenceUnits[0].length);
-  logger.debug('Obj: ' + valenceUnits[1].length);*/
-  for (let i = 0; i < valenceUnits.length; i += 1) {
-    let diffVUSet = new Set(valenceUnits[i]);
-    let j = 0;
-    while (j < i) {
-      /*
-      logger.debug('i = ' + i);
-      logger.debug('j = ' + j);
-      logger.debug('diffVUSet before: ' + diffVUSet.length);
-      logger.debug(diffVUSet.toArray());
-      logger.debug('valenceUnits[j]: ' + valenceUnits[j].length);
-      logger.debug(valenceUnits[j].toArray());*/
-      diffVUSet = diffVUSet.difference(valenceUnits[j]);
-      //logger.debug('diffVUSet after: ' + diffVUSet.length);
-      //logger.debug(diffVUSet.toArray());
-      j += 1;
-    }
-    const dbPatterns = await Pattern.find().where('valenceUnits').in(diffVUSet.toArray());
-    //logger.debug('dbPatterns: ' + dbPatterns.length);
-    const dbPatternSet = new Set(dbPatterns);
-    //logger.debug('patternSet before: ' + patternSet.length);
-    patternSet = patternSet.length === 0 ? dbPatternSet : patternSet.intersection(dbPatternSet);
-  //logger.debug('patternSet after: ' + patternSet.length);
+  for (const unit of preprocessedQuery) {
+    const valenceUnitSet = await getValenceUnitSet(unit);
+    const patterns = await Pattern
+      .find()
+      .where('valenceUnits')
+      .in(valenceUnitSet.toArray());
+    const reducedPatterns = patterns.map((pattern) => {
+      for (const vu in pattern.valenceUnits) {
+        if (valenceUnitSet.has(vu)) {
+          return new Pattern({
+            valenceUnits: valenceUnitSet.remove(vu).toArray(),
+          });
+        }
+      }
+    });
   }
-  /*
-   for (const unit of processedQuery.tokenArray) {
-   const valenceUnitSet = await getValenceUnitSet(unit);
-   logger.debug(`ValenceUnitSet.length = ${valenceUnitSet.length}`);
-   const dbPatterns = await Pattern.find().where('valenceUnits').in(valenceUnitSet.toArray());
-   logger.debug(`Pattern.length = ${dbPatterns.length}`);
-   if (dbPatterns.length === 0) {
-   throw new NotFoundException(`Could not find patters matching given input in FrameNet database:
-   ${processedQuery.query}`);
-   }
-   const dbPatternSet = new Set(dbPatterns);
-   logger.debug(`PatternSet.length = ${dbPatternSet.length}`);
-   patternSet = patternSet.length === 0 ? dbPatternSet : patternSet.intersection(dbPatternSet);
-   }*/
   return patternSet;
 }
 
