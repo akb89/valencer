@@ -8,8 +8,7 @@ const logger = config.logger;
 
 /**
  * Retrieve valenceUnit objects from the db matching any combination of
- * FE.PT.GF, in any order,
- * and with potentially unspecified elements:
+ * FE.PT.GF, in any order, and with potentially unspecified elements:
  * FE.PT.GF / PT.FE.GF / PT.GF / GF.FE / FE / GF etc.
  * @param unit: an array of FE/PT/GF tags: ['FE', 'PT', 'GF'] corresponding to a
  * single valenceUnit inside a tokenArray pattern (@see processor:process)
@@ -54,7 +53,7 @@ async function getValenceUnits(unit) {
       .find(expVU);
 }
 
-async function _getPatterns(valenceUnitsArray) {
+async function $getPatterns(valenceUnitsArray) {
   await Pattern
     .aggregate([{
       $match: {
@@ -124,7 +123,7 @@ async function getPatterns(tokenArray) {
     .map(async unit => await getValenceUnits(unit)));
   logger.verbose(`ValenceUnits created in ${process.hrtime(startTime)[1] / 1000000}ms`);
   startTime = process.hrtime();
-  const patterns = await _getPatterns(valenceUnitsArray);
+  const patterns = await $getPatterns(valenceUnitsArray);
   logger.verbose(`Patterns created in ${process.hrtime(startTime)[1] / 1000000}ms`);
   return patterns;
 }
