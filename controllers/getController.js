@@ -1,5 +1,4 @@
-import { Pattern, ValenceUnit, Set } from 'noframenet-core';
-import mongoose from 'mongoose';
+import { Pattern, TMPattern, ValenceUnit, Set } from 'noframenet-core';
 import bluebird from 'bluebird';
 import { NotFoundException } from './../exceptions/valencerException';
 import config from './../config';
@@ -7,51 +6,53 @@ import config from './../config';
 const Promise = bluebird.Promise;
 const logger = config.logger;
 
+/**
+ * Retrieve valenceUnit objects from the db matching any combination of
+ * FE.PT.GF, in any order,
+ * and with potentially unspecified elements:
+ * FE.PT.GF / PT.FE.GF / PT.GF / GF.FE / FE / GF etc.
+ * @param unit: an array of FE/PT/GF tags: ['FE', 'PT', 'GF'] corresponding to a
+ * single valenceUnit inside a tokenArray pattern (@see processor:process)
+ */
 async function getValenceUnits(unit) {
   logger.debug(`Fetching valence units for unit: ${unit}`);
-  const vus = await Promise.all(
-    unit.map(
-      async token => await ValenceUnit
-          .find({
-            $or: [{
-              FE: token,
-            }, {
-              PT: token,
-            }, {
-              GF: token,
-            }],
-          })));
-  const notFound = [];
-  for (let i = 0; i < vus.length; i += 1) {
-    if (vus[i].length === 0) {
-      notFound.push(unit[i]);
+  const valenceUnit = {
+    FE: undefined,
+    PT: undefined,
+    GF: undefined,
+  };
+  for (const token of unit) {
+    let found = false;
+    for (const key in valenceUnit) {
+      if (valenceUnit[key] === undefined) {
+        const dbKey = await ValenceUnit
+          .findOne({
+            [key]: token,
+          });
+        if (dbKey !== null) {
+          valenceUnit[key] = token;
+          found = true;
+          break;
+        }
+      }
+    }
+    if (!found) {
+      throw new NotFoundException(`Could not find token in FrameNet database: ${token}`);
     }
   }
-  if (notFound.length !== 0) {
-    // FIXME: unit tests
-    /*
-    return new Promise.reject(new NotFoundException(`Could not find token(s) in FrameNet database: ${notFound}`));
-    throw new NotFoundException(`Could not find token(s) in FrameNet database: ${notFound}`);*/
+  const expVU = {};
+  if (valenceUnit.FE !== undefined) {
+    expVU.FE = valenceUnit.FE;
   }
-  return vus.reduce((a, b) => {
-    const aSet = new Set(a);
-    const bSet = new Set(b);
-    return aSet.intersection(bSet).toArray();
-  });
+  if (valenceUnit.PT !== undefined) {
+    expVU.PT = valenceUnit.PT;
+  }
+  if (valenceUnit.GF !== undefined) {
+    expVU.GF = valenceUnit.GF;
+  }
+  return await ValenceUnit
+      .find(expVU);
 }
-
-const patternSchema = mongoose.Schema({
-  valenceUnits: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'ValenceUnit',
-  }],
-});
-
-patternSchema.index({
-  valenceUnits: 1,
-});
-
-const TMPattern = mongoose.model('TMPattern', patternSchema);
 
 async function _getPatterns(valenceUnitsArray) {
   await Pattern
@@ -62,7 +63,7 @@ async function _getPatterns(valenceUnitsArray) {
         },
       },
     }, {
-      $out: 'tmpatterns',
+      $out: '_tmpatterns',
     }]);
   const patterns = await TMPattern.find();
   if (valenceUnitsArray.length > 1) {
@@ -108,7 +109,7 @@ async function _getPatterns(valenceUnitsArray) {
           },
         },
       }, {
-        $out: 'tmpatterns',
+        $out: '_tmpatterns',
       }]);
       tmpatterns = await TMPattern.find();
     }
