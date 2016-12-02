@@ -68,6 +68,10 @@ describe('getController#getPatternSet', () => {
     const patterns = await getController.getPatterns([['A', 'NP', 'Obj'], ['B', 'NP', 'Obj']]);
     patterns.length.should.equal(4);
   });
+  it('#getPatternSet should return the correct number of patterns when processing long FE.PT.GF combinations', async () => {
+    const patterns = await getController.getPatterns([['A', 'NP', 'Obj'], ['B', 'NP', 'Obj'], ['C', 'NP', 'Ext'], ['D', 'PP[about]', 'Ext']]);
+    patterns.length.should.equal(1);
+  });
   it('#getPatternSet should return the correct number of patterns when processing FE PT.GF', async () => {
     const patterns = await getController.getPatterns([['A'], ['NP', 'Ext']]);
     patterns.length.should.equal(4);
@@ -98,6 +102,10 @@ describe('getController#getPatternSet', () => {
   });
   it('#getPatternSet should return the correct number of patterns when processing FE PT GF', async () => {
     const patterns = await getController.getPatterns([['A'], ['PP[about]'], ['Ext']]);
+    patterns.length.should.equal(2);
+  });
+  it('#getPatternSet should return the correct number of patterns when processing long tokenArrays', async () => {
+    const patterns = await getController.getPatterns([['Ext'], ['NP'], ['NP'], ['NP']]);
     patterns.length.should.equal(2);
   });
 });

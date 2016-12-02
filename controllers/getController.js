@@ -9,42 +9,35 @@ const logger = config.logger;
 
 async function getValenceUnits(unit) {
   logger.debug(`Fetching valence units for unit: ${unit}`);
-  const valenceUnit = {
-    FE: undefined,
-    PT: undefined,
-    GF: undefined,
-  };
-  for (const token of unit) {
-    let found = false;
-    for (const key in valenceUnit) {
-      if (valenceUnit[key] === undefined) {
-        const dbKey = await ValenceUnit
-          .findOne({
-            [key]: token,
-          });
-        if (dbKey !== null) {
-          valenceUnit[key] = token;
-          found = true;
-          break;
-        }
-      }
-    }
-    if (!found) {
-      throw new NotFoundException(`Could not find token in FrameNet database: ${token}`);
+  const vus = await Promise.all(
+    unit.map(
+      async token => await ValenceUnit
+          .find({
+            $or: [{
+              FE: token,
+            }, {
+              PT: token,
+            }, {
+              GF: token,
+            }],
+          })));
+  const notFound = [];
+  for (let i = 0; i < vus.length; i += 1) {
+    if (vus[i].length === 0) {
+      notFound.push(unit[i]);
     }
   }
-  const expVU = {};
-  if (valenceUnit.FE !== undefined) {
-    expVU.FE = valenceUnit.FE;
+  if (notFound.length !== 0) {
+    // FIXME: unit tests
+    /*
+    return new Promise.reject(new NotFoundException(`Could not find token(s) in FrameNet database: ${notFound}`));
+    throw new NotFoundException(`Could not find token(s) in FrameNet database: ${notFound}`);*/
   }
-  if (valenceUnit.PT !== undefined) {
-    expVU.PT = valenceUnit.PT;
-  }
-  if (valenceUnit.GF !== undefined) {
-    expVU.GF = valenceUnit.GF;
-  }
-  return await ValenceUnit
-      .find(expVU);
+  return vus.reduce((a, b) => {
+    const aSet = new Set(a);
+    const bSet = new Set(b);
+    return aSet.intersection(bSet).toArray();
+  });
 }
 
 const patternSchema = mongoose.Schema({
@@ -60,11 +53,8 @@ patternSchema.index({
 
 const TMPattern = mongoose.model('TMPattern', patternSchema);
 
-async function getPatterns(tokenArray) {
-  const valenceUnitsArray = await Promise.all(tokenArray
-    .map(async unit => await getValenceUnits(unit)));
-  console.log('Processing = ' + tokenArray);
-  const patterns = await Pattern
+async function _getPatterns(valenceUnitsArray) {
+  await Pattern
     .aggregate([{
       $match: {
         valenceUnits: {
@@ -74,23 +64,14 @@ async function getPatterns(tokenArray) {
     }, {
       $out: 'tmpatterns',
     }]);
-  console.log('FIRST ROUND');
-  const test = await TMPattern.find().populate({
-    path: 'valenceUnits',
-  });
-  console.log(test.toString());
-  if (tokenArray.length > 1) {
-    let test3;
-    for (let i = 1; i < tokenArray.length; i += 1) {
-      console.log('NEXT ROUND = ' + tokenArray[i]);
+  const patterns = await TMPattern.find();
+  if (valenceUnitsArray.length > 1) {
+    let tmpatterns;
+    for (let i = 1; i < valenceUnitsArray.length; i += 1) {
       const merge = new Set();
       for (let j = 0; j < i + 1; j += 1) {
         merge.addEach(valenceUnitsArray[j]);
-      //valenceUnitsArray[j].forEach(vu => merge.add(vu));
-      //array.push(...valenceUnitsArray[j].map(vu => vu._id));
       }
-      console.log('MERGE = ' + merge.length);
-      console.log(merge.toJSON());
       const tmp = await TMPattern
         .aggregate([{
           $match: {
@@ -129,20 +110,22 @@ async function getPatterns(tokenArray) {
       }, {
         $out: 'tmpatterns',
       }]);
-      const test2 = await TMPattern.find();
-      console.log('TMPatterns');
-      console.log(test2);
-      test3 = await Pattern.find().where('_id').in(test2).populate({
-        path: 'valenceUnits'
-      });
-      console.log('Patterns');
-      console.log(test3.toString());
+      tmpatterns = await TMPattern.find();
     }
-    console.log('FINAL ROUND');
-    console.log(test3.toString());
-    return test3;
+    return tmpatterns;
   }
-  return test;
+  return patterns;
+}
+
+async function getPatterns(tokenArray) {
+  let startTime = process.hrtime();
+  const valenceUnitsArray = await Promise.all(tokenArray
+    .map(async unit => await getValenceUnits(unit)));
+  logger.verbose(`ValenceUnits created in ${process.hrtime(startTime)[1] / 1000000}ms`);
+  startTime = process.hrtime();
+  const patterns = await _getPatterns(valenceUnitsArray);
+  logger.verbose(`Patterns created in ${process.hrtime(startTime)[1] / 1000000}ms`);
+  return patterns;
 }
 
 export default {

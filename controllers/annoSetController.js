@@ -6,10 +6,8 @@ const logger = config.logger;
 // TODO : Discuss what should be populated
 async function getAll(context) {
   logger.info(`Querying for all annotationSets with a valence pattern matching: ${context.query.vp}`);
-  let startTime = process.hrtime();
   const patterns = await getController.getPatterns(context.query.preprocessed);
-  logger.verbose(`PatternSet created in ${process.hrtime(startTime)[1] / 1000000}ms`);
-  startTime = process.hrtime();
+  const startTime = process.hrtime();
   context.body = await AnnotationSet
     .find()
     .where('pattern')

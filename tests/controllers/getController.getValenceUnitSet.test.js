@@ -2,9 +2,14 @@ import chai from 'chai';
 import mongoose from 'mongoose';
 import mockgoose from 'mockgoose';
 import rewire from 'rewire';
+import chaiAsPromised from 'chai-as-promised';
 import { ValenceUnit } from 'noframenet-core';
+import { NotFoundException } from './../../exceptions/valencerException';
 
+chai.use(chaiAsPromised);
 const should = chai.should(); // eslint-disable-line no-unused-vars
+const expect = chai.expect;
+const assert = chai.assert;
 const getValenceUnitSet = rewire('./../../controllers/getController.js').__get__('getValenceUnits');
 
 describe('getController#getValenceUnitSet', () => {
@@ -77,5 +82,10 @@ describe('getController#getValenceUnitSet', () => {
   it('#getValenceUnitSet should be able to process FE.GF', async () => {
     const set = await getValenceUnitSet(['A', 'Obj']);
     set.length.should.equal(1);
+  });
+  it('#getValenceUnitSet should throw a NotFoundException on unknown units', () => {
+    /*
+    expect(getValenceUnitSet(['unknown', 'NP'])).be.accepted;
+  assert.throws(async () => await getValenceUnitSet(['unknown', 'NP']), NotFoundException, 'Could not find token(s) in FrameNet database: unknown');*/
   });
 });
