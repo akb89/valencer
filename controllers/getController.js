@@ -1,101 +1,150 @@
 import { Pattern, ValenceUnit, Set } from 'noframenet-core';
+import mongoose from 'mongoose';
+import bluebird from 'bluebird';
 import { NotFoundException } from './../exceptions/valencerException';
 import config from './../config';
 
+const Promise = bluebird.Promise;
 const logger = config.logger;
 
-/**
- * Retrieve valenceUnit objects from the db matching any combination of
- * FE.PT.GF, in any order,
- * and with potentially unspecified elements:
- * FE.PT.GF / PT.FE.GF / PT.GF / GF.FE / FE / GF etc.
- * @param unit an array of FE/PT/GF tags: ['FE', 'PT', 'GF'] corresponding to a
- * single
- * valenceUnit inside a tokenArray pattern (@see processor:process)
- */
-async function getValenceUnitSet(unit) {
-  console.log(`Fetching valence units for unit: ${unit}`);
-  let set = new Set(null);
+async function getValenceUnits(unit) {
+  logger.debug(`Fetching valence units for unit: ${unit}`);
   const valenceUnit = {
-    fe: undefined,
-    pt: undefined,
-    gf: undefined,
+    FE: undefined,
+    PT: undefined,
+    GF: undefined,
   };
   for (const token of unit) {
-    console.log(`Processing token: ${token}`);
-    if (valenceUnit.fe === undefined) {
-      const dbFE = await ValenceUnit.find().where('FE').equals(token);
-      if (dbFE.length !== 0) {
-        const FE = new Set(dbFE);
-        set = set.length === 0 ? FE : set.intersection(FE);
-        valenceUnit.fe = token;
-        continue; // TODO: find a way to get rid of continue?
-      }
-    }
-    if (valenceUnit.pt === undefined) {
-      const dbPT = await ValenceUnit.find().where('PT').equals(token);
-      if (dbPT.length !== 0) {
-        const PT = new Set(dbPT);
-        set = set.length === 0 ? PT : set.intersection(PT);
-        valenceUnit.pt = token;
-        continue;
-      }
-    }
-    if (valenceUnit.gf === undefined) {
-      const dbGF = await ValenceUnit.find().where('GF').equals(token);
-      if (dbGF.length !== 0) {
-        const GF = new Set(dbGF);
-        set = set.length === 0 ? GF : set.intersection(GF);
-        valenceUnit.gf = token;
-        continue;
-      }
-    }
-    throw new NotFoundException(`Could not find token in FrameNet database: ${token}`);
-  }
-  return set;
-}
-
-/**
- * Fetch all the valenceUnits sets corresponding to the elements of a
- * tokenArray, e.g.:
- * ['A', 'B', 'C'] in [['A', 'B', 'C'], ['D', 'E', 'F']]
- * @param tokenArray of a processed query
- * @returns an array of sets of valenceUnit objects
- */
-async function getValenceUnits(tokenArray) {
-  const valenceUnits = [];
-  for (const unit of tokenArray) {
-    const valenceUnitSet = await getValenceUnitSet(unit);
-    valenceUnits.push(valenceUnitSet);
-  }
-  return valenceUnits;
-}
-
-// FIXME for NP ... Obj queries <-- This is a major concern
-async function getPatternSet(preprocessedQuery) {
-  console.log(`Fetching patterns for tokenArray: ${preprocessedQuery.toString()}`);
-  let patternSet = new Set(null);
-  for (const unit of preprocessedQuery) {
-    const valenceUnitSet = await getValenceUnitSet(unit);
-    const patterns = await Pattern
-      .find()
-      .where('valenceUnits')
-      .in(valenceUnitSet.toArray());
-    const reducedPatterns = patterns.map((pattern) => {
-      for (const vu in pattern.valenceUnits) {
-        if (valenceUnitSet.has(vu)) {
-          return new Pattern({
-            valenceUnits: valenceUnitSet.remove(vu).toArray(),
+    let found = false;
+    for (const key in valenceUnit) {
+      if (valenceUnit[key] === undefined) {
+        const dbKey = await ValenceUnit
+          .findOne({
+            [key]: token,
           });
+        if (dbKey !== null) {
+          valenceUnit[key] = token;
+          found = true;
+          break;
         }
       }
-    });
+    }
+    if (!found) {
+      throw new NotFoundException(`Could not find token in FrameNet database: ${token}`);
+    }
   }
-  return patternSet;
+  const expVU = {};
+  if (valenceUnit.FE !== undefined) {
+    expVU.FE = valenceUnit.FE;
+  }
+  if (valenceUnit.PT !== undefined) {
+    expVU.PT = valenceUnit.PT;
+  }
+  if (valenceUnit.GF !== undefined) {
+    expVU.GF = valenceUnit.GF;
+  }
+  return await ValenceUnit
+      .find(expVU);
+}
+
+const patternSchema = mongoose.Schema({
+  valenceUnits: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ValenceUnit',
+  }],
+});
+
+patternSchema.index({
+  valenceUnits: 1,
+});
+
+const TMPattern = mongoose.model('TMPattern', patternSchema);
+
+async function getPatterns(tokenArray) {
+  const valenceUnitsArray = await Promise.all(tokenArray
+    .map(async unit => await getValenceUnits(unit)));
+  console.log('Processing = ' + tokenArray);
+  const patterns = await Pattern
+    .aggregate([{
+      $match: {
+        valenceUnits: {
+          $in: valenceUnitsArray[0].map(vu => vu._id),
+        },
+      },
+    }, {
+      $out: 'tmpatterns',
+    }]);
+  console.log('FIRST ROUND');
+  const test = await TMPattern.find().populate({
+    path: 'valenceUnits',
+  });
+  console.log(test.toString());
+  if (tokenArray.length > 1) {
+    let test3;
+    for (let i = 1; i < tokenArray.length; i += 1) {
+      console.log('NEXT ROUND = ' + tokenArray[i]);
+      const merge = new Set();
+      for (let j = 0; j < i + 1; j += 1) {
+        merge.addEach(valenceUnitsArray[j]);
+      //valenceUnitsArray[j].forEach(vu => merge.add(vu));
+      //array.push(...valenceUnitsArray[j].map(vu => vu._id));
+      }
+      console.log('MERGE = ' + merge.length);
+      console.log(merge.toJSON());
+      const tmp = await TMPattern
+        .aggregate([{
+          $match: {
+            valenceUnits: {
+              $in: valenceUnitsArray[i].map(vu => vu._id),
+            },
+          },
+        }, {
+          $unwind: '$valenceUnits',
+        }, {
+          $match: {
+            valenceUnits: {
+              $in: merge.toArray().map(vu => vu._id),
+            },
+          },
+        }, {
+          $group: {
+            _id: '$_id',
+            count: {
+              $sum: 1,
+            },
+          },
+        }, {
+          $match: {
+            count: {
+              $gte: i + 1,
+            },
+          },
+        }]);
+      await Pattern.aggregate([{
+        $match: {
+          _id: {
+            $in: tmp.map(t => t._id),
+          },
+        },
+      }, {
+        $out: 'tmpatterns',
+      }]);
+      const test2 = await TMPattern.find();
+      console.log('TMPatterns');
+      console.log(test2);
+      test3 = await Pattern.find().where('_id').in(test2).populate({
+        path: 'valenceUnits'
+      });
+      console.log('Patterns');
+      console.log(test3.toString());
+    }
+    console.log('FINAL ROUND');
+    console.log(test3.toString());
+    return test3;
+  }
+  return test;
 }
 
 export default {
-  getValenceUnitSet,
-  getPatternSet,
-  getValenceUnits,
+  getPatterns,
 };

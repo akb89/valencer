@@ -7,13 +7,13 @@ const logger = config.logger;
 async function getAll(context) {
   logger.info(`Querying for all annotationSets with a valence pattern matching: ${context.query.vp}`);
   let startTime = process.hrtime();
-  const patternSet = await getController.getPatternSet(context.query.preprocessed);
-  logger.debug(`PatternSet created in ${process.hrtime(startTime)[1] / 1000000}ms`);
+  const patterns = await getController.getPatterns(context.query.preprocessed);
+  logger.verbose(`PatternSet created in ${process.hrtime(startTime)[1] / 1000000}ms`);
   startTime = process.hrtime();
   context.body = await AnnotationSet
     .find()
     .where('pattern')
-    .in(patternSet.toArray())
+    .in(patterns)
     .populate({
       path: 'pattern',
       populate: {
@@ -38,7 +38,7 @@ async function getAll(context) {
     .populate({
       path: 'labels',
     });
-  logger.debug(`Patterns retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+  logger.verbose(`Patterns retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
 }
 
 export default {

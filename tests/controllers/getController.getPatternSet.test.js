@@ -1,11 +1,9 @@
-import bluebird from 'bluebird';
 import chai from 'chai';
 import mongoose from 'mongoose';
 import mockgoose from 'mockgoose';
 import { Pattern, ValenceUnit } from 'noframenet-core';
 import getController from './../../controllers/getController';
 
-mongoose.Promise = bluebird;
 const should = chai.should(); // eslint-disable-line no-unused-vars
 
 describe('getController#getPatternSet', () => {
@@ -31,14 +29,14 @@ describe('getController#getPatternSet', () => {
       GF: 'Ext',
     });
     await cNPExt.save();
-    const dPPaExt = new ValenceUnit({
+    const dPPaboutExt = new ValenceUnit({
       FE: 'D',
       PT: 'PP[about]',
       GF: 'Ext',
     });
-    await dPPaExt.save();
+    await dPPaboutExt.save();
     const pattern1 = new Pattern({
-      valenceUnits: [aNPObj, dPPaExt],
+      valenceUnits: [aNPObj, dPPaboutExt],
     });
     await pattern1.save();
     const pattern2 = new Pattern({
@@ -50,32 +48,56 @@ describe('getController#getPatternSet', () => {
     });
     await pattern3.save();
     const pattern4 = new Pattern({
-      valenceUnits: [aNPObj, bNPObj, cNPExt, dPPaExt],
+      valenceUnits: [aNPObj, bNPObj, cNPExt, dPPaboutExt],
     });
     await pattern4.save();
+    const pattern5 = new Pattern({
+      valenceUnits: [aNPObj, cNPExt, dPPaboutExt],
+    });
+    await pattern5.save();
+    const pattern6 = new Pattern({
+      valenceUnits: [aNPObj, bNPObj, aNPObj, cNPExt],
+    });
+    await pattern6.save();
   });
   after(() => {
     mongoose.disconnect();
     mockgoose.reset();
   });
   it('#getPatternSet should return the correct number of patterns when processing FE.PT.GF combinations', async () => {
-    const patterns = await getController.getPatternSet([['A', 'NP', 'Obj'], ['B', 'NP', 'Obj']]);
-    patterns.length.should.equal(3);
+    const patterns = await getController.getPatterns([['A', 'NP', 'Obj'], ['B', 'NP', 'Obj']]);
+    patterns.length.should.equal(4);
   });
   it('#getPatternSet should return the correct number of patterns when processing FE PT.GF', async () => {
-    const patterns = await getController.getPatternSet([['A'], ['NP', 'Ext']]);
-    patterns.length.should.equal(2);
+    const patterns = await getController.getPatterns([['A'], ['NP', 'Ext']]);
+    patterns.length.should.equal(4);
   });
   it('#getPatternSet should return the correct number of patterns when processing FE combinations', async () => {
-    const patterns = await getController.getPatternSet([['D'], ['A']]);
-    patterns.length.should.equal(2);
-  });
-  it('#getPatternSet should return the correct number of patterns when processing PT GF', async () => {
-    const patterns = await getController.getPatternSet([['NP'], ['Obj']]);
+    const patterns = await getController.getPatterns([['D'], ['A']]);
     patterns.length.should.equal(3);
   });
   it('#getPatternSet should return the correct number of patterns when processing single PT', async () => {
-    const patterns = await getController.getPatternSet([['NP']]);
+    const patterns = await getController.getPatterns([['NP']]);
+    patterns.length.should.equal(6);
+  });
+  it('#getPatternSet should return the correct number of patterns when processing PT GF', async () => {
+    const patterns = await getController.getPatterns([['NP'], ['Obj']]);
+    patterns.length.should.equal(5);
+  });
+  it('#getPatternSet should return the correct number of patterns when processing PT GF PT', async () => {
+    const patterns = await getController.getPatterns([['NP'], ['Obj'], ['NP']]);
+    patterns.length.should.equal(3);
+  });
+  it('#getPatternSet should return the correct number of patterns when processing up to two PT.GF', async () => {
+    const patterns = await getController.getPatterns([['NP', 'Obj'], ['NP', 'Obj']]);
     patterns.length.should.equal(4);
+  });
+  it('#getPatternSet should return the correct number of patterns when processing up to three PT.GF', async () => {
+    const patterns = await getController.getPatterns([['NP', 'Obj'], ['NP', 'Obj'], ['NP', 'Obj']]);
+    patterns.length.should.equal(1);
+  });
+  it('#getPatternSet should return the correct number of patterns when processing FE PT GF', async () => {
+    const patterns = await getController.getPatterns([['A'], ['PP[about]'], ['Ext']]);
+    patterns.length.should.equal(2);
   });
 });

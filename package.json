@@ -48,6 +48,7 @@
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.4.1",
     "mocha": "^3.2.0",
-    "mockgoose": "^6.0.6"
+    "mockgoose": "^6.0.6",
+    "rewire": "^2.5.2"
   }
 }

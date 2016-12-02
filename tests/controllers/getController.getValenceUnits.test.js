@@ -1,10 +1,11 @@
 import chai from 'chai';
 import mongoose from 'mongoose';
 import mockgoose from 'mockgoose';
+import rewire from 'rewire';
 import { ValenceUnit } from 'noframenet-core';
-import getController from './../../controllers/getController';
 
 const should = chai.should(); // eslint-disable-line no-unused-vars
+const getValenceUnitSet = rewire('./../../controllers/getController.js').__get__('getValenceUnits');
 
 describe('getController#getValenceUnits', () => {
   before(async () => {
@@ -40,16 +41,16 @@ describe('getController#getValenceUnits', () => {
     mongoose.disconnect();
     mockgoose.reset();
   });
-  it('#getValenceUnits should be able to process a single unit tokenArray', async () => {
-    const valenceUnits = await getController.getValenceUnits([['A', 'NP', 'Obj']]);
+  it('#getValenceUnitSet should be able to process a single unit tokenArray', async () => {
+    const valenceUnits = await getValenceUnitSet([['A', 'NP', 'Obj']]);
     valenceUnits.length.should.equal(1);
     valenceUnits[0].toArray().length.should.equal(1);
     valenceUnits[0].toArray()[0].FE.should.equal('A');
     valenceUnits[0].toArray()[0].PT.should.equal('NP');
     valenceUnits[0].toArray()[0].GF.should.equal('Obj');
   });
-  it('#getValenceUnits should be able to process a double unit tokenArray', async () => {
-    const valenceUnits = await getController.getValenceUnits([['A', 'NP', 'Obj'], ['C', 'NP', 'Ext']]);
+  it('#getValenceUnitSet should be able to process a double unit tokenArray', async () => {
+    const valenceUnits = await getValenceUnitSet([['A', 'NP', 'Obj'], ['C', 'NP', 'Ext']]);
     valenceUnits.length.should.equal(2);
     valenceUnits[0].toArray().length.should.equal(1);
     valenceUnits[1].toArray().length.should.equal(1);
@@ -57,8 +58,8 @@ describe('getController#getValenceUnits', () => {
     valenceUnits[1].toArray()[0].PT.should.equal('NP');
     valenceUnits[1].toArray()[0].GF.should.equal('Ext');
   });
-  it('#getValenceUnits should be able to process a triple unit tokenArray', async () => {
-    const valenceUnits = await getController.getValenceUnits([['A', 'NP', 'Obj'], ['C', 'NP', 'Ext'],
+  it('#getValenceUnitSet should be able to process a triple unit tokenArray', async () => {
+    const valenceUnits = await getValenceUnitSet([['A', 'NP', 'Obj'], ['C', 'NP', 'Ext'],
       ['D', 'PP[about]', 'Ext']]);
     valenceUnits.length.should.equal(3);
     valenceUnits[0].toArray().length.should.equal(1);
@@ -68,13 +69,13 @@ describe('getController#getValenceUnits', () => {
     valenceUnits[2].toArray()[0].PT.should.equal('PP[about]');
     valenceUnits[2].toArray()[0].GF.should.equal('Ext');
   });
-  it('#getValenceUnits should be able to retrieve all valenceUnits matching a PT', async () => {
-    const valenceUnits = await getController.getValenceUnits([['NP']]);
+  it('#getValenceUnitSet should be able to retrieve all valenceUnits matching a PT', async () => {
+    const valenceUnits = await getValenceUnitSet([['NP']]);
     valenceUnits.length.should.equal(1);
     valenceUnits[0].length.should.equal(3);
   });
-  it('#getValenceUnits should be able to retrieve all valenceUnits matching a PT GF', async () => {
-    const valenceUnits = await getController.getValenceUnits([['NP'], ['Ext']]);
+  it('#getValenceUnitSet should be able to retrieve all valenceUnits matching a PT GF', async () => {
+    const valenceUnits = await getValenceUnitSet([['NP'], ['Ext']]);
     valenceUnits.length.should.equal(2);
     valenceUnits[0].length.should.equal(3);
     valenceUnits[1].length.should.equal(2);
