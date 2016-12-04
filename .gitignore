@@ -12,3 +12,6 @@ public/img/uploads/*
 *.zip
 *.log
 *_*.js
+apidoc/
+header.md
+footer.md

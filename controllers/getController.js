@@ -1,5 +1,6 @@
-import { Pattern, TMPattern, ValenceUnit, Set } from 'noframenet-core';
+import { Pattern, ValenceUnit, Set } from 'noframenet-core';
 import bluebird from 'bluebird';
+import TMPattern from './../models/tmpattern';
 import { NotFoundException } from './../exceptions/valencerException';
 import config from './../config';
 
