@@ -4,8 +4,28 @@ import config from '../config';
 
 const logger = config.logger;
 // TODO : Discuss what should be populated
-async function getAll(context) {
-  logger.info(`Querying for all annotationSets with a valence pattern matching: ${context.query.vp}`);
+
+async function getByID(context) {
+  logger.info(`Querying for AnnotationSet with _id = ${context.params.id}`);
+  const startTime = process.hrtime();
+  context.body = await AnnotationSet
+    .findOne()
+    .where('_id')
+    .equals(context.params.id);
+  logger.verbose(`AnnotationSets retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+}
+
+async function getByNoPopulateVP(context) {
+  const patterns = await getController.getPatterns(context.query.preprocessed);
+  const startTime = process.hrtime();
+  context.body = await AnnotationSet
+    .find()
+    .where('pattern')
+    .in(patterns);
+  logger.verbose(`AnnotationSets retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+}
+
+async function getByPopulateVP(context) {
   const patterns = await getController.getPatterns(context.query.preprocessed);
   const startTime = process.hrtime();
   context.body = await AnnotationSet
@@ -36,9 +56,20 @@ async function getAll(context) {
     .populate({
       path: 'labels',
     });
-  logger.verbose(`Patterns retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+  logger.verbose(`AnnotationSets retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+}
+
+async function getByVP(context) {
+  logger.info(`Querying for all AnnotationSets with a valence pattern matching: ${context.query.vp}`);
+  logger.info(`Return populated documents: ${context.query.populate}`);
+  if (context.query.populate) {
+    await getByPopulateVP(context);
+  } else {
+    await getByNoPopulateVP(context);
+  }
 }
 
 export default {
-  getAll,
+  getByID,
+  getByVP,
 };
