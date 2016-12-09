@@ -85,7 +85,8 @@ async function $getPatterns(valenceUnitsArray) {
         }, {
           $match: {
             valenceUnits: {
-              $in: merge.toArray().map(vu => vu._id),
+              $in: merge.toArray()
+                .map(vu => vu._id),
             },
           },
         }, {
