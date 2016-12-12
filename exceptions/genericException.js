@@ -1,5 +1,3 @@
-'use strict';
-
 function GenericException(name, code, error, status) {
   Error.call(this, error.message);
   Error.captureStackTrace(this, this.constructor);
@@ -12,4 +10,4 @@ function GenericException(name, code, error, status) {
 GenericException.prototype = Object.create(Error.prototype);
 GenericException.prototype.constructor = GenericException;
 
-module.exports = GenericException;
+export default GenericException;

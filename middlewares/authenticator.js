@@ -4,8 +4,8 @@ import ApiErrors from './../exceptions/apiException';
 import User from './../models/user';
 import config from './../config';
 
-async function verifyApiSignature(ctx, next) {
-  const req = ctx.request;
+async function verifyApiSignature(context, next) {
+  const req = context.request;
   const host = req.header.host;
 
   if (host.indexOf('localhost') !== -1 || host.indexOf('127.0.0.1') !== -1) {
@@ -33,10 +33,14 @@ async function verifyApiSignature(ctx, next) {
   apiInfo = apiInfo[0];
 
 
-  const timestamp = parseInt(req.header['x-val-timestamp'], 10); // TODO: check radix. Here set
-  // to 10
-  const testSignature = req.method + ctx.originalUrl + timestamp;
-  const hash = crypto.createHmac('sha1', apiInfo.secret).update(testSignature).digest('hex');
+  const timestamp = parseInt(req.header['x-val-timestamp'], 10);
+  // TODO: check radix. Here set to 10
+
+  const testSignature = req.method + context.originalUrl + timestamp;
+  const hash = crypto
+    .createHmac('sha1', apiInfo.secret)
+    .update(testSignature)
+    .digest('hex');
 
   if (hash !== sign) {
     throw ApiErrors.InvalidSignature;
