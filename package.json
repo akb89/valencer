@@ -29,8 +29,8 @@
   "apidoc": {
     "title": "Valencer API Doc",
     "header": {
-    "title": "General",
-    "filename": "header.md"
+      "title": "General",
+      "filename": "header.md"
     },
     "footer": {
       "title": "Help",

@@ -7,6 +7,9 @@ import config from './../config';
 const Promise = bluebird.Promise;
 const logger = config.logger;
 
+// TODO if query contains 'PP', points toward all PP[] variants: PP[about], PP[of], etc.
+// TODO do the same fo 'PPing' and distinguish 'PP' and 'PPing'
+
 /**
  * Retrieve valenceUnit objects from the db matching any combination of
  * FE.PT.GF, in any order, and with potentially unspecified elements:
@@ -121,11 +124,15 @@ async function $getPatterns(valenceUnitsArray) {
 
 async function getPatterns(tokenArray) {
   let startTime = process.hrtime();
-  const valenceUnitsArray = await Promise.all(tokenArray
-    .map(async unit => await getValenceUnits(unit)));
+  const valenceUnitsArray = await Promise
+    .all(tokenArray
+      .map(async unit => await getValenceUnits(unit)));
+
   logger.verbose(`ValenceUnits created in ${process.hrtime(startTime)[1] / 1000000}ms`);
+
   startTime = process.hrtime();
   const patterns = await $getPatterns(valenceUnitsArray);
+
   logger.verbose(`Patterns created in ${process.hrtime(startTime)[1] / 1000000}ms`);
   return patterns;
 }

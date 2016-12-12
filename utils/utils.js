@@ -1,55 +1,32 @@
-function containsWhiteSpace(string) {
-  return /\+/.test(string);
-}
-
-function isWhiteSpace(char) {
-  if (char.length === 1) {
-    return /\+/.test(char);
-  }
-}
-
 // A.B.C+D.E.F+G.H.I --> [A.B.C, D.E.F, G.H.I]
-// Check for invalid characters (regex, everything except . and +)
-// Check for invalid combinations: ++ +. .+ .start end.
 function toValenceArray(string) {
-  string = string.trim();
-  if (containsWhiteSpace(string)) {
+  const trimmedStr = string.trim();
+  if (/\s/.test(trimmedStr)) {
     const array = [];
     let iterator = 0;
-    for (let i = 0; i < string.length; i += 1) {
-      if (isWhiteSpace(string.charAt(i))) {
+    for (let i = 0; i < trimmedStr.length; i += 1) {
+      if (/\s/.test(trimmedStr.charAt(i))) {
         if (iterator !== i) {
-          array.push(string.substring(iterator, i));
+          array.push(trimmedStr.substring(iterator, i));
         }
         iterator = i + 1;
       }
     }
-    array.push(string.substring(iterator, string.length));
+    array.push(trimmedStr.substring(iterator, trimmedStr.length));
     return array;
   }
   return [string];
 }
 
-function containsPeriod(string) {
-  return /\./.test(string);
-}
-
-function isPeriod(char) {
-  if (char.length === 1) {
-    return /\./.test(char);
-  }
-}
-
-// TODO throw error if length of valenceArray is > 3
 // [A.B.C, D.E.F, G.H.I] --> [[A, B, C], [D, E, F], [G, H, I]]
 function toTokenArray(valenceArray) {
   const tokenArray = [];
   for (let i = 0; i < valenceArray.length; i += 1) {
-    if (containsPeriod(valenceArray[i])) {
+    if (/\./.test(valenceArray[i])) {
       const labelArray = [];
       let iterator = 0;
       for (let j = 0; j < valenceArray[i].length; j += 1) {
-        if (isPeriod(valenceArray[i].charAt(j))) {
+        if (/\./.test(valenceArray[i].charAt(j))) {
           if (iterator !== j) {
             labelArray.push(valenceArray[i].substring(iterator, j));
           }

@@ -1,13 +1,15 @@
 import GenericException from './genericException';
 
-function InvalidQuery(query, details) {
-  const message = query.concat('\n').concat(details);
+function InvalidQuery(message) {
   return new GenericException('InvalidQuery', 6, new Error(message), 400);
 }
 
-function InvalidQueryParams(param, details) {
-  const message = param.concat(details);
+function InvalidQueryParams(message) {
   return new GenericException('InvalidQueryParams', 7, new Error(message), 400);
+}
+
+function IllFormedQuery(message) {
+  return new GenericException('IllFormedQuery', 8, new Error(message), 400);
 }
 
 function InvalidValencePattern() {
@@ -40,6 +42,7 @@ export default {
     403),
   InvalidQuery,
   InvalidQueryParams,
+  IllFormedQuery,
   InvalidValencePattern,
   NotFoundError,
 };

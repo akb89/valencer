@@ -16,17 +16,20 @@ async function getByID(context) {
 }
 
 async function getByNoPopulateVP(context) {
-  const patterns = await getController.getPatterns(context.query.preprocessed);
+  const patterns = await getController.getPatterns(context.processedQuery);
+  logger.debug(`Patterns.length = ${patterns.length}`);
   const startTime = process.hrtime();
-  context.body = await AnnotationSet
+  const annoSets = await AnnotationSet
     .find()
     .where('pattern')
     .in(patterns);
+  logger.debug(`AnnotationSets.length = ${annoSets.length}`);
+  context.body = annoSets;
   logger.verbose(`AnnotationSets retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
 }
 
 async function getByPopulateVP(context) {
-  const patterns = await getController.getPatterns(context.query.preprocessed);
+  const patterns = await getController.getPatterns(context.processedQuery);
   const startTime = process.hrtime();
   context.body = await AnnotationSet
     .find()
@@ -61,7 +64,8 @@ async function getByPopulateVP(context) {
 
 async function getByVP(context) {
   logger.info(`Querying for all AnnotationSets with a valence pattern matching: ${context.query.vp}`);
-  logger.info(`Return populated documents: ${context.query.populate}`);
+  const populate = context.query.populate === 'true';
+  logger.info(`Return populated documents: ${populate}`);
   if (context.query.populate) {
     await getByPopulateVP(context);
   } else {

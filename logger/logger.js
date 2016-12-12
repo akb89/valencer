@@ -15,6 +15,11 @@ const info = new (winston.Logger)({
       level: 'info',
       colorize: true,
     }),
+    new (winston.transports.File)({
+      filename: 'valencer.log',
+      level: 'verbose',
+      colorize: true,
+    }),
   ],
 });
 
@@ -33,7 +38,11 @@ const debug = new (winston.Logger)({
       level: 'debug',
       colorize: true,
     }),
-  //new (winston.transports.File)({filename: 'noFrameNet.log', level: 'error', colorize: true})
+    new (winston.transports.File)({
+      filename: 'valencer.log',
+      level: 'debug',
+      colorize: true,
+    }),
   ],
 });
 

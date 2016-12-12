@@ -41,7 +41,7 @@ function printLogo() {
   logger.info('                                              ');
 }
 
-(async() => {
+(async () => {
   try {
     logger.info('Starting Valencer...');
     printLogo();

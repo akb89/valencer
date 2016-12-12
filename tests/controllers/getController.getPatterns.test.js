@@ -7,7 +7,7 @@ import getController from './../../controllers/getController';
 const should = chai.should(); // eslint-disable-line no-unused-vars
 
 describe('getController#getPatterns', () => {
-  before(async() => {
+  before(async () => {
     await mockgoose(mongoose);
     await mongoose.connect('mongodb://valencer.io/tests');
     mockgoose.reset();
