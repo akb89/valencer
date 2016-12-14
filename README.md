@@ -49,6 +49,9 @@ Click on the above url or copy-paste it in your web-browser.
 
 **JSON Formatting** You can use [JSONView](https://addons.mozilla.org/en-US/firefox/addon/jsonview/) to format JSON in your web-browser and make it more reader-friendly.
 
+## Documentation
+The full documentation of the API is available on our [GitHub Page](https://akb89.github.io/valencer/)
+
 [release-image]:https://img.shields.io/github/release/akb89/valencer.svg?style=flat-square
 [release-url]:https://github.com/akb89/valencer/releases/latest
 [travis-image]:https://img.shields.io/travis/akb89/valencer.svg?style=flat-square
