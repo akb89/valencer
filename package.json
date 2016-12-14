@@ -14,7 +14,7 @@
   "scripts": {
     "lint": "./node_modules/.bin/eslint . --ext .js",
     "test": "NODE_ENV=testing ./node_modules/mocha/bin/mocha --compilers js:babel-core/register --require babel-polyfill './tests/**/*.@(js)' --reporter spec",
-    "doc": "apidoc -i ./ -o ./apidoc/ -e node_modules",
+    "doc": "apidoc -i ./ -o ./docs/ -e node_modules",
     "dev": "NODE_ENV=development ./node_modules/babel-cli/bin/babel-node.js server.js",
     "start": "NODE_ENV=production ./node_modules/babel-cli/bin/babel-node.js server.js"
   },
