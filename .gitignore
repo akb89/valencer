@@ -13,6 +13,4 @@ public/img/uploads/*
 *.log
 *_*.js
 apidoc/
-header.md
-footer.md
 requests.md
