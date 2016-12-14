@@ -34,6 +34,31 @@ async function getAll(context) {
   context.body = uniquePatterns;
 }
 
+async function getByNoPopulateID(context) {
+
+}
+
+async function getByPopulateID(context) {
+
+}
+
+async function getByID(context) {
+
+}
+
+async function getByNoPopulateVP(context) {
+
+}
+
+async function getByPopulateVP(context) {
+
+}
+
+async function getByVP(context) {
+
+}
+
 export default {
-  getAll,
+  getByID,
+  getByVP,
 };

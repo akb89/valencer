@@ -128,12 +128,12 @@ async function getPatterns(tokenArray) {
     .all(tokenArray
       .map(async unit => await getValenceUnits(unit)));
 
-  logger.verbose(`ValenceUnits created in ${process.hrtime(startTime)[1] / 1000000}ms`);
+  logger.verbose(`ValenceUnits retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
 
   startTime = process.hrtime();
   const patterns = await $getPatterns(valenceUnitsArray);
 
-  logger.verbose(`Patterns created in ${process.hrtime(startTime)[1] / 1000000}ms`);
+  logger.verbose(`Patterns retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
   return patterns;
 }
 

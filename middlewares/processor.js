@@ -5,7 +5,7 @@ const logger = config.logger;
 
 function processvp(context, next) {
   const vp = context.query.vp;
-  logger.debug(`Processing vp: ${vp}`);
+  logger.debug(`Processing valence pattern: ${vp}`);
   context.processedQuery = utils.toTokenArray(utils.toValenceArray(vp));
   return next();
 }

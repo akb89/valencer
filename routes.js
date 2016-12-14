@@ -88,7 +88,7 @@ const router = new Router();
  */
 router.get('/annoSet/:id',
   //authenticator.authenticate,
-  //validator.validate,
+  validator.validate,
   processor.processid,
   annoSetController.getByID);
 
@@ -112,7 +112,7 @@ router.get('/annoSet/:id',
  */
 router.get('/annoSets',
   //authenticator.authenticate,
-  //validator.validate,
+  validator.validate,
   processor.processvp,
   annoSetController.getByVP);
 
@@ -139,9 +139,9 @@ router.get('/annoSets',
  */
 router.get('/frames',
   //authenticator.authenticate,
-  //validator.validate,
+  validator.validate,
   processor.processvp,
-  frameController.getAll);
+  frameController.getByVP);
 
 /**
  * @api {get} /frame/:id GetFrame
@@ -164,9 +164,9 @@ router.get('/frames',
  */
 router.get('/frame/:id',
   //authenticator.authenticate,
-  //validator.validate,
+  validator.validate,
   processor.processid,
-  frameController.getAll);
+  frameController.getByID);
 
 /**
  * @api {get} /lexUnit/:id GetLexUnit
@@ -189,9 +189,9 @@ router.get('/frame/:id',
  */
 router.get('/lexUnit/:id',
   //authenticator.authenticate,
-  //validator.validate,
+  validator.validate,
   processor.processid,
-  lexUnitController.getAll);
+  lexUnitController.getByID);
 
 /**
  * @api {get} /lexUnits GetLexUnits
@@ -216,9 +216,9 @@ router.get('/lexUnit/:id',
  */
 router.get('/lexUnits',
   //authenticator.authenticate,
-  //validator.validate,
+  validator.validate,
   processor.processvp,
-  lexUnitController.getAll);
+  lexUnitController.getByVP);
 
 /**
  * @api {get} /pattern/:id GetPattern
@@ -241,9 +241,9 @@ router.get('/lexUnits',
  */
 router.get('/pattern/:id',
   //authenticator.authenticate,
-  //validator.validate,
+  validator.validate,
   processor.processid,
-  patternController.getAll);
+  patternController.getByID);
 
 /**
  * @api {get} /patterns GetPatterns
@@ -268,9 +268,9 @@ router.get('/pattern/:id',
  */
 router.get('/patterns',
   //authenticator.authenticate,
-  //validator.validate,
+  validator.validate,
   processor.processvp,
-  patternController.getAll);
+  patternController.getByVP);
 
 /**
  * @api {get} /valenceUnit/:id GetValenceUnit
@@ -293,9 +293,9 @@ router.get('/patterns',
  */
 router.get('/valenceUnit/:id',
   //authenticator.authenticate,
-  //validator.validate,
+  validator.validate,
   processor.processid,
-  valenceUnitController.getAll);
+  valenceUnitController.getByID);
 
 /**
  * @api {get} /valenceUnits GetValenceUnits
@@ -337,8 +337,8 @@ router.get('/valenceUnit/:id',
  */
 router.get('/valenceUnits',
   //authenticator.authenticate,
-  //validator.validate,
+  validator.validate,
   processor.processvp,
-  valenceUnitController.getAll);
+  valenceUnitController.getByVP);
 
 export default router;

@@ -1,28 +1,108 @@
-import { AnnotationSet, LexUnit } from 'noframenet-core';
-import { getPatternSet } from './getController';
+import { AnnotationSet, Frame, LexUnit } from 'noframenet-core';
+import getController from './getController';
 import config from '../config';
 
 const logger = config.logger;
 
-async function getAll(context) {
-  const query = context.query.vp;
-  logger.info(`Querying for all distinct lexUnits with a valence pattern matching: ${query}`);
-  const patternSet = await getPatternSet(query);
+async function getByNoPopulateID(context) {
+  const startTime = process.hrtime();
+  const frame = await Frame
+    .findOne()
+    .where('_id')
+    .equals(context.params.id);
+  context.body = frame;
+  logger.verbose(`Frame retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+}
+
+async function getByPopulateID(context) {
+  const startTime = process.hrtime();
+  const frame = await Frame
+    .findOne()
+    .where('_id')
+    .equals(context.params.id)
+    .populate([{
+      path: 'lexUnits',
+      select: 'name',
+    }, {
+      path: 'frameElements',
+    }, {
+      path: 'semTypes',
+    }]);
+  context.body = frame;
+  logger.verbose(`Frame retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+}
+
+async function getByID(context) {
+  logger.info(`Querying for Frame with _id = ${context.params.id}`);
+  const populate = context.query.populate === 'true';
+  logger.info(`Return populated documents: ${populate}`);
+  if (populate) {
+    await getByPopulateID(context);
+  } else {
+    await getByNoPopulateID(context);
+  }
+}
+
+async function getByNoPopulateVP(context) {
+  const patterns = await getController.getPatterns(context.processedQuery);
+  const startTime = process.hrtime();
   const luIds = await AnnotationSet
     .find()
     .where('pattern')
-    .in(patternSet.toArray())
+    .in(patterns)
     .distinct('lexUnit');
-  const lexUnits = await LexUnit
+  const frameIDs = await LexUnit
     .find()
     .where('_id')
     .in(luIds)
     .distinct('frame');
-  // .select('name frame -_id');
-  logger.info(`${lexUnits.length} unique frames found for specified input`);
-  context.body = lexUnits.sort();
+  logger.info(`${frameIDs.length} unique Frames found for specified valence pattern: ${context.query.vp}`);
+  context.body = frameIDs.sort();
+  logger.verbose(`Frames retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+}
+
+async function getByPopulateVP(context) {
+  const patterns = await getController.getPatterns(context.processedQuery);
+  const startTime = process.hrtime();
+  const luIds = await AnnotationSet
+    .find()
+    .where('pattern')
+    .in(patterns)
+    .distinct('lexUnit');
+  const frameIDs = await LexUnit
+    .find()
+    .where('_id')
+    .in(luIds)
+    .distinct('frame');
+  const frames = await Frame
+    .find()
+    .where('_id')
+    .in(frameIDs)
+    .populate([{
+      path: 'lexUnits',
+      select: 'name',
+    }, {
+      path: 'frameElements',
+    }, {
+      path: 'semTypes',
+    }]);
+  logger.info(`${frames.length} unique Frames found for specified valence pattern: ${context.query.vp}`);
+  context.body = frames.sort();
+  logger.verbose(`Frames retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+}
+
+async function getByVP(context) {
+  logger.info(`Querying for all Frames with a valence pattern matching: ${context.query.vp}`);
+  const populate = context.query.populate === 'true';
+  logger.info(`Return populated documents: ${populate}`);
+  if (populate) {
+    await getByPopulateVP(context);
+  } else {
+    await getByNoPopulateVP(context);
+  }
 }
 
 export default {
-  getAll,
+  getByID,
+  getByVP,
 };

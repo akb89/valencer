@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { AnnotationSet, LexUnit } from 'noframenet-core';
 import { getPatternSet } from './getController';
 import config from '../config';
@@ -28,6 +27,31 @@ async function getAll(context) {
   this.context.body = lexUnits;
 }
 
+async function getByNoPopulateID(context) {
+
+}
+
+async function getByPopulateID(context) {
+
+}
+
+async function getByID(context) {
+
+}
+
+async function getByNoPopulateVP(context) {
+
+}
+
+async function getByPopulateVP(context) {
+
+}
+
+async function getByVP(context) {
+
+}
+
 export default {
-  getAll,
+  getByID,
+  getByVP,
 };

@@ -3,16 +3,57 @@ import getController from './getController';
 import config from '../config';
 
 const logger = config.logger;
-// TODO : Discuss what should be populated
 
-async function getByID(context) {
-  logger.info(`Querying for AnnotationSet with _id = ${context.params.id}`);
+async function getByNoPopulateID(context) {
   const startTime = process.hrtime();
-  context.body = await AnnotationSet
+  const annoSet = await AnnotationSet
     .findOne()
     .where('_id')
     .equals(context.params.id);
-  logger.verbose(`AnnotationSets retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+  context.body = annoSet;
+  logger.verbose(`AnnotationSet retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+}
+
+async function getByPopulateID(context) {
+  const startTime = process.hrtime();
+  const annoSet = await AnnotationSet
+    .findOne()
+    .where('_id')
+    .equals(context.params.id)
+    .populate([{
+      path: 'pattern',
+      populate: {
+        path: 'valenceUnits',
+      },
+    }, {
+      path: 'sentence',
+    }, {
+      path: 'lexUnit',
+      populate: {
+        path: 'frame',
+        populate: [{
+          path: 'lexUnits',
+          select: 'name',
+        }, {
+          path: 'frameElements',
+        }],
+      },
+    }, {
+      path: 'labels',
+    }]);
+  context.body = annoSet;
+  logger.verbose(`AnnotationSet retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+}
+
+async function getByID(context) {
+  logger.info(`Querying for AnnotationSet with _id = ${context.params.id}`);
+  const populate = context.query.populate === 'true';
+  logger.info(`Return populated documents: ${populate}`);
+  if (populate) {
+    await getByPopulateID(context);
+  } else {
+    await getByNoPopulateID(context);
+  }
 }
 
 async function getByNoPopulateVP(context) {
@@ -31,20 +72,18 @@ async function getByNoPopulateVP(context) {
 async function getByPopulateVP(context) {
   const patterns = await getController.getPatterns(context.processedQuery);
   const startTime = process.hrtime();
-  context.body = await AnnotationSet
+  const annoSets = await AnnotationSet
     .find()
     .where('pattern')
     .in(patterns)
-    .populate({
+    .populate([{
       path: 'pattern',
       populate: {
         path: 'valenceUnits',
       },
-    })
-    .populate({
+    }, {
       path: 'sentence',
-    })
-    .populate({
+    }, {
       path: 'lexUnit',
       populate: {
         path: 'frame',
@@ -55,10 +94,11 @@ async function getByPopulateVP(context) {
           path: 'frameElements',
         }],
       },
-    })
-    .populate({
+    }, {
       path: 'labels',
-    });
+    }]);
+  logger.debug(`AnnotationSets.length = ${annoSets.length}`);
+  context.body = annoSets;
   logger.verbose(`AnnotationSets retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
 }
 
@@ -66,7 +106,7 @@ async function getByVP(context) {
   logger.info(`Querying for all AnnotationSets with a valence pattern matching: ${context.query.vp}`);
   const populate = context.query.populate === 'true';
   logger.info(`Return populated documents: ${populate}`);
-  if (context.query.populate) {
+  if (populate) {
     await getByPopulateVP(context);
   } else {
     await getByNoPopulateVP(context);

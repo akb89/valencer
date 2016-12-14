@@ -21,6 +21,13 @@ app.use(winstonKoaLogger(logger));
 app.use(router.routes());
 app.use(router.allowedMethods());
 // app.use(ctx => ctx.status = 404);
+app.on('error', (err, context) => {
+  logger.error(err.message);
+  logger.debug(err);
+  err.expose = true; // expose the error to the context;
+  context.status = err.status || 500;
+  context.body = err.message;
+});
 
 function connectToDatabase(uri) {
   return new Promise((resolve, reject) => {
