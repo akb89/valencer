@@ -1,15 +1,39 @@
-import { AnnotationSet, Pattern } from 'noframenet-core';
+import { Pattern } from 'noframenet-core';
 import getController from './getController';
+import ApiError from './../exceptions/apiException';
 import config from '../config';
 
 const logger = config.logger;
 
 async function getByNoPopulateID(context) {
-
+  const startTime = process.hrtime();
+  const pattern = await Pattern
+    .findOne()
+    .where('_id')
+    .equals(context.params.id);
+  if (!pattern) {
+    throw ApiError.NotFoundError(`Could not find Pattern with _id = ${context.params.id}`);
+  } else {
+    context.body = pattern;
+    logger.verbose(`Pattern retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+  }
 }
 
 async function getByPopulateID(context) {
-
+  const startTime = process.hrtime();
+  const pattern = await Pattern
+    .findOne()
+    .where('_id')
+    .equals(context.params.id)
+    .populate({
+      path: 'valenceUnits',
+    });
+  if (!pattern) {
+    throw ApiError.NotFoundError(`Could not find Pattern with _id = ${context.params.id}`);
+  } else {
+    context.body = pattern;
+    logger.verbose(`Pattern retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+  }
 }
 
 async function getByID(context) {

@@ -1,64 +1,49 @@
 import { ValenceUnit } from 'noframenet-core';
 import getController from './getController';
+import ApiError from './../exceptions/apiException';
 import config from '../config';
 
 const logger = config.logger;
 
-async function getAll(context) {
-  const query = context.query.vp;
-  logger.info(`Querying for all valenceUnits matching: ${query}`);
-  const valenceUnitSet = await getValenceUnitSet(query);
-
-  const valenceUnits = await ValenceUnit
-    .find()
+async function getByNoPopulateID(context) {
+  const startTime = process.hrtime();
+  const vu = await ValenceUnit
+    .findOne()
     .where('_id')
-    .in(valenceUnitSet.toArray())
-    .select('-_id');
-  logger.info(`${valenceUnits.length} unique valenceUnits found for specified entry`);
-  context.body = valenceUnits;
-}
-
-async function getByNoPopulateID(context) {
-
-}
-
-async function getByPopulateID(context) {
-
-}
-
-async function getByNoPopulateID(context) {
-
-}
-
-async function getByPopulateID(context) {
-
+    .equals(context.params.id);
+  if (!vu) {
+    throw ApiError.NotFoundError(`Could not find ValenceUnit with _id = ${context.params.id}`);
+  } else {
+    context.body = vu;
+    logger.verbose(`ValenceUnit retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+  }
 }
 
 async function getByID(context) {
-  logger.info(`Querying for Pattern with _id = ${context.params.id}`);
+  logger.info(`Querying for ValenceUnit with _id = ${context.params.id}`);
   const populate = context.query.populate === 'true';
   logger.info(`Return populated documents: ${populate}`);
   if (populate) {
-    await getByPopulateID(context);
+    throw ApiError.InvalidQueryParams('There is nothing to populate in a ValenceUnit! Try setting populate to false');
   } else {
     await getByNoPopulateID(context);
   }
 }
 
 async function getByNoPopulateVP(context) {
-
-}
-
-async function getByPopulateVP(context) {
-
+  const vus = await getController.getValenceUnits(context.processedQuery[0]);
+  const startTime = process.hrtime();
+  logger.info(`${vus.length} unique ValenceUnits found for specified valence: ${JSON.stringify(context.processedQuery[0])}`);
+  context.body = vus.sort();
+  logger.verbose(`ValenceUnits retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
 }
 
 async function getByVP(context) {
-  logger.info(`Querying for all Patterns matching: ${context.query.vp}`);
+  logger.info(`Querying for all ValenceUnits matching: ${context.query.vp}`);
   const populate = context.query.populate === 'true';
   logger.info(`Return populated documents: ${populate}`);
   if (populate) {
-    await getByPopulateVP(context);
+    throw ApiError.InvalidQueryParams('There is nothing to populate in a ValenceUnit! Try setting populate to false');
   } else {
     await getByNoPopulateVP(context);
   }

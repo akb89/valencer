@@ -1,5 +1,6 @@
 import { AnnotationSet, LexUnit } from 'noframenet-core';
 import getController from './getController';
+import ApiError from './../exceptions/apiException';
 import config from '../config';
 
 const logger = config.logger;
@@ -10,8 +11,12 @@ async function getByNoPopulateID(context) {
     .findOne()
     .where('_id')
     .equals(context.params.id);
-  context.body = lexUnit;
-  logger.verbose(`LexUnit retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+  if (!lexUnit) {
+    throw ApiError.NotFoundError(`Could not find LexUnit with _id = ${context.params.id}`);
+  } else {
+    context.body = lexUnit;
+    logger.verbose(`LexUnit retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+  }
 }
 
 async function getByPopulateID(context) {
@@ -31,8 +36,12 @@ async function getByPopulateID(context) {
     }, {
       path: 'lexemes',
     }]);
-  context.body = lexUnit;
-  logger.verbose(`LexUnit retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+  if (!lexUnit) {
+    throw ApiError.NotFoundError(`Could not find LexUnit with _id = ${context.params.id}`);
+  } else {
+    context.body = lexUnit;
+    logger.verbose(`LexUnit retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+  }
 }
 
 async function getByID(context) {

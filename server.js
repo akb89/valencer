@@ -18,15 +18,19 @@ const app = new Koa();
 app.use(winstonKoaLogger(logger));
 // app.keys = ['my-secret-key'];
 // app.use(authenticate());
+app.use(async (context, next) => {
+  try {
+    await next();
+  } catch (err) {
+    logger.error(err.message);
+    logger.debug(err);
+    err.expose = true; // expose the error to the context;
+    context.status = err.status || 500;
+    context.body = err.message;
+  }
+});
 app.use(router.routes());
 app.use(router.allowedMethods());
-app.on('error', (err, context) => {
-  logger.error(err.message);
-  logger.debug(err);
-  err.expose = true; // expose the error to the context;
-  context.status = err.status || 500;
-  context.body = err.message;
-});
 
 function connectToDatabase(uri) {
   return new Promise((resolve, reject) => {

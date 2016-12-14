@@ -1,5 +1,6 @@
 import { AnnotationSet, Frame, LexUnit } from 'noframenet-core';
 import getController from './getController';
+import ApiError from './../exceptions/apiException';
 import config from '../config';
 
 const logger = config.logger;
@@ -10,8 +11,12 @@ async function getByNoPopulateID(context) {
     .findOne()
     .where('_id')
     .equals(context.params.id);
-  context.body = frame;
-  logger.verbose(`Frame retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+  if (!frame) {
+    throw ApiError.NotFoundError(`Could not find Frame with _id = ${context.params.id}`);
+  } else {
+    context.body = frame;
+    logger.verbose(`Frame retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+  }
 }
 
 async function getByPopulateID(context) {
@@ -28,8 +33,12 @@ async function getByPopulateID(context) {
     }, {
       path: 'semTypes',
     }]);
-  context.body = frame;
-  logger.verbose(`Frame retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+  if (!frame) {
+    throw ApiError.NotFoundError(`Could not find Frame with _id = ${context.params.id}`);
+  } else {
+    context.body = frame;
+    logger.verbose(`Frame retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+  }
 }
 
 async function getByID(context) {

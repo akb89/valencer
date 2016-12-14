@@ -42,6 +42,7 @@ function NotFoundError(message) {
   return new GenericException('NotFoundError', 8, new Error(message), 404);
 }
 
+
 export default {
   NoAuthorizationHeaderError,
   NoTwoPartAuthorizationError,

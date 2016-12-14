@@ -139,4 +139,5 @@ async function getPatterns(tokenArray) {
 
 export default {
   getPatterns,
+  getValenceUnits,
 };
