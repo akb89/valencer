@@ -8,7 +8,6 @@ import authenticator from './middlewares/authenticator';
 import validator from './middlewares/validator';
 import processor from './middlewares/processor';
 
-
 const router = new Router();
 
 /**
