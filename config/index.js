@@ -13,5 +13,4 @@ try {
 
 const config = tmp;
 
-
 export default config;

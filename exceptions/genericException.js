@@ -10,5 +10,4 @@ function GenericException(name, code, error, status) {
 GenericException.prototype = Object.create(Error.prototype);
 GenericException.prototype.constructor = GenericException;
 
-
 export default GenericException;

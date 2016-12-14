@@ -6,5 +6,4 @@ const production = {
   logger: logger.info,
 };
 
-
 module.exports = production;
