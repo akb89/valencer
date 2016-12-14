@@ -1,7 +1,7 @@
 import { Pattern, ValenceUnit, Set } from 'noframenet-core';
 import bluebird from 'bluebird';
 import TMPattern from './../models/tmpattern';
-import { NotFoundException } from './../exceptions/valencerException';
+import ApiError from './../exceptions/apiException';
 import config from './../config';
 
 const Promise = bluebird.Promise;
@@ -40,7 +40,7 @@ async function getValenceUnits(unit) {
       }
     }
     if (!found) {
-      throw new NotFoundException(`Could not find token in FrameNet database: ${token}`);
+      throw ApiError.NotFoundError(`Could not find token in FrameNet database: ${token}`);
     }
   }
   const expVU = {};

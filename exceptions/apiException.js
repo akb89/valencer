@@ -38,8 +38,8 @@ function InvalidQueryParams(message) {
   return new GenericException('InvalidQueryParams', 7, new Error(message), 400);
 }
 
-function NotFoundError() {
-  return new GenericException('NotFoundError', 8, new Error(), 404);
+function NotFoundError(message) {
+  return new GenericException('NotFoundError', 8, new Error(message), 404);
 }
 
 export default {
