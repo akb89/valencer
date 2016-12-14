@@ -11,55 +11,82 @@ import processor from './middlewares/processor';
 const router = new Router();
 
 /**
- * @apiDefine AnnotationSetParam
+ * @apiDefine NotFoundIDError
+ * @apiError NotFoundError The id was not found
+ */
+
+/**
+ * @apiDefine NotFoundVPError
+ * @apiError NotFoundError A valence unit of the vp was not found
+ */
+
+/**
+ * @apiDefine idParam
  *
- * @apiParam {Number}     id          The AnnotationSet id
- * @apiParam {Boolean}    populate    Specify whether collections should be
- * populated. Default to false
+ * @apiParam {Number}     id          The id
+ * @apiParam {Boolean} [populate=false]    Specify whether documents
+ * should be populated
+ */
+
+/**
+ * @apiDefine vpParam
+ *
+ * @apiParam {String}     vp          The Valence Pattern: a
+ * combination of triplets FE.PT.GF
+ * @apiParam {Boolean}    populate    Specify whether documents
+ * should be populated. Default to false
  */
 
 /**
  * @apiDefine AnnotationSetSuccess
  *
- * @apiSuccess {Number}   _id        The AnnotationSet id
- * @apiSuccess {Number}   lexUnit    The LexUnit id
- * @apiSuccess {Number}   sentence   The Sentence id
- * @apiSuccess {Object[]} labels     The list of labels ObjectID
+ * @apiSuccess  {Number}   _id        The AnnotationSet id
+ * @apiSuccess  {Number}   lexUnit    The LexUnit id
+ * @apiSuccess  {Number}   sentence   The Sentence id
+ * @apiSuccess  {Object[]} labels     The list of labels ObjectID
  */
 
 /**
- * @apiDefine AnnotationSetSuccessExample
+ * @apiDefine AnnotationSetSuccessPopulated
  *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *        "_id": 791417,
- *        "lexUnit": 1004,
- *        "sentence": 656052,
- *        "labels": [
- *           "583c37b47a730328b2f8654a",
- *           "583c37b47a730328b2f8654b",
- *           "583c37b47a730328b2f8654c",
- *           "583c37b47a730328b2f8654d",
- *           "583c37b47a730328b2f8654e",
- *           "583c37b47a730328b2f8654f",
- *           "583c37b47a730328b2f86550",
- *           "583c37b47a730328b2f86551",
- *           "583c37b47a730328b2f86552",
- *           "583c37b47a730328b2f86553",
- *           "583c37b47a730328b2f86554",
- *           "583c37b47a730328b2f86555"
- *       ]
- *     }
- */
-
-/**
- * @apiDefine AnnotationSetSuccessPopulate
- *
- * @apiSuccessExample {json} Success-Response (populated):
- *     HTTP/1.1 200 OK
- *     {
- *     }
+ * @apiSuccess   {Number}    _id                          The AnnotationSet id
+ * @apiSuccess   {Object}    lexUnit                      The LexUnit
+ * @apiSuccess   {Number}    lexUnit._id                  The LexUnit id
+ * @apiSuccess   {String}    lexUnit.name                 The LexUnit name
+ * @apiSuccess   {String}    lexUnit.pos                  The LexUnit part of speech
+ * @apiSuccess   {String}    lexUnit.definition           The LexUnit definition
+ * @apiSuccess   {Number}    lexUnit.lemmaID              The LexUnit lemmaID
+ * @apiSuccess   {Object}    lexUnit.frame                The LexUnit Frame
+ * @apiSuccess   {Number}    lexUnit.frame._id            The Frame id
+ * @apiSuccess   {String}    lexUnit.frame.name           The Frame name
+ * @apiSuccess   {String}    lexUnit.frame.definition     The Frame definition
+ * @apiSuccess   {String}    lexUnit.frame.cDate          The Frame creation date
+ * @apiSuccess   {String}    lexUnit.frame.cBy            The Frame annotator
+ * @apiSuccess   {Number[]}    lexUnit.frame._id The Frame id
+ * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
+ * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
+ * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
+ * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
+ * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
+ * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
+ * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
+ * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
+ * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
+ * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
+ * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
+ * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
+ * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
+ * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
+ * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
+ * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
+ * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
+ * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
+ * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
+ * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
+ * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
+ * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
+ * @apiSuccess   {Number}    sentence    The Sentence id
+ * @apiSuccess   {Object[]}  labels      The list of labels ObjectID
  */
 
 /**
@@ -67,24 +94,14 @@ const router = new Router();
  * @apiVersion 1.0.0
  * @apiName GetAnnoSet
  * @apiGroup AnnotationSet
- * @apiDescription Get AnnotationSet with id
- *
- * @apiUse AnnotationSetParam
- *
- * @apiUse AnnotationSetSuccess
- *
+ * @apiDescription Get AnnotationSet with id. Returns at most one
+ * document and throws an error if not found. Sample success output
+ * is given with populate=true
+ * @apiUse idParam
  * @apiExample Example usage:
- * curl -i http://localhost/annoSet/123
- *
- * @apiUse AnnotationSetSuccessExample
- *
- * @apiError NotFound   Details.
- *
- * @apiErrorExample Response (example):
- *     HTTP/1.1 401 Not Authenticated
- *     {
- *       "error": "NoAccessRight"
- *     }
+ * curl -i http://localhost/annoSet/123?populate=true
+ * @apiUse AnnotationSetSuccessPopulated
+ * @apiUse NotFoundIDError
  */
 router.get('/annoSet/:id',
   //authenticator.authenticate,
@@ -98,17 +115,13 @@ router.get('/annoSet/:id',
  * @apiName GetAnnoSets
  * @apiGroup AnnotationSet
  * @apiDescription Get all AnnotationSets with pattern matching input
- *
- * @apiParam {String} vp The Valence Pattern.
- * @apiParam {Boolean} populate Specify whether collections should be populated
- *
- * @apiSuccess {Number}   id            The Users-ID.
- *
+ * vp. Returns an empty array if no match is found. Sample success
+ * output is given with (default) populate=false
+ * @apiUse vpParam
  * @apiExample Example usage:
- * curl -i http://localhost/annoSets?
- * vp=Donor.NP.Ext+Theme.NP.Obj+Recipient.PP[to].Dep
- *
- *
+ * curl -i http://localhost/annoSets?vp=Donor.NP.Ext+Theme.NP.Obj
+ * @apiUse AnnotationSetSuccess
+ * @apiUse NotFoundVPError
  */
 router.get('/annoSets',
   //authenticator.authenticate,
@@ -117,50 +130,15 @@ router.get('/annoSets',
   annoSetController.getByVP);
 
 /**
- * @api {get} /frames GetFrames
- * @apiVersion 1.0.0
- * @apiName GetFrames
- * @apiGroup Frame
- * @apiDescription Get all Frames with pattern matching input
- *
- * @apiParam {String} vp The Valence Pattern.
- * @apiParam {Boolean} populate Specify whether collections should be populated
- *
- * @apiSuccess {Number}   id            The Users-ID.
- *
- * @apiExample Example usage:
- * curl -i http://localhost:3030/frames?
- * vp=Donor.NP.Ext+Theme.NP.Obj+Recipient.PP[to].Dep
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *     }
- */
-router.get('/frames',
-  //authenticator.authenticate,
-  validator.validate,
-  processor.processvp,
-  frameController.getByVP);
-
-/**
  * @api {get} /frame/:id GetFrame
  * @apiVersion 1.0.0
  * @apiName GetFrame
  * @apiGroup Frame
  * @apiDescription Get Frame with id
- *
- * @apiParam {Boolean} populate Specify whether collections should be populated
- *
- * @apiSuccess {Number}   id            The Users-ID.
- *
+ * @apiUse idParam
  * @apiExample Example usage:
- * curl -i http://localhost:3030/frame/123
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *     }
+ * curl -i http://localhost/frame/123?populate=true
+ * @apiUse NotFoundIDError
  */
 router.get('/frame/:id',
   //authenticator.authenticate,
@@ -169,23 +147,32 @@ router.get('/frame/:id',
   frameController.getByID);
 
 /**
+ * @api {get} /frames GetFrames
+ * @apiVersion 1.0.0
+ * @apiName GetFrames
+ * @apiGroup Frame
+ * @apiDescription Get all Frames with pattern matching input
+ * @apiUse vpParam
+ * @apiExample Example usage:
+ * curl -i http://localhost/frames?vp=Donor.NP.Ext+Theme.NP.Obj
+ * @apiUse NotFoundVPError
+ */
+router.get('/frames',
+  //authenticator.authenticate,
+  validator.validate,
+  processor.processvp,
+  frameController.getByVP);
+
+/**
  * @api {get} /lexUnit/:id GetLexUnit
  * @apiVersion 1.0.0
  * @apiName GetLexUnit
  * @apiGroup LexUnit
  * @apiDescription Get LexUnit with id
- *
- * @apiParam {Boolean} populate Specify whether collections should be populated
- *
- * @apiSuccess {Number}   id            The Users-ID.
- *
+ * @apiUse idParam
  * @apiExample Example usage:
  * curl -i http://localhost:3030/lexUnit/123
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *     }
+ * @apiUse NotFoundIDError
  */
 router.get('/lexUnit/:id',
   //authenticator.authenticate,
@@ -199,20 +186,10 @@ router.get('/lexUnit/:id',
  * @apiName GetLexUnits
  * @apiGroup LexUnit
  * @apiDescription Get all LexUnits with pattern matching input
- *
- * @apiParam {String} vp The Valence Pattern.
- * @apiParam {Boolean} populate Specify whether collections should be populated
- *
- * @apiSuccess {Number}   id            The Users-ID.
- *
+ * @apiUse vpParam
  * @apiExample Example usage:
- * curl -i http://localhost:3030/lexUnits?
- * vp=Donor.NP.Ext+Theme.NP.Obj+Recipient.PP[to].Dep
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *     }
+ * curl -i http://localhost:3030/lexUnits?vp=Donor.NP.Ext+Theme.NP.Obj
+ * @apiUse NotFoundVPError
  */
 router.get('/lexUnits',
   //authenticator.authenticate,
@@ -226,18 +203,10 @@ router.get('/lexUnits',
  * @apiName GetPattern
  * @apiGroup Pattern
  * @apiDescription Get Pattern with id
- *
- * @apiParam {Boolean} populate Specify whether collections should be populated
- *
- * @apiSuccess {Number}   id            The Users-ID.
- *
+ * @apiUse idParam
  * @apiExample Example usage:
  * curl -i http://localhost:3030/pattern/123
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *     }
+ * @apiUse NotFoundIDError
  */
 router.get('/pattern/:id',
   //authenticator.authenticate,
@@ -251,20 +220,10 @@ router.get('/pattern/:id',
  * @apiName GetPatterns
  * @apiGroup Pattern
  * @apiDescription Get all Patterns with pattern matching input
- *
- * @apiParam {String} vp The Valence Pattern.
- * @apiParam {Boolean} populate Specify whether collections should be populated
- *
- * @apiSuccess {Number}   id            The Users-ID.
- *
+ * @apiUse vpParam
  * @apiExample Example usage:
- * curl -i http://localhost:3030/patterns?
- * vp=Donor.NP.Ext+Theme.NP.Obj+Recipient.PP[to].Dep
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *     }
+ * curl -i http://localhost:3030/patterns?vp=Donor.NP.Ext+Theme.NP.Obj
+ * @apiUse NotFoundVPError
  */
 router.get('/patterns',
   //authenticator.authenticate,
@@ -278,18 +237,10 @@ router.get('/patterns',
  * @apiName GetValenceUnit
  * @apiGroup ValenceUnit
  * @apiDescription Get ValenceUnit with id
- *
- * @apiParam {Boolean} populate Specify whether collections should be populated
- *
- * @apiSuccess {Number}   id            The Users-ID.
- *
+ * @apiUse idParam
  * @apiExample Example usage:
  * curl -i http://localhost:3030/valenceUnit/123
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *     }
+ * @apiUse NotFoundIDError
  */
 router.get('/valenceUnit/:id',
   //authenticator.authenticate,
@@ -303,37 +254,10 @@ router.get('/valenceUnit/:id',
  * @apiName GetValenceUnits
  * @apiGroup ValenceUnit
  * @apiDescription Get all ValenceUnits with pattern matching input
- *
- * @apiParam {String} vp The Valence Pattern.
- * @apiParam {Boolean} populate Specify whether collections should be populated
- *
- * @apiSuccess {Number}   id            The Users-ID.
- *
+ * @apiUse vpParam
  * @apiExample Example usage:
- * curl -i http://localhost:3030/valenceUnits?
- * vp=Donor.NP.Ext+Theme.NP.Obj+Recipient.PP[to].Dep
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *        "_id": 791417,
- *        "lexUnit": 1004,
- *        "sentence": 656052,
- *        "labels": [
- *           "583c37b47a730328b2f8654a",
- *           "583c37b47a730328b2f8654b",
- *           "583c37b47a730328b2f8654c",
- *           "583c37b47a730328b2f8654d",
- *           "583c37b47a730328b2f8654e",
- *           "583c37b47a730328b2f8654f",
- *           "583c37b47a730328b2f86550",
- *           "583c37b47a730328b2f86551",
- *           "583c37b47a730328b2f86552",
- *           "583c37b47a730328b2f86553",
- *           "583c37b47a730328b2f86554",
- *           "583c37b47a730328b2f86555"
- *       ]
- *     }
+ * curl -i http://localhost:3030/valenceUnits?vp=Donor.NP.Ext+Theme.NP.Obj
+ * @apiUse NotFoundVPError
  */
 router.get('/valenceUnits',
   //authenticator.authenticate,
