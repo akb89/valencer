@@ -46,7 +46,7 @@ async function getByID(context) {
 async function getByNoPopulateVP(context) {
   const patterns = await getController.getPatterns(context.processedQuery);
   const startTime = process.hrtime();
-  const luIds = await AnnotationSet
+  const lexUnitIDs = await AnnotationSet
     .find()
     .where('pattern')
     .in(patterns)
@@ -54,7 +54,7 @@ async function getByNoPopulateVP(context) {
   const frameIDs = await LexUnit
     .find()
     .where('_id')
-    .in(luIds)
+    .in(lexUnitIDs)
     .distinct('frame');
   logger.info(`${frameIDs.length} unique Frames found for specified valence pattern: ${context.query.vp}`);
   context.body = frameIDs.sort();
@@ -64,7 +64,7 @@ async function getByNoPopulateVP(context) {
 async function getByPopulateVP(context) {
   const patterns = await getController.getPatterns(context.processedQuery);
   const startTime = process.hrtime();
-  const luIds = await AnnotationSet
+  const lexUnitIDs = await AnnotationSet
     .find()
     .where('pattern')
     .in(patterns)
@@ -72,7 +72,7 @@ async function getByPopulateVP(context) {
   const frameIDs = await LexUnit
     .find()
     .where('_id')
-    .in(luIds)
+    .in(lexUnitIDs)
     .distinct('frame');
   const frames = await Frame
     .find()
