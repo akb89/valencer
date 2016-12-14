@@ -8,6 +8,7 @@
     "Koa2",
     "MongoDB"
   ],
+  
   "author": "Alexandre Kabbach",
   "license": "MIT",
   "main": "server.js",

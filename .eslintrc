@@ -38,6 +38,7 @@
     // Allow devDependencies for tests
     "import/no-extraneous-dependencies": [
       "error",
+      
       {
         "devDependencies": [
           "**/*.test.js"
