@@ -1,5 +1,5 @@
 import { ValenceUnit } from 'noframenet-core';
-import { getValenceUnitSet } from './getController';
+import getController from './getController';
 import config from '../config';
 
 const logger = config.logger;
@@ -26,8 +26,23 @@ async function getByPopulateID(context) {
 
 }
 
-async function getByID(context) {
+async function getByNoPopulateID(context) {
 
+}
+
+async function getByPopulateID(context) {
+
+}
+
+async function getByID(context) {
+  logger.info(`Querying for Pattern with _id = ${context.params.id}`);
+  const populate = context.query.populate === 'true';
+  logger.info(`Return populated documents: ${populate}`);
+  if (populate) {
+    await getByPopulateID(context);
+  } else {
+    await getByNoPopulateID(context);
+  }
 }
 
 async function getByNoPopulateVP(context) {
@@ -39,7 +54,14 @@ async function getByPopulateVP(context) {
 }
 
 async function getByVP(context) {
-
+  logger.info(`Querying for all Patterns matching: ${context.query.vp}`);
+  const populate = context.query.populate === 'true';
+  logger.info(`Return populated documents: ${populate}`);
+  if (populate) {
+    await getByPopulateVP(context);
+  } else {
+    await getByNoPopulateVP(context);
+  }
 }
 
 export default {

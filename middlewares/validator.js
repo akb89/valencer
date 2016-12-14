@@ -20,43 +20,55 @@ function validate(context, next) {
   const query = context.query;
   const params = context.params;
   logger.debug(`Validating query: ${JSON.stringify(query)} and/or parameters: ${JSON.stringify(params)}`);
-  if ((!query.vp || Object.keys(query.vp).length === 0)
-    && (!params || Object.keys(params).length === 0)) {
+
+  // Test if the query is empty: query.vp is empty/null/undefined and
+  //  params is empty/null/undefined
+  if (query && params && (!query.vp || Object.keys(query.vp).length
+    === 0) && (!params || Object.keys(params).length === 0)) {
     throw ApiError.InvalidQuery(`No specified parameters in query: ${context.querystring}`);
   }
-  if (query.vp
+  if ((!query && !params) || (query && query.vp &&
+    query.vp.trim().length === 0 && (!params || (params &&
+    params.id && params.id.trim().length === 0)))) {
+    throw ApiError.InvalidQuery('Empty query and parameters');
+  }
+  // Test if the query specifies both vp and params
+  if (query && query.vp
     && Object.keys(query.vp).length !== 0
     && params
     && Object.keys(params).length !== 0) {
     throw ApiError.InvalidQuery(`Cannot combine vp and parameters in request: ${context.querystring}`);
   }
-  if (query.populate && Object.keys(query.populate).length !== 0
+  // Test if the query contains an invalid populate value
+  if (query && query.populate && Object.keys(query.populate).length !== 0
     && query.populate !== 'true'
     && query.populate !== 'false') {
     throw ApiError.InvalidQueryParams('populate should be true or false');
   }
-  if (params && Object.keys(params).length !== 0) {
-    if (!params.id) {
+  // If params is specified, test that it is not empty and that it contains valid characters
+  if (query && !query.vp && params) {
+    if (!params.id || params.id.trim().length === 0) {
       throw ApiError.InvalidQueryParams(':id is not specified');
-    } else if (params.id.trim().length === 0 || isNaN(params.id)) {
+    } else if (isNaN(params.id)) {
       throw ApiError.InvalidQueryParams(':id should be a number');
     }
   }
+  // If query.vp is specified, test that it is not empty
   if (query && query.vp && Object.keys(query.vp).length !== 0) {
     const vp = query.vp;
     // Check for invalid characters (regex, everything except . and +)
     const invalidCharacterIndex = vp.search(/[^.\s\w\[\]]/);
     if (invalidCharacterIndex !== -1) {
-      throw ApiError.IllFormedQuery(`Invalid character in vp '${vp}' at index ${invalidCharacterIndex}`);
+      throw ApiError.InvalidQueryParams(`Invalid character in vp '${vp}' at index ${invalidCharacterIndex}`);
     }
     const invalidSquenceIndex = vp.search(/(\s{2,}|\.{2,}|\[{2,}|]{2,}|\.\s|\.\[|\s\.|^[.\s]|[.\s]$)/);
     // Check for invalid combinations: ++ +. .+ start. end. start+ end+
     if (invalidSquenceIndex !== -1) {
-      throw ApiError.IllFormedQuery(`Invalid sequence in vp '${vp}' starting at index ${invalidSquenceIndex}`);
+      throw ApiError.InvalidQueryParams(`Invalid sequence in vp '${vp}' starting at index ${invalidSquenceIndex}`);
     }
     // throw error if length of valenceArray is > 3
     if (countValence(vp) > 3) {
-      throw ApiError.IllFormedQuery(`MaxValenceLengthExceeded in vp '${vp}'. A valence can only contain up to 3 tokens FE.PT.GF separated by a dot`);
+      throw ApiError.InvalidQueryParams(`MaxValenceLengthExceeded in vp '${vp}'. A valence can only contain up to 3 tokens FE.PT.GF separated by a dot`);
     }
   }
   return next();

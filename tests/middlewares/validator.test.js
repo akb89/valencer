@@ -16,6 +16,21 @@ describe('validator', () => {
     };
     (() => validator.validate(context, next)).should.throw('InvalidQuery: Cannot combine vp and parameters in request: undefined');
   });
+  it('#validate should throw InvalidQuery when both vp and params are empty', () => {
+    const next = {};
+    const context = {
+      query: {
+        vp: '   ',
+      },
+      params: {
+        id: '   ',
+      },
+    };
+    (() => validator.validate(context, next)).should.throw('InvalidQuery: Empty query and parameters');
+  });
+  it('#validate should throw InvalidQuery when', () => {
+
+  });
   it('#validate should throw InvalidQueryParams when populate parameter is not true of false', () => {
     const next = {};
     const context = {
@@ -30,7 +45,7 @@ describe('validator', () => {
     const next = {};
     const context = {
       params: {
-        id: undefined,
+        id: '',
       },
     };
     (() => validator.validate(context, next)).should.throw('InvalidQueryParams: :id is not specified');
@@ -44,41 +59,41 @@ describe('validator', () => {
     };
     (() => validator.validate(context, next)).should.throw('InvalidQueryParams: :id should be a number');
   });
-  it('#validate should throw IllFormedQuery when vp contains an invalid character (non-alphanumeric except for . and space)', () => {
+  it('#validate should throw InvalidQueryParams when vp contains an invalid character (non-alphanumeric except for . and space)', () => {
     const next = {};
     const context = {
       query: {
         vp: 'A.B.$',
       },
     };
-    (() => validator.validate(context, next)).should.throw('IllFormedQuery: Invalid character in vp \'A.B.$\' at index 4');
+    (() => validator.validate(context, next)).should.throw('InvalidQueryParams: Invalid character in vp \'A.B.$\' at index 4');
   });
-  it('#validate should throw IllFormedQuery when vp contains a forbidden sequence (++ | .+ | +. | .. | starting/ending with + or .)', () => {
+  it('#validate should throw InvalidQueryParams when vp contains a forbidden sequence (++ | .+ | +. | .. | starting/ending with + or .)', () => {
     const next = {};
     const context = {
       query: {
         vp: 'A.B.C  D.E.F',
       },
     };
-    (() => validator.validate(context, next)).should.throw('IllFormedQuery: Invalid sequence in vp \'A.B.C  D.E.F\' starting at index 5');
+    (() => validator.validate(context, next)).should.throw('InvalidQueryParams: Invalid sequence in vp \'A.B.C  D.E.F\' starting at index 5');
     context.query.vp = '.A.B.C D.E.F';
-    (() => validator.validate(context, next)).should.throw('IllFormedQuery: Invalid sequence in vp \'.A.B.C D.E.F\' starting at index 0');
+    (() => validator.validate(context, next)).should.throw('InvalidQueryParams: Invalid sequence in vp \'.A.B.C D.E.F\' starting at index 0');
     context.query.vp = 'A.B.C. D.E.F';
-    (() => validator.validate(context, next)).should.throw('IllFormedQuery: Invalid sequence in vp \'A.B.C. D.E.F\' starting at index 5');
+    (() => validator.validate(context, next)).should.throw('InvalidQueryParams: Invalid sequence in vp \'A.B.C. D.E.F\' starting at index 5');
     context.query.vp = 'A.B.C .D.E.F';
-    (() => validator.validate(context, next)).should.throw('IllFormedQuery: Invalid sequence in vp \'A.B.C .D.E.F\' starting at index 5');
+    (() => validator.validate(context, next)).should.throw('InvalidQueryParams: Invalid sequence in vp \'A.B.C .D.E.F\' starting at index 5');
     context.query.vp = 'A.B.C D.E.F ';
-    (() => validator.validate(context, next)).should.throw('IllFormedQuery: Invalid sequence in vp \'A.B.C D.E.F \' starting at index 11');
+    (() => validator.validate(context, next)).should.throw('InvalidQueryParams: Invalid sequence in vp \'A.B.C D.E.F \' starting at index 11');
     context.query.vp = 'A.B.C..D.E.F';
-    (() => validator.validate(context, next)).should.throw('IllFormedQuery: Invalid sequence in vp \'A.B.C..D.E.F\' starting at index 5');
+    (() => validator.validate(context, next)).should.throw('InvalidQueryParams: Invalid sequence in vp \'A.B.C..D.E.F\' starting at index 5');
   });
-  it('#validate should throw IllFormedQuery when at least one valence in the vp contains more than 3 tokens separated by a dot', () => {
+  it('#validate should throw InvalidQueryParams when at least one valence in the vp contains more than 3 tokens separated by a dot', () => {
     const next = {};
     const context = {
       query: {
         vp: 'A.B.C D.E.F.G',
       },
     };
-    (() => validator.validate(context, next)).should.throw('IllFormedQuery: MaxValenceLength exceeded in vp \'A.B.C D.E.F.G\'. A valence can only contain up to 3 tokens FE.PT.GF separated by a dot');
+    (() => validator.validate(context, next)).should.throw('InvalidQueryParams: MaxValenceLengthExceeded in vp \'A.B.C D.E.F.G\'. A valence can only contain up to 3 tokens FE.PT.GF separated by a dot');
   });
 });
