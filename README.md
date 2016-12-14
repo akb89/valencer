@@ -15,8 +15,7 @@ Welcome to **Valencer**, a RESTful API to query combinations of syntactic realiz
 
 To import FrameNet data to a Mongo database, check out [NoFrameNet](https://github.com/akb89/noframenet)
 
-## HowTo
-To start the **Valencer** server:
+## HowTo :|: Start the Valencer server
 
 ### 1. Install the required dependencies
 Run the following command in your terminal, under the Valencer directory:
@@ -41,11 +40,12 @@ Run the following command in your terminal, under the Valencer directory:
 npm run start
 ```
 
-## Shoot your first query
-Here is a sample HTTP request querying for all the AnnotationSets referring to the valence pattern `Donor.NP.Ext Theme.NP.Obj Recipient.PP[to].Dep`:
+## HowTo :|: Shoot your first query
+Here is a sample HTTP request querying all the AnnotationSets in the database referring to the valence pattern `Donor.NP.Ext Theme.NP.Obj Recipient.PP[to].Dep`:
 ```
 http://localhost:3030/annoSets?vp=Donor.NP.Ext+Theme.NP.Obj+Recipient.PP[to].Dep
 ```
+Copy-paste it in your web browser and check out the output.
 
 [release-image]:https://img.shields.io/github/release/akb89/valencer.svg?style=flat-square
 [release-url]:https://img.shields.io/github/release/akb89/valencer/v1
@@ -59,5 +59,5 @@ http://localhost:3030/annoSets?vp=Donor.NP.Ext+Theme.NP.Obj+Recipient.PP[to].Dep
 [framenet-url]:https://framenet.icsi.berkeley.edu/fndrupal
 [license-image]:http://img.shields.io/badge/license-MIT-000000.svg?style=flat-square
 [license-url]:LICENSE.txt
-[david-image]: https://david-dm.org/akb89/valencer.svg?style=flat-square
 [david-url]: https://david-dm.org/akb89/valencer
+[david-image]: https://david-dm.org/akb89/valencer.svg?style=flat-square

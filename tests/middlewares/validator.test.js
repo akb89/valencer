@@ -4,18 +4,6 @@ import validator from './../../middlewares/validator';
 const should = chai.should(); // eslint-disable-line no-unused-vars
 
 describe('validator', () => {
-  it('#validate should throw InvalidQuery when request combines vp and parameters', () => {
-    const next = {};
-    const context = {
-      query: {
-        vp: 'A.B.C',
-      },
-      params: {
-        id: 123,
-      },
-    };
-    (() => validator.validate(context, next)).should.throw('InvalidQuery: Cannot combine vp and parameters in request: undefined');
-  });
   it('#validate should throw InvalidQuery when both vp and params are empty', () => {
     const next = {};
     const context = {
@@ -28,8 +16,17 @@ describe('validator', () => {
     };
     (() => validator.validate(context, next)).should.throw('InvalidQuery: Empty query and parameters');
   });
-  it('#validate should throw InvalidQuery when', () => {
-
+  it('#validate should throw InvalidQuery when request combines vp and parameters', () => {
+    const next = {};
+    const context = {
+      query: {
+        vp: 'A.B.C',
+      },
+      params: {
+        id: '123',
+      },
+    };
+    (() => validator.validate(context, next)).should.throw('InvalidQuery: Cannot combine vp and parameters in request: undefined');
   });
   it('#validate should throw InvalidQueryParams when populate parameter is not true of false', () => {
     const next = {};
@@ -39,25 +36,19 @@ describe('validator', () => {
         populate: 'tru',
       },
     };
-    (() => validator.validate(context, next)).should.throw('InvalidQueryParams: populate should be true or false');
+    (() => validator.validate(context, next)).should.throw('InvalidQueryParams: populate parameter should be true or false');
   });
-  it('#validate should throw InvalidQueryParams when :id is not specified', () => {
+  it('#validate should throw InvalidQueryParams when :id contains invalid charaters (non-alphanumeric)', () => {
     const next = {};
     const context = {
+      query: {
+        random: 'true',
+      },
       params: {
-        id: '',
+        id: '?true',
       },
     };
-    (() => validator.validate(context, next)).should.throw('InvalidQueryParams: :id is not specified');
-  });
-  it('#validate should throw InvalidQueryParams when :id is not a number', () => {
-    const next = {};
-    const context = {
-      params: {
-        id: 'true',
-      },
-    };
-    (() => validator.validate(context, next)).should.throw('InvalidQueryParams: :id should be a number');
+    (() => validator.validate(context, next)).should.throw('InvalidQueryParams: :id should only contain alphanumeric characters');
   });
   it('#validate should throw InvalidQueryParams when vp contains an invalid character (non-alphanumeric except for . and space)', () => {
     const next = {};

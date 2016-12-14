@@ -4,7 +4,6 @@ import mockgoose from 'mockgoose';
 import rewire from 'rewire';
 import chaiAsPromised from 'chai-as-promised';
 import { ValenceUnit } from 'noframenet-core';
-import { NotFoundException } from './../../exceptions/valencerException';
 
 chai.use(chaiAsPromised);
 const should = chai.should(); // eslint-disable-line no-unused-vars

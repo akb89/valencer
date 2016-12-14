@@ -20,7 +20,6 @@ app.use(winstonKoaLogger(logger));
 // app.use(authenticate());
 app.use(router.routes());
 app.use(router.allowedMethods());
-// app.use(ctx => ctx.status = 404);
 app.on('error', (err, context) => {
   logger.error(err.message);
   logger.debug(err);
