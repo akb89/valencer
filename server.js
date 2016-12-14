@@ -8,6 +8,7 @@
  */
 import Koa from 'koa';
 import winstonKoaLogger from 'winston-koa-logger';
+import cors from 'kcors';
 import mongoose from 'mongoose';
 import router from './routes';
 import config from './config';
@@ -15,6 +16,7 @@ import config from './config';
 const logger = config.logger;
 const app = new Koa();
 
+app.use(cors());
 app.use(winstonKoaLogger(logger));
 // app.keys = ['my-secret-key'];
 // app.use(authenticate());

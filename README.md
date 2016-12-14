@@ -15,7 +15,7 @@ Welcome to **Valencer**, a RESTful API to query combinations of syntactic realiz
 
 To import FrameNet data to a Mongo database, check out [NoFrameNet](https://github.com/akb89/noframenet)
 
-## HowTo :|: Start the Valencer server
+## HowTo &ndash; Start the Valencer server
 
 ### 1. Install the required dependencies
 Run the following command in your terminal, under the Valencer directory:
@@ -40,15 +40,17 @@ Run the following command in your terminal, under the Valencer directory:
 npm run start
 ```
 
-## HowTo :|: Shoot your first query
+## HowTo &ndash; Shoot your first query
 Here is a sample HTTP request querying all the AnnotationSets in the database referring to the valence pattern `Donor.NP.Ext Theme.NP.Obj Recipient.PP[to].Dep`:
 ```
 http://localhost:3030/annoSets?vp=Donor.NP.Ext+Theme.NP.Obj+Recipient.PP[to].Dep
 ```
-Copy-paste it in your web browser and check out the output.
+Click on the above url or copy-paste it in your web-browser.
+
+**JSON Formatting** You can use [JSONView](https://addons.mozilla.org/en-US/firefox/addon/jsonview/) to format JSON in your web-browser and make it more reader-friendly.
 
 [release-image]:https://img.shields.io/github/release/akb89/valencer.svg?style=flat-square
-[release-url]:https://img.shields.io/github/release/akb89/valencer/v1
+[release-url]:https://github.com/akb89/valencer/releases/latest
 [travis-image]:https://img.shields.io/travis/akb89/valencer.svg?style=flat-square
 [travis-url]:https://travis-ci.org/akb89/valencer
 [coverage-image]:https://img.shields.io/coveralls/akb89/valencer/dev.svg?style=flat-square

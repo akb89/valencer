@@ -62,31 +62,46 @@ const router = new Router();
  * @apiSuccess   {String}    lexUnit.frame.definition     The Frame definition
  * @apiSuccess   {String}    lexUnit.frame.cDate          The Frame creation date
  * @apiSuccess   {String}    lexUnit.frame.cBy            The Frame annotator
- * @apiSuccess   {Number[]}    lexUnit.frame._id The Frame id
- * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
- * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
- * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
- * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
- * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
- * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
- * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
- * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
- * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
- * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
- * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
- * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
- * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
- * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
- * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
- * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
- * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
- * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
- * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
- * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
- * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
- * @apiSuccess   {Number}    lexUnit.frame._id The Frame id
- * @apiSuccess   {Number}    sentence    The Sentence id
- * @apiSuccess   {Object[]}  labels      The list of labels ObjectID
+ * @apiSuccess   {Number[]}  lexUnit.frame.semTypes       The Frame SemTypes ids
+ * @apiSuccess   {Object[]}  lexUnit.frame.lexUnits       The Frame LexUnits
+ * @apiSuccess   {Number}    lexUnit.frame.lexUnits._id   The LexUnits ids
+ * @apiSuccess   {String}    lexUnit.frame.lexUnits.name  The LexUnits names
+ * @apiSuccess   {Number[]}  lexUnit.frame.feCoreSets     The Frame minimal set of core FrameElements ids
+ * @apiSuccess   {Object[]}  lexUnit.frame.frameElements  The Frame FrameElements
+ * @apiSuccess   {Number}    lexUnit.frame.frameElements._id    The FrameElements ids
+ * @apiSuccess   {String}    lexUnit.frame.frameElements.name   The FrameElements names
+ * @apiSuccess   {String}    lexUnit.frame.frameElements.definition The FrameElements definitions
+ * @apiSuccess   {String}    lexUnit.frame.frameElements.coreType The FrameElements coreTypes
+ * @apiSuccess   {String}    lexUnit.frame.frameElements.cDate The FrameElements creation dates
+ * @apiSuccess   {String}    lexUnit.frame.frameElements.cBy The FrameElements annotators
+ * @apiSuccess   {String}    lexUnit.frame.frameElements.abbrev The FrameElements abbreviations
+ * @apiSuccess   {Number[]}    lexUnit.frame.frameElements.semTypes The FrameElements SemTypes ids
+ * @apiSuccess   {Number[]}    lexUnit.frame.frameElements.excludes The excluded FrameElements ids
+ * @apiSuccess   {Number[]}    lexUnit.frame.frameElements.requires The required FrameElements ids
+ * @apiSuccess   {String}    lexUnit.status         The LexUnit status
+ * @apiSuccess   {String}    lexUnit.cBy            The LexUnit annotator
+ * @apiSuccess   {String}    lexUnit.cDate          The LexUnit creation date
+ * @apiSuccess   {Number[]}  lexUnit.semTypes       The LexUnit SemTypes ids
+ * @apiSuccess   {Number[]}  lexUnit.lexemes        The LexUnit Lexemes ids
+ * @apiSuccess   {Object}    sentence               The Sentence
+ * @apiSuccess   {Number}    sentence._id           The Sentence id
+ * @apiSuccess   {String}    sentence.name          The Sentence name
+ * @apiSuccess   {Number}    sentence.sentenceNumber          The Sentence number
+ * @apiSuccess   {Number}    sentence.paragraphNumber          The Sentence paragraph number
+ * @apiSuccess   {Number}    sentence.aPos          The Sentence a-positional value
+ * @apiSuccess   {Object}    pattern                The Pattern
+ * @apiSuccess   {Number}    pattern._id            The Pattern id
+ * @apiSuccess   {Object[]}  pattern.valenceUnits   The Pattern ValenceUnits
+ * @apiSuccess   {Number}  pattern.valenceUnits._id   The Pattern ValenceUnits ids
+ * @apiSuccess   {String}  pattern.valenceUnits.FE   The Pattern ValenceUnits frame elements names
+ * @apiSuccess   {String}  pattern.valenceUnits.PT   The Pattern ValenceUnits phrase types
+ * @apiSuccess   {String}  pattern.valenceUnits.GF   The Pattern ValenceUnits grammatical functions
+ * @apiSuccess   {Object[]}  labels             The Labels
+ * @apiSuccess   {Number}   labels._id          The Labels ids
+ * @apiSuccess   {String}   labels.name         The Labels names
+ * @apiSuccess   {String}   labels.type         The Labels types
+ * @apiSuccess   {Number}   labels.startPos     The Labels start positions
+ * @apiSuccess   {Number}   labels.endPos       The Labels end positions
  */
 
 /**
