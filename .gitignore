@@ -11,6 +11,5 @@ public/img/uploads/*
 *.o
 *.zip
 *.log
-*_*.js
 apidoc/
 requests.md
