@@ -5,8 +5,6 @@
     "mocha": true
   },
   "rules": {
-    // TODO: set policy on 'use strict'. Currently: disallowing strict mode directives
-    "strict": "off",
     // Allow _id on mongo id attributes
     "no-underscore-dangle": [
       "error",
