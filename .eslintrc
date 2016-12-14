@@ -41,6 +41,8 @@
           "**/*.test.js"
         ]
       }
-    ]
+    ],
+    // Allow reassigning koa context
+    no-param-reassign: ["off"]
   }
 }
