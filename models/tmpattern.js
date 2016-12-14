@@ -3,7 +3,6 @@ import bluebird from 'bluebird';
 
 mongoose.Promise = bluebird;
 
-
 const patternSchema = mongoose.Schema({
   valenceUnits: [{
     type: mongoose.Schema.Types.ObjectId,
