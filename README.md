@@ -45,7 +45,7 @@ npm run start
 Here is a sample HTTP request querying for all the AnnotationSets referring to the valence pattern `Donor.NP.Ext Theme.NP.Obj Recipient.PP[to].Dep`:
 ```
 http://localhost:3030/annoSets?vp=Donor.NP.Ext+Theme.NP.Obj+Recipient.PP[to].Dep
-``` 
+```
 
 [release-image]:https://img.shields.io/github/release/akb89/valencer.svg?style=flat-square
 [release-url]:https://img.shields.io/github/release/akb89/valencer/v1
@@ -60,4 +60,4 @@ http://localhost:3030/annoSets?vp=Donor.NP.Ext+Theme.NP.Obj+Recipient.PP[to].Dep
 [license-image]:http://img.shields.io/badge/license-MIT-000000.svg?style=flat-square
 [license-url]:LICENSE.txt
 [david-image]: https://david-dm.org/akb89/valencer.svg?style=flat-square
-[david-url]: https://david-dm.org/akb89/valencer.svg?style=flat-square
+[david-url]: https://david-dm.org/akb89/valencer
