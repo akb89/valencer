@@ -42,10 +42,10 @@ npm run start
 
 ## HowTo &ndash; Shoot your first query
 Here is a sample HTTP request querying all the AnnotationSets in the database referring to the valence pattern `Donor.NP.Ext Theme.NP.Obj Recipient.PP[to].Dep`:
-
+```
 http://localhost:3030/annoSets?vp=Donor.NP.Ext+Theme.NP.Obj+Recipient.PP[to].Dep?populate=true
-
-Click on the above url or copy-paste it in your web-browser.
+```
+Copy-paste the above url to your web-browser.
 
 **JSON Formatting** You can use [JSONView](https://addons.mozilla.org/en-US/firefox/addon/jsonview/) to format JSON in your web-browser and make it more reader-friendly.
 
