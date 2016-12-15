@@ -9,6 +9,21 @@
 
 Welcome to **Valencer**, a RESTful API to query combinations of syntactic realizations of the arguments of a predicate &ndash; aka *valence patterns* &ndash; in the FrameNet database.
 
+#### Are you using us in your work? Please cite us!
+```latex
+@InProceedings{kabbach-ribeyre:2016:COLINGDEMO,
+  author    = {Kabbach, Alexandre  and  Ribeyre, Corentin},
+  title     = {{Valencer: an API to Query Valence Patterns in FrameNet}},
+  booktitle = {{Proceedings of COLING 2016, the 26th International Conference on Computational Linguistics: System Demonstrations}},
+  month     = dec,
+  year      = {2016},
+  address   = {Osaka, Japan},
+  publisher = {The COLING 2016 Organizing Committee},
+  pages     = {156--160},
+  url       = {http://aclweb.org/anthology/C16-2033}
+}
+```
+
 ## Requirements
 - [Mongo](https://docs.mongodb.com/manual/administration/install-community/)
 - [Node](https://nodejs.org/en/download/)
@@ -51,6 +66,9 @@ Copy-paste the above url to your web-browser.
 
 ## Documentation
 The full documentation of the API is available on our [GitHub Page](https://akb89.github.io/valencer/)
+
+## Background
+For additional details regarding the background of the API, its architecture and use cases, refer to our COLING2016 [paper](https://www.aclweb.org/anthology/C/C16/C16-2033.pdf).
 
 [release-image]:https://img.shields.io/github/release/akb89/valencer.svg?style=flat-square
 [release-url]:https://github.com/akb89/valencer/releases/latest
