@@ -58,7 +58,7 @@ npm run start
 ## HowTo &ndash; Shoot your first query
 Here is a sample HTTP request querying all the AnnotationSets in the database referring to the valence pattern `Donor.NP.Ext Theme.NP.Obj Recipient.PP[to].Dep`:
 ```
-http://localhost:3030/annoSets?vp=Donor.NP.Ext+Theme.NP.Obj+Recipient.PP[to].Dep?populate=true
+http://localhost:3030/annoSets?vp=Donor.NP.Ext+Theme.NP.Obj+Recipient.PP[to].Dep&populate=true
 ```
 Copy-paste the above url to your web-browser.
 
