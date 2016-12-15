@@ -68,7 +68,7 @@ Copy-paste the above url to your web-browser.
 The full documentation of the API is available on our [GitHub Page](https://akb89.github.io/valencer/)
 
 ## Background
-For additional details regarding the background of the API, its architecture and use cases, refer to our COLING2016 [paper](https://www.aclweb.org/anthology/C/C16/C16-2033.pdf).
+For additional details regarding the background of the API, its architecture and use cases, refer to our [COLING 2016 paper](https://www.aclweb.org/anthology/C/C16/C16-2033.pdf).
 
 [release-image]:https://img.shields.io/github/release/akb89/valencer.svg?style=flat-square
 [release-url]:https://github.com/akb89/valencer/releases/latest
