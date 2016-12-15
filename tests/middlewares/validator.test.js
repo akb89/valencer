@@ -38,17 +38,17 @@ describe('validator', () => {
     };
     (() => validator.validate(context, next)).should.throw('InvalidQueryParams: populate parameter should be true or false');
   });
-  it('#validate should throw InvalidQueryParams when :id contains invalid charaters (non-alphanumeric)', () => {
+  it('#validate should throw InvalidQueryParams when :id is not a Number or an ObjectID', () => {
     const next = {};
     const context = {
       query: {
         random: 'true',
       },
       params: {
-        id: '?true',
+        id: '?fail',
       },
     };
-    (() => validator.validate(context, next)).should.throw('InvalidQueryParams: :id should only contain alphanumeric characters');
+    (() => validator.validate(context, next)).should.throw('InvalidQueryParams: :id should be a Number or an ObjectID');
   });
   it('#validate should throw InvalidQueryParams when vp contains an invalid character (non-alphanumeric except for . and space)', () => {
     const next = {};

@@ -41,8 +41,10 @@ function validate(context, next) {
     if (!query.vp && params) {
       if (!params.id || params.id.trim().length === 0) {
         throw ApiError.InvalidQueryParams(':id is not specified'); // TODO: remove, this is useless...
-      } else if (/^[a-fA-F0-9]{24}$/.test(params.id)) { // TODO match exact regex ObjectID
-        throw ApiError.InvalidQueryParams(':id should only contain alphanumeric characters');
+      } else if (isNaN(params.id)) {
+        if (!/[a-fA-F0-9]{24}$/.test(params.id)) {
+          throw ApiError.InvalidQueryParams(':id should be a Number or an ObjectID');
+        }
       }
     }
     // If query.vp is specified, test that it is not empty
