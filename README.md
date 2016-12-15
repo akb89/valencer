@@ -62,7 +62,7 @@ http://localhost:3030/annoSets?vp=Donor.NP.Ext+Theme.NP.Obj+Recipient.PP[to].Dep
 ```
 Copy-paste the above url to your web-browser.
 
-**JSON Formatting** You can use [JSONView](https://addons.mozilla.org/en-US/firefox/addon/jsonview/) to format JSON in your web-browser and make it more reader-friendly.
+You can use [JSONView](https://addons.mozilla.org/en-US/firefox/addon/jsonview/) to format JSON in your web-browser and make it more reader-friendly.
 
 ## Documentation
 The full documentation of the API is available on our [GitHub Page](https://akb89.github.io/valencer/)
