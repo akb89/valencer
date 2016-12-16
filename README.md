@@ -74,8 +74,8 @@ For additional details regarding the background of the API, its architecture and
 [release-url]:https://github.com/akb89/valencer/releases/latest
 [travis-image]:https://img.shields.io/travis/akb89/valencer.svg?style=flat-square
 [travis-url]:https://travis-ci.org/akb89/valencer
-[coverage-image]:https://img.shields.io/coveralls/akb89/valencer/dev.svg?style=flat-square
-[coverage-url]:https://coveralls.io/r/akb89/valencer?branch=master
+[coverage-image]:https://codeclimate.com/github/akb89/valencer/badges/coverage.svg?style=flat-square
+[coverage-url]:https://codeclimate.com/github/akb89/valencer/coverage
 [quality-image]:https://img.shields.io/codeclimate/github/akb89/valencer.svg?style=flat-square
 [quality-url]:https://codeclimate.com/github/akb89/valencer
 [framenet-image]:https://img.shields.io/badge/FrameNet-%3E%3D1.5-blue.svg?style=flat-square
