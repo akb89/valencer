@@ -2,3 +2,9 @@ engines:
   eslint:
     enabled: true
     channel: "eslint-3"
+ratings:
+   paths:
+   - "."
+exclude_paths:
+  - "node_modules"
+  - "docs"
