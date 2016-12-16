@@ -9,6 +9,8 @@
 
 Welcome to **Valencer**, a RESTful API to query combinations of syntactic realizations of the arguments of a predicate &ndash; aka *valence patterns* &ndash; in the FrameNet database.
 
+*Valencer is currently in beta. We will release version 1.0 by January 1st 2017 once all tests are implemented*
+
 #### Are you using us in your work? Please cite us!
 ```latex
 @InProceedings{kabbach-ribeyre:2016:COLINGDEMO,
