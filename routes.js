@@ -4,7 +4,6 @@ import frameController from './controllers/frameController';
 import lexUnitController from './controllers/lexUnitController';
 import patternController from './controllers/patternController';
 import valenceUnitController from './controllers/valenceUnitController';
-import authenticator from './middlewares/authenticator';
 import validator from './middlewares/validator';
 import processor from './middlewares/processor';
 
@@ -66,7 +65,8 @@ const router = new Router();
  * @apiSuccess   {Object[]}  lexUnit.frame.lexUnits       The Frame LexUnits
  * @apiSuccess   {Number}    lexUnit.frame.lexUnits._id   The LexUnits ids
  * @apiSuccess   {String}    lexUnit.frame.lexUnits.name  The LexUnits names
- * @apiSuccess   {Number[]}  lexUnit.frame.feCoreSets     The Frame minimal set of core FrameElements ids
+ * @apiSuccess   {Number[]}  lexUnit.frame.feCoreSets     The Frame
+ * minimal set of core FrameElements ids
  * @apiSuccess   {Object[]}  lexUnit.frame.frameElements  The Frame FrameElements
  * @apiSuccess   {Number}    lexUnit.frame.frameElements._id    The FrameElements ids
  * @apiSuccess   {String}    lexUnit.frame.frameElements.name   The FrameElements names
@@ -119,7 +119,6 @@ const router = new Router();
  * @apiUse NotFoundIDError
  */
 router.get('/annoSet/:id',
-  //authenticator.authenticate,
   validator.validate,
   processor.processid,
   annoSetController.getByID);
@@ -139,7 +138,6 @@ router.get('/annoSet/:id',
  * @apiUse NotFoundVPError
  */
 router.get('/annoSets',
-  //authenticator.authenticate,
   validator.validate,
   processor.processvp,
   annoSetController.getByVP);
@@ -156,7 +154,6 @@ router.get('/annoSets',
  * @apiUse NotFoundIDError
  */
 router.get('/frame/:id',
-  //authenticator.authenticate,
   validator.validate,
   processor.processid,
   frameController.getByID);
@@ -173,7 +170,6 @@ router.get('/frame/:id',
  * @apiUse NotFoundVPError
  */
 router.get('/frames',
-  //authenticator.authenticate,
   validator.validate,
   processor.processvp,
   frameController.getByVP);
@@ -190,7 +186,6 @@ router.get('/frames',
  * @apiUse NotFoundIDError
  */
 router.get('/lexUnit/:id',
-  //authenticator.authenticate,
   validator.validate,
   processor.processid,
   lexUnitController.getByID);
@@ -207,7 +202,6 @@ router.get('/lexUnit/:id',
  * @apiUse NotFoundVPError
  */
 router.get('/lexUnits',
-  //authenticator.authenticate,
   validator.validate,
   processor.processvp,
   lexUnitController.getByVP);
@@ -224,7 +218,6 @@ router.get('/lexUnits',
  * @apiUse NotFoundIDError
  */
 router.get('/pattern/:id',
-  //authenticator.authenticate,
   validator.validate,
   processor.processid,
   patternController.getByID);
@@ -241,7 +234,6 @@ router.get('/pattern/:id',
  * @apiUse NotFoundVPError
  */
 router.get('/patterns',
-  //authenticator.authenticate,
   validator.validate,
   processor.processvp,
   patternController.getByVP);
@@ -258,7 +250,6 @@ router.get('/patterns',
  * @apiUse NotFoundIDError
  */
 router.get('/valenceUnit/:id',
-  //authenticator.authenticate,
   validator.validate,
   processor.processid,
   valenceUnitController.getByID);
@@ -275,7 +266,6 @@ router.get('/valenceUnit/:id',
  * @apiUse NotFoundVPError
  */
 router.get('/valenceUnits',
-  //authenticator.authenticate,
   validator.validate,
   processor.processvp,
   valenceUnitController.getByVP);

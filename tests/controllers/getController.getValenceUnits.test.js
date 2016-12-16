@@ -6,9 +6,7 @@ import chaiAsPromised from 'chai-as-promised';
 import { ValenceUnit } from 'noframenet-core';
 
 chai.use(chaiAsPromised);
-const should = chai.should(); // eslint-disable-line no-unused-vars
-const expect = chai.expect;
-const assert = chai.assert;
+const should = chai.should();
 const getValenceUnits = rewire('./../../controllers/getController.js').__get__('getValenceUnits');
 
 describe('getController#getValenceUnits', () => {
@@ -83,8 +81,6 @@ describe('getController#getValenceUnits', () => {
     set.length.should.equal(1);
   });
   it('#getValenceUnits should throw a NotFoundException on unknown units', () => {
-    /*
-    expect(getValenceUnits(['unknown', 'NP'])).be.accepted;
-  assert.throws(async () => await getValenceUnits(['unknown', 'NP']), NotFoundException, 'Could not find token(s) in FrameNet database: unknown');*/
+
   });
 });

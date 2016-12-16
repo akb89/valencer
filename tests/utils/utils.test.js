@@ -1,7 +1,7 @@
 import chai from 'chai';
 import utils from './../../utils/utils';
 
-const should = chai.should(); // eslint-disable-line no-unused-vars
+const should = chai.should();
 
 describe('utils', () => {
   it('#toValenceArray should convert a string to an array of sub-strings where each array element is a substring of the input string separated by a space', () => {

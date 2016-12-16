@@ -4,7 +4,7 @@ import mockgoose from 'mockgoose';
 import { Pattern, ValenceUnit } from 'noframenet-core';
 import getController from './../../controllers/getController';
 
-const should = chai.should(); // eslint-disable-line no-unused-vars
+const should = chai.should();
 
 describe('getController#getPatterns', () => {
   before(async () => {

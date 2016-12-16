@@ -1,7 +1,7 @@
 import chai from 'chai';
 import validator from './../../middlewares/validator';
 
-const should = chai.should(); // eslint-disable-line no-unused-vars
+const should = chai.should();
 
 describe('validator', () => {
   it('#validate should throw InvalidQuery when both vp and params are empty', () => {

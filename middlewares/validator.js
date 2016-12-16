@@ -23,11 +23,13 @@ function validate(context, next) {
   if (query) {
     // Test if the query is empty: query.vp is
     // empty/null/undefined and params is empty/null/undefined
-    if ((!query.vp || query.vp.trim().length === 0) && (!params || !params.id || params.id.trim().length === 0)) {
+    if ((!query.vp || query.vp.trim().length === 0) && (!params ||
+      !params.id || params.id.trim().length === 0)) {
       throw ApiError.InvalidQuery('Empty query and parameters');
     }
     // Test if the query specifies both vp and params
-    if (query.vp && query.vp.trim().length !== 0 && params && params.id && params.id.trim().length !== 0) {
+    if (query.vp && query.vp.trim().length !== 0 && params && params.id
+      && params.id.trim().length !== 0) {
       throw ApiError.InvalidQuery(`Cannot combine vp and parameters in request: ${context.querystring}`);
     }
     // Test if the query contains an invalid populate value
@@ -51,7 +53,7 @@ function validate(context, next) {
     if (query.vp && query.vp.trim().length !== 0) {
       const vp = query.vp;
       // Check for invalid characters (regex, everything except . and +)
-      const invalidCharacterIndex = vp.search(/[^.\s\w\[\]]/);
+      const invalidCharacterIndex = vp.search(/[^.\s\w[\]]/);
       if (invalidCharacterIndex !== -1) {
         throw ApiError.InvalidQueryParams(`Invalid character in vp '${vp}' at index ${invalidCharacterIndex}`);
       }

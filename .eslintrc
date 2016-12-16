@@ -10,26 +10,8 @@
       "error",
       {
         "allow": [
-          "_id"
-        ]
-      }
-    ],
-    // Tolerate String extension for hashcode needed for Set
-    "no-extend-native": [
-      "error",
-      {
-        "exceptions": [
-          "String"
-        ]
-      }
-    ],
-    // Those are not typos and are used for hashcode definition
-    "no-bitwise": [
-      "error",
-      {
-        "allow": [
-          "<<",
-          "|="
+          "_id",
+          "__get__"
         ]
       }
     ],
@@ -43,6 +25,19 @@
       }
     ],
     // Allow reassigning koa context
-    no-param-reassign: ["off"]
+    "no-param-reassign": ["off"],
+    // Allow for of/in loops as forEach does not work with async await
+    "no-restricted-syntax": [
+      "warn",
+      "ForOfStatement",
+      "ForInStatement"
+    ],
+    // Ignore unused-var error message on chai.should()
+    "no-unused-vars": [
+      "error",
+      {
+        "varsIgnorePattern": "should"
+      }
+    ],
   }
 }
