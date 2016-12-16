@@ -6,6 +6,9 @@ env:
 extends:
   - airbnb
 
+plugins:
+  - import
+
 rules:
   #Allow _id on mongo id attributes and rewire __get__
   no-underscore-dangle: [error, {allow: [_id, __get__]}]
