@@ -49,7 +49,7 @@ const config = {
   logger: logger.info,
 };
 ```
-The `dbUri` parameter should refer to the your Mongo database containing FrameNet data.
+The `dbUri` parameter should refer to your Mongo database instance containing FrameNet data.
 
 ### 3. Start the server
 Run the following command in your terminal, under the Valencer directory:
