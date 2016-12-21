@@ -3,7 +3,7 @@
 [![Build][travis-image]][travis-url]
 [![Dependencies][david-image]][david-url]
 [![MIT License][license-image]][license-url]
-[![Coverage Status][coverage-image]][coverage-url]
+[![Code Coverage][coverage-image]][coverage-url]
 [![Code Quality][quality-image]][quality-url]
 [![FrameNet][framenet-image]][framenet-url]
 
@@ -80,7 +80,7 @@ For additional details regarding the background of the API, its architecture and
 [coverage-url]:https://codeclimate.com/github/akb89/valencer/coverage
 [quality-image]:https://img.shields.io/codeclimate/github/akb89/valencer.svg?style=flat-square
 [quality-url]:https://codeclimate.com/github/akb89/valencer
-[framenet-image]:https://img.shields.io/badge/FrameNet-%3E%3D1.5-blue.svg?style=flat-square
+[framenet-image]:https://img.shields.io/badge/framenet-1.5%E2%87%A1-blue.svg?style=flat-square
 [framenet-url]:https://framenet.icsi.berkeley.edu/fndrupal
 [license-image]:http://img.shields.io/badge/license-MIT-000000.svg?style=flat-square
 [license-url]:LICENSE.txt
