@@ -4,8 +4,7 @@ node_js:
 addons:
     code_climate:
         repo_token: b5beab30d6c5f64c881325111106a0e29ea3255f29736afa910974a2b9306c22
-install:
-  - npm install -g codeclimate-test-reporter
-  - npm install
+script:
+    - npm run cover
 after_success:
-  - codeclimate-test-reporter < lcov.info
+  - codeclimate-test-reporter < coverage/lcov.info

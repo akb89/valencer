@@ -13,7 +13,8 @@
   "main": "server.js",
   "scripts": {
     "lint": "./node_modules/.bin/eslint . --ext .js",
-    "test": "NODE_ENV=testing ./node_modules/mocha/bin/mocha --compilers js:babel-core/register --require babel-polyfill './tests/**/*.@(js)' --reporter spec",
+    "test": "NODE_ENV=testing ./node_modules/.bin/mocha --compilers js:babel-core/register --require babel-polyfill './tests/**/*.@(js)' --reporter spec",
+    "cover": "NODE_ENV=testing ./node_modules/.bin/istanbul cover _mocha -- ./tests/**/*.test.js --compilers js:babel-register --require babel-polyfill",
     "doc": "apidoc -i ./ -o ./docs/ -e node_modules",
     "dev": "NODE_ENV=development ./node_modules/babel-cli/bin/babel-node.js server.js",
     "start": "NODE_ENV=production ./node_modules/babel-cli/bin/babel-node.js server.js"
@@ -63,6 +64,7 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.4.1",
+    "istanbul": "^1.1.0-alpha.1",
     "mocha": "^3.2.0",
     "mockgoose": "^6.0.6",
     "rewire": "^2.5.2"

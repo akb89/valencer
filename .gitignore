@@ -13,3 +13,4 @@ public/img/uploads/*
 *.log
 apidoc/
 requests.md
+coverage/
