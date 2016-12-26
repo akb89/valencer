@@ -15,7 +15,7 @@
     "lint": "./node_modules/.bin/eslint . --ext .js",
     "test": "NODE_ENV=testing ./node_modules/.bin/mocha --compilers js:babel-core/register --require babel-polyfill './tests/**/*.@(js)' --reporter spec",
     "cover": "NODE_ENV=testing ./node_modules/.bin/istanbul cover _mocha -- ./tests/**/*.test.js --compilers js:babel-register --require babel-polyfill",
-    "doc": "apidoc -i ./ -o ./docs/ -e node_modules",
+    "doc": "rm -rf docs/ && ./node_modules/apidoc/bin/apidoc -i ./ -o ./docs/ -e node_modules",
     "dev": "NODE_ENV=development ./node_modules/babel-cli/bin/babel-node.js server.js",
     "start": "NODE_ENV=production ./node_modules/babel-cli/bin/babel-node.js server.js"
   },
@@ -51,6 +51,7 @@
     "winston-koa-logger": "0.0.2"
   },
   "devDependencies": {
+    "apidoc": "^0.16.1",
     "babel-cli": "^6.9.0",
     "babel-core": "^6.13.2",
     "babel-eslint": "^7.1.1",

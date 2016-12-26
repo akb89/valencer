@@ -11,12 +11,33 @@ const router = new Router();
 
 /**
  * @apiDefine NotFoundIDError
- * @apiError NotFoundError The id was not found
+ * @apiError (Error 404) NotFoundError The id was not found
  */
 
 /**
  * @apiDefine NotFoundVPError
- * @apiError NotFoundError A valence unit of the vp was not found
+ * @apiError (Error 404) NotFoundError A valence unit of the vp was not found
+ */
+
+/**
+ * @apiDefine InvalidQuery
+ * @apiError (Error 400) InvalidQuery The specified query is null, empty or
+ * combines :id and vp in request
+ */
+
+/**
+ * @apiDefine InvalidQueryParamsID
+ * @apiError (Error 400) InvalidQueryParams The populate parameter is neither
+ * <code>true</code> nor <code>false</code> or the specified :id is
+ * neither a <code>Number</code> nor a valid <code>ObjectID</code>
+ */
+
+/**
+ * @apiDefine InvalidQueryParamsVP
+ * @apiError (Error 400) InvalidQueryParams The populate parameter is neither
+ * <code>true</code> nor <code>false</code> or the vp parameter contains either
+ * an invalid character, an invalid sequence of characters or more than 3
+ * tokens separated by a dot in at least one of its valence units
  */
 
 /**
@@ -32,8 +53,8 @@ const router = new Router();
  *
  * @apiParam {String}     vp          The Valence Pattern: a
  * combination of triplets FE.PT.GF
- * @apiParam {Boolean}    populate    Specify whether documents
- * should be populated. Default to false
+ * @apiParam {Boolean}    [populate=false]     Specify whether documents
+ * should be populated.
  */
 
 /**
@@ -90,18 +111,134 @@ const router = new Router();
  * @apiSuccess   {Number}    sentence.paragraphNumber          The Sentence paragraph number
  * @apiSuccess   {Number}    sentence.aPos          The Sentence a-positional value
  * @apiSuccess   {Object}    pattern                The Pattern
- * @apiSuccess   {Number}    pattern._id            The Pattern id
+ * @apiSuccess   {Object}    pattern._id            The Pattern ObjectID
  * @apiSuccess   {Object[]}  pattern.valenceUnits   The Pattern ValenceUnits
- * @apiSuccess   {Number}  pattern.valenceUnits._id   The Pattern ValenceUnits ids
+ * @apiSuccess   {Object}  pattern.valenceUnits._id   The Pattern ValenceUnits ObjectIDs
  * @apiSuccess   {String}  pattern.valenceUnits.FE   The Pattern ValenceUnits frame elements names
  * @apiSuccess   {String}  pattern.valenceUnits.PT   The Pattern ValenceUnits phrase types
  * @apiSuccess   {String}  pattern.valenceUnits.GF   The Pattern ValenceUnits grammatical functions
  * @apiSuccess   {Object[]}  labels             The Labels
- * @apiSuccess   {Number}   labels._id          The Labels ids
+ * @apiSuccess   {Object}   labels._id          The Labels ObjectIDs
  * @apiSuccess   {String}   labels.name         The Labels names
  * @apiSuccess   {String}   labels.type         The Labels types
  * @apiSuccess   {Number}   labels.startPos     The Labels start positions
  * @apiSuccess   {Number}   labels.endPos       The Labels end positions
+ */
+
+/**
+ * @apiDefine FrameSuccess
+ * @apiSuccess   {Number}    _id            The Frame id
+ * @apiSuccess   {String}    name           The Frame name
+ * @apiSuccess   {String}    definition     The Frame definition
+ * @apiSuccess   {String}    cDate          The Frame creation date
+ * @apiSuccess   {String}    cBy            The Frame annotator
+ * @apiSuccess   {Number[]}  semTypes       The Frame SemTypes ids
+ * @apiSuccess   {Number[]}  lexUnits       The Frame LexUnits ids
+ * @apiSuccess   {Number[]}  feCoreSets     The Frame
+ * minimal set of core FrameElements ids
+ * @apiSuccess   {Number[]}  frameElements  The Frame FrameElements ids
+ */
+
+/**
+ * @apiDefine FrameSuccessPopulated
+ * @apiSuccess   {Number}    _id            The Frame id
+ * @apiSuccess   {String}    name           The Frame name
+ * @apiSuccess   {String}    definition     The Frame definition
+ * @apiSuccess   {String}    cDate          The Frame creation date
+ * @apiSuccess   {String}    cBy            The Frame annotator
+ * @apiSuccess   {Number[]}  semTypes       The Frame SemTypes ids
+ * @apiSuccess   {Object[]}  lexUnits       The Frame LexUnits
+ * @apiSuccess   {Number}    lexUnits._id   The LexUnits ids
+ * @apiSuccess   {String}    lexUnits.name  The LexUnits names
+ * @apiSuccess   {Number[]}  feCoreSets     The Frame
+ * minimal set of core FrameElements ids
+ * @apiSuccess   {Object[]}  frameElements  The Frame FrameElements
+ * @apiSuccess   {Number}    frameElements._id    The FrameElements ids
+ * @apiSuccess   {String}    frameElements.name   The FrameElements names
+ * @apiSuccess   {String}    frameElements.definition The FrameElements definitions
+ * @apiSuccess   {String}    frameElements.coreType The FrameElements coreTypes
+ * @apiSuccess   {String}    frameElements.cDate The FrameElements creation dates
+ * @apiSuccess   {String}    frameElements.cBy The FrameElements annotators
+ * @apiSuccess   {String}    frameElements.abbrev The FrameElements abbreviations
+ * @apiSuccess   {Number[]}    frameElements.semTypes The FrameElements SemTypes ids
+ * @apiSuccess   {Number[]}    frameElements.excludes The excluded FrameElements ids
+ * @apiSuccess   {Number[]}    frameElements.requires The required FrameElements ids
+ */
+
+/**
+ * @apiDefine LexUnitSuccess
+ * @apiSuccess   {Number}    _id                  The LexUnit id
+ * @apiSuccess   {String}    name                 The LexUnit name
+ * @apiSuccess   {String}    pos                  The LexUnit part of speech
+ * @apiSuccess   {String}    definition           The LexUnit definition
+ * @apiSuccess   {Number}    lemmaID              The LexUnit lemmaID
+ * @apiSuccess   {Number}    frame                The LexUnit Frame id
+ * @apiSuccess   {String}    status         The LexUnit status
+ * @apiSuccess   {String}    cBy            The LexUnit annotator
+ * @apiSuccess   {String}    cDate          The LexUnit creation date
+ * @apiSuccess   {Number[]}  semTypes       The LexUnit SemTypes ids
+ * @apiSuccess   {Number[]}  lexemes        The LexUnit Lexemes ids
+ */
+
+/**
+ * @apiDefine LexUnitSuccessPopulated
+ * @apiSuccess   {Number}    _id                  The LexUnit id
+ * @apiSuccess   {String}    name                 The LexUnit name
+ * @apiSuccess   {String}    pos                  The LexUnit part of speech
+ * @apiSuccess   {String}    definition           The LexUnit definition
+ * @apiSuccess   {Number}    lemmaID              The LexUnit lemmaID
+ * @apiSuccess   {Object}    frame                The LexUnit Frame
+ * @apiSuccess   {Number}    frame._id            The Frame id
+ * @apiSuccess   {String}    frame.name           The Frame name
+ * @apiSuccess   {String}    frame.definition     The Frame definition
+ * @apiSuccess   {String}    frame.cDate          The Frame creation date
+ * @apiSuccess   {String}    frame.cBy            The Frame annotator
+ * @apiSuccess   {Number[]}  frame.semTypes       The Frame SemTypes ids
+ * @apiSuccess   {Object[]}  frame.lexUnits       The Frame LexUnits
+ * @apiSuccess   {Number}    frame.lexUnits._id   The LexUnits ids
+ * @apiSuccess   {String}    frame.lexUnits.name  The LexUnits names
+ * @apiSuccess   {Number[]}  frame.feCoreSets     The Frame
+ * minimal set of core FrameElements ids
+ * @apiSuccess   {Object[]}  frame.frameElements  The Frame FrameElements
+ * @apiSuccess   {Number}    frame.frameElements._id    The FrameElements ids
+ * @apiSuccess   {String}    frame.frameElements.name   The FrameElements names
+ * @apiSuccess   {String}    frame.frameElements.definition The FrameElements definitions
+ * @apiSuccess   {String}    frame.frameElements.coreType The FrameElements coreTypes
+ * @apiSuccess   {String}    frame.frameElements.cDate The FrameElements creation dates
+ * @apiSuccess   {String}    frame.frameElements.cBy The FrameElements annotators
+ * @apiSuccess   {String}    frame.frameElements.abbrev The FrameElements abbreviations
+ * @apiSuccess   {Number[]}    frame.frameElements.semTypes The FrameElements SemTypes ids
+ * @apiSuccess   {Number[]}    frame.frameElements.excludes The excluded FrameElements ids
+ * @apiSuccess   {Number[]}    frame.frameElements.requires The required FrameElements ids
+ * @apiSuccess   {String}    status         The LexUnit status
+ * @apiSuccess   {String}    cBy            The LexUnit annotator
+ * @apiSuccess   {String}    cDate          The LexUnit creation date
+ * @apiSuccess   {Number[]}  semTypes       The LexUnit SemTypes ids
+ * @apiSuccess   {Number[]}  lexemes        The LexUnit Lexemes ids
+ */
+
+/**
+ * @apiDefine PatternSuccess
+ * @apiSuccess   {Object}    _id            The Pattern ObjectID
+ * @apiSuccess   {Object[]}  valenceUnits   The Pattern ValenceUnits ObjectIDs
+ */
+
+/**
+ * @apiDefine PatternSuccessPopulated
+ * @apiSuccess   {Object}    _id            The Pattern ObjectID
+ * @apiSuccess   {Object[]}  valenceUnits   The Pattern ValenceUnits
+ * @apiSuccess   {Object}  valenceUnits._id   The ValenceUnits ObjectIDs
+ * @apiSuccess   {String}  valenceUnits.FE   The ValenceUnits frame elements names
+ * @apiSuccess   {String}  valenceUnits.PT   The ValenceUnits phrase types
+ * @apiSuccess   {String}  valenceUnits.GF   The ValenceUnits grammatical functions
+ */
+
+/**
+ * @apiDefine ValenceUnitSuccess
+ * @apiSuccess   {Object}  _id  The ObjectID
+ * @apiSuccess   {String}  FE   The frame element name
+ * @apiSuccess   {String}  PT   The phrase type
+ * @apiSuccess   {String}  GF   The grammatical function
  */
 
 /**
@@ -111,12 +248,14 @@ const router = new Router();
  * @apiGroup AnnotationSet
  * @apiDescription Get AnnotationSet with id. Returns at most one
  * document and throws an error if not found. Sample success output
- * is given with populate=true
+ * is given with <code>populate=true</code>
  * @apiUse idParam
  * @apiExample Example usage:
  * curl -i http://localhost/annoSet/123?populate=true
  * @apiUse AnnotationSetSuccessPopulated
  * @apiUse NotFoundIDError
+ * @apiUse InvalidQuery
+ * @apiUse InvalidQueryParamsID
  */
 router.get('/annoSet/:id',
   validator.validate,
@@ -130,12 +269,14 @@ router.get('/annoSet/:id',
  * @apiGroup AnnotationSet
  * @apiDescription Get all AnnotationSets with pattern matching input
  * vp. Returns an empty array if no match is found. Sample success
- * output is given with (default) populate=false
+ * output is given with (default) <code>populate=false</code>
  * @apiUse vpParam
  * @apiExample Example usage:
  * curl -i http://localhost/annoSets?vp=Donor.NP.Ext+Theme.NP.Obj
  * @apiUse AnnotationSetSuccess
  * @apiUse NotFoundVPError
+ * @apiUse InvalidQuery
+ * @apiUse InvalidQueryParamsVP
  */
 router.get('/annoSets',
   validator.validate,
@@ -147,11 +288,16 @@ router.get('/annoSets',
  * @apiVersion 1.0.0
  * @apiName GetFrame
  * @apiGroup Frame
- * @apiDescription Get Frame with id
+ * @apiDescription Get Frame with id. Returns at most one
+ * document and throws an error if not found. Sample success output
+ * is given with <code>populate=true</code>
  * @apiUse idParam
  * @apiExample Example usage:
  * curl -i http://localhost/frame/123?populate=true
+ * @apiUse FrameSuccessPopulated
  * @apiUse NotFoundIDError
+ * @apiUse InvalidQuery
+ * @apiUse InvalidQueryParamsID
  */
 router.get('/frame/:id',
   validator.validate,
@@ -163,11 +309,16 @@ router.get('/frame/:id',
  * @apiVersion 1.0.0
  * @apiName GetFrames
  * @apiGroup Frame
- * @apiDescription Get all Frames with pattern matching input
+ * @apiDescription Get all Frames with pattern matching input vp. Returns an
+ * empty array if no match is found. Sample success
+ * output is given with (default) <code>populate=false</code>
  * @apiUse vpParam
  * @apiExample Example usage:
  * curl -i http://localhost/frames?vp=Donor.NP.Ext+Theme.NP.Obj
+ * @apiUse FrameSuccess
  * @apiUse NotFoundVPError
+ * @apiUse InvalidQuery
+ * @apiUse InvalidQueryParamsVP
  */
 router.get('/frames',
   validator.validate,
@@ -179,11 +330,16 @@ router.get('/frames',
  * @apiVersion 1.0.0
  * @apiName GetLexUnit
  * @apiGroup LexUnit
- * @apiDescription Get LexUnit with id
+ * @apiDescription Get LexUnit with id. Returns at most one
+ * document and throws an error if not found. Sample success output
+ * is given with <code>populate=true</code>
  * @apiUse idParam
  * @apiExample Example usage:
  * curl -i http://localhost:3030/lexUnit/123
+ * @apiUse LexUnitSuccessPopulated
  * @apiUse NotFoundIDError
+ * @apiUse InvalidQuery
+ * @apiUse InvalidQueryParamsID
  */
 router.get('/lexUnit/:id',
   validator.validate,
@@ -195,11 +351,16 @@ router.get('/lexUnit/:id',
  * @apiVersion 1.0.0
  * @apiName GetLexUnits
  * @apiGroup LexUnit
- * @apiDescription Get all LexUnits with pattern matching input
+ * @apiDescription Get all LexUnits with pattern matching input vp. Returns an
+ * empty array if no match is found. Sample success
+ * output is given with (default) <code>populate=false</code>
  * @apiUse vpParam
  * @apiExample Example usage:
  * curl -i http://localhost:3030/lexUnits?vp=Donor.NP.Ext+Theme.NP.Obj
+ * @apiUse LexUnitSuccess
  * @apiUse NotFoundVPError
+ * @apiUse InvalidQuery
+ * @apiUse InvalidQueryParamsVP
  */
 router.get('/lexUnits',
   validator.validate,
@@ -211,11 +372,16 @@ router.get('/lexUnits',
  * @apiVersion 1.0.0
  * @apiName GetPattern
  * @apiGroup Pattern
- * @apiDescription Get Pattern with id
+ * @apiDescription Get Pattern with id. Returns at most one
+ * document and throws an error if not found. Sample success output
+ * is given with <code>populate=true</code>
  * @apiUse idParam
  * @apiExample Example usage:
  * curl -i http://localhost:3030/pattern/123
+ * @apiUse PatternSuccessPopulated
  * @apiUse NotFoundIDError
+ * @apiUse InvalidQuery
+ * @apiUse InvalidQueryParamsID
  */
 router.get('/pattern/:id',
   validator.validate,
@@ -227,11 +393,16 @@ router.get('/pattern/:id',
  * @apiVersion 1.0.0
  * @apiName GetPatterns
  * @apiGroup Pattern
- * @apiDescription Get all Patterns with pattern matching input
+ * @apiDescription Get all Patterns with pattern matching input vp. Returns an
+ * empty array if no match is found. Sample success
+ * output is given with (default) <code>populate=false</code>
  * @apiUse vpParam
  * @apiExample Example usage:
  * curl -i http://localhost:3030/patterns?vp=Donor.NP.Ext+Theme.NP.Obj
+ * @apiUse PatternSuccess
  * @apiUse NotFoundVPError
+ * @apiUse InvalidQuery
+ * @apiUse InvalidQueryParamsVP
  */
 router.get('/patterns',
   validator.validate,
@@ -243,11 +414,15 @@ router.get('/patterns',
  * @apiVersion 1.0.0
  * @apiName GetValenceUnit
  * @apiGroup ValenceUnit
- * @apiDescription Get ValenceUnit with id
+ * @apiDescription Get ValenceUnit with id. Returns at most one
+ * document and throws an error if not found.
  * @apiUse idParam
  * @apiExample Example usage:
  * curl -i http://localhost:3030/valenceUnit/123
+ * @apiUse ValenceUnitSuccess
  * @apiUse NotFoundIDError
+ * @apiUse InvalidQuery
+ * @apiUse InvalidQueryParamsID
  */
 router.get('/valenceUnit/:id',
   validator.validate,
@@ -259,11 +434,15 @@ router.get('/valenceUnit/:id',
  * @apiVersion 1.0.0
  * @apiName GetValenceUnits
  * @apiGroup ValenceUnit
- * @apiDescription Get all ValenceUnits with pattern matching input
+ * @apiDescription Get all ValenceUnits with pattern matching input vp. Returns
+ * an empty array if no match is found.
  * @apiUse vpParam
  * @apiExample Example usage:
  * curl -i http://localhost:3030/valenceUnits?vp=Donor.NP.Ext+Theme.NP.Obj
+ * @apiUse ValenceUnitSuccess
  * @apiUse NotFoundVPError
+ * @apiUse InvalidQuery
+ * @apiUse InvalidQueryParamsVP
  */
 router.get('/valenceUnits',
   validator.validate,
