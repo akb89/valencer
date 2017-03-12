@@ -70,34 +70,34 @@ describe('getController#getValenceUnits', () => {
     set.toArray()[0].PT.should.equal('NP');
     set.toArray()[0].GF.should.equal('Obj');
   });
-/*it('#getValenceUnits should be able to process PT.FE.GF', async () => {
-  const set = await getValenceUnits(['NP', 'A', 'Obj']);
-  set.length.should.equal(1);
-  set.toArray()[0].FE.should.equal(1);
-  set.toArray()[0].PT.should.equal('NP');
-  set.toArray()[0].GF.should.equal('Obj');
-});
-it('#getValenceUnits should be able to process GF.PT.FE', async () => {
-  const set = await getValenceUnits(['Obj', 'NP', 'A']);
-  set.length.should.equal(1);
-  set.toArray()[0].FE.should.equal(1);
-  set.toArray()[0].PT.should.equal('NP');
-  set.toArray()[0].GF.should.equal('Obj');
-});
-it('#getValenceUnits should be able to process FE', async () => {
-  const set = await getValenceUnits(['A']);
-  set.length.should.equal(1);
-});
-it('#getValenceUnits should be able to process PT', async () => {
-  const set = await getValenceUnits(['NP']);
-  set.length.should.equal(3);
-});
-it('#getValenceUnits should be able to process PT.GF', async () => {
-  const set = await getValenceUnits(['NP', 'Obj']);
-  set.length.should.equal(2);
-});
-it('#getValenceUnits should be able to process FE.GF', async () => {
-  const set = await getValenceUnits(['A', 'Obj']);
-  set.length.should.equal(1);
-});*/
+  it('#getValenceUnits should be able to process PT.FE.GF', async () => {
+    const set = await getValenceUnits(['NP', 'A', 'Obj']);
+    set.length.should.equal(1);
+    set.toArray()[0].FE.should.equal(1);
+    set.toArray()[0].PT.should.equal('NP');
+    set.toArray()[0].GF.should.equal('Obj');
+  });
+  it('#getValenceUnits should be able to process GF.PT.FE', async () => {
+    const set = await getValenceUnits(['Obj', 'NP', 'A']);
+    set.length.should.equal(1);
+    set.toArray()[0].FE.should.equal(1);
+    set.toArray()[0].PT.should.equal('NP');
+    set.toArray()[0].GF.should.equal('Obj');
+  });
+  it('#getValenceUnits should be able to process FE', async () => {
+    const set = await getValenceUnits(['A']);
+    set.length.should.equal(1);
+  });
+  it('#getValenceUnits should be able to process PT', async () => {
+    const set = await getValenceUnits(['NP']);
+    set.length.should.equal(3);
+  });
+  it('#getValenceUnits should be able to process PT.GF', async () => {
+    const set = await getValenceUnits(['NP', 'Obj']);
+    set.length.should.equal(2);
+  });
+  it('#getValenceUnits should be able to process FE.GF', async () => {
+    const set = await getValenceUnits(['A', 'Obj']);
+    set.length.should.equal(1);
+  });
 });

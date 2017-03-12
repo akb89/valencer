@@ -10,7 +10,7 @@ describe('getController#getPatterns', () => {
   before(async () => {
     await mockgoose(mongoose);
     await mongoose.connect('mongodb://valencer.io/tests');
-    mockgoose.reset(); /*
+    mockgoose.reset();
     const aFE = new FrameElement({
       _id: 1,
       name: 'A',
@@ -78,7 +78,7 @@ describe('getController#getPatterns', () => {
     const pattern6 = new Pattern({
       valenceUnits: [aNPObj, bNPObj, aNPObj, cNPExt],
     });
-    await pattern6.save();*/
+    await pattern6.save();
   });
   after(() => {
     mongoose.disconnect();
