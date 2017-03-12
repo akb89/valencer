@@ -7,7 +7,12 @@ import valenceUnitController from './controllers/valenceUnitController';
 import validator from './middlewares/validator';
 import processor from './middlewares/processor';
 
+import testController from './controllers/testController';
+
 const router = new Router();
+
+router.get('/test',
+  testController.test);
 
 /**
  * @apiDefine NotFoundIDError

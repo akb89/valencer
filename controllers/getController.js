@@ -1,4 +1,4 @@
-import { Pattern, ValenceUnit, Set } from 'noframenet-core';
+import { FrameElement, Pattern, ValenceUnit, Set } from 'noframenet-core';
 import bluebird from 'bluebird';
 import TMPattern from './../models/tmpattern';
 import ApiError from './../exceptions/apiException';
@@ -6,9 +6,6 @@ import config from './../config';
 
 const Promise = bluebird.Promise;
 const logger = config.logger;
-
-// TODO if query contains 'PP', points toward all PP[] variants: PP[about], PP[of], etc.
-// TODO do the same fo 'PPing' and distinguish 'PP' and 'PPing'
 
 /**
  * Retrieve valenceUnit objects from the db matching any combination of
@@ -19,23 +16,43 @@ const logger = config.logger;
  */
 async function getValenceUnits(unit) {
   logger.debug(`Fetching valence units for unit: ${unit}`);
+  logger.debug('Looking for Frame Element');
+  const unitWithFEIDs = [];
+  for (const token of unit) {
+    logger.debug(`Processing token = ${token}`);
+    const fes = await FrameElement.find().where('name').equals(token);
+    if (fes.length) {
+      unitWithFEIDs.add(fes.map(fe => fe._id));
+    } else {
+      unitWithFEIDs.add(token);
+    }
+  }
+  for (const token of unitWithFEIDs) {
+    logger.info(`token = ${token}`);
+  }
   const valenceUnit = {
     FE: undefined,
     PT: undefined,
     GF: undefined,
   };
-  for (const token of unit) {
+  for (const token of unitWithFEIDs) {
     let found = false;
     for (const key in valenceUnit) {
       if (valenceUnit[key] === undefined) {
-        const dbKey = await ValenceUnit
-          .findOne({
-            [key]: token,
-          });
-        if (dbKey !== null) {
-          valenceUnit[key] = token;
-          found = true;
-          break;
+        try {
+          const dbKey = await ValenceUnit
+            .findOne({
+              [key]: {
+                $in: token,
+              },
+            });
+          if (dbKey !== null) {
+            valenceUnit[key] = token;
+            found = true;
+            break;
+          }
+        } catch (err) {
+          logger.debug('Invalid combination of units');
         }
       }
     }
@@ -53,8 +70,22 @@ async function getValenceUnits(unit) {
   if (valenceUnit.GF !== undefined) {
     expVU.GF = valenceUnit.GF;
   }
-  return await ValenceUnit
-      .find(expVU);
+  logger.debug(`expVU = ${JSON.stringify(expVU)}`);
+  /*
+  if(expVU.FE){
+
+  }else{
+    return ValenceUnit.find(expVU);
+  }
+  return ValenceUnit
+    .find({
+      FE: {
+        $in: expVU.FE,
+      },
+      PT: expVU.PT,
+      GF: expVU.GF,
+    });*/
+  return ValenceUnit.find(expVU);
 }
 
 async function $getPatterns(valenceUnitsArray) {
@@ -122,6 +153,13 @@ async function $getPatterns(valenceUnitsArray) {
   return patterns;
 }
 
+/**
+ * Right now getPatterns only returns patterns matching input exactly.
+ * Ultimately, inclusion with non-core FEs should be made available
+ * @method getPatterns
+ * @param  {[type]}    tokenArray [description]
+ * @return {Promise}   [description]
+ */
 async function getPatterns(tokenArray) {
   let startTime = process.hrtime();
   const valenceUnitsArray = await Promise
@@ -129,10 +167,14 @@ async function getPatterns(tokenArray) {
       .map(async unit => await getValenceUnits(unit)));
 
   logger.verbose(`ValenceUnits retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+  logger.debug(`ValenceUnits.length = ${valenceUnitsArray.length}`);
 
   startTime = process.hrtime();
   const patterns = await $getPatterns(valenceUnitsArray);
-
+  logger.debug(`Patterns length = ${patterns.length}`);
+  // Strict matching of patterns
+  const strictMatchingPatterns = patterns.filter(pattern => pattern.valenceUnits.length === tokenArray.length);
+  logger.debug(`Strict matching patterns length = ${strictMatchingPatterns.length}`);
   logger.verbose(`Patterns retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
   return patterns;
 }

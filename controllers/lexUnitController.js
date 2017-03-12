@@ -70,6 +70,9 @@ async function getByNoPopulateVP(context) {
 
 async function getByPopulateVP(context) {
   const patterns = await getController.getPatterns(context.processedQuery);
+  if (patterns.length !== 1) {
+    logger.error('patterns.length should be 1!');
+  }
   const startTime = process.hrtime();
   const lexUnitIDs = await AnnotationSet
     .find()

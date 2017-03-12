@@ -1,7 +1,7 @@
 import chai from 'chai';
 import mongoose from 'mongoose';
 import mockgoose from 'mockgoose';
-import { Pattern, ValenceUnit } from 'noframenet-core';
+import { FrameElement, Pattern, ValenceUnit } from 'noframenet-core';
 import getController from './../../controllers/getController';
 
 const should = chai.should();
@@ -10,27 +10,47 @@ describe('getController#getPatterns', () => {
   before(async () => {
     await mockgoose(mongoose);
     await mongoose.connect('mongodb://valencer.io/tests');
-    mockgoose.reset();
+    mockgoose.reset(); /*
+    const aFE = new FrameElement({
+      _id: 1,
+      name: 'A',
+    });
+    await aFE.save();
+    const bFE = new FrameElement({
+      _id: 2,
+      name: 'B',
+    });
+    await bFE.save();
+    const cFE = new FrameElement({
+      _id: 3,
+      name: 'C',
+    });
+    await cFE.save();
+    const dFE = new FrameElement({
+      _id: 4,
+      name: 'D',
+    });
+    await dFE.save();
     const aNPObj = new ValenceUnit({
-      FE: 'A',
+      FE: 1,
       PT: 'NP',
       GF: 'Obj',
     });
     await aNPObj.save();
     const bNPObj = new ValenceUnit({
-      FE: 'B',
+      FE: 2,
       PT: 'NP',
       GF: 'Obj',
     });
     await bNPObj.save();
     const cNPExt = new ValenceUnit({
-      FE: 'C',
+      FE: 3,
       PT: 'NP',
       GF: 'Ext',
     });
     await cNPExt.save();
     const dPPaboutExt = new ValenceUnit({
-      FE: 'D',
+      FE: 4,
       PT: 'PP[about]',
       GF: 'Ext',
     });
@@ -58,7 +78,7 @@ describe('getController#getPatterns', () => {
     const pattern6 = new Pattern({
       valenceUnits: [aNPObj, bNPObj, aNPObj, cNPExt],
     });
-    await pattern6.save();
+    await pattern6.save();*/
   });
   after(() => {
     mongoose.disconnect();
