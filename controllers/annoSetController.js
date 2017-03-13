@@ -66,27 +66,22 @@ async function getByID(context) {
 }
 
 async function getByNoPopulateVP(context) {
-  const strictMatching = context.query.strictMatching !== 'false';
-  const patterns = await getController.getPatterns(context.processedQuery, strictMatching);
-  logger.debug(`Patterns.length = ${patterns.length}`);
   const startTime = process.hrtime();
   const annoSets = await AnnotationSet
     .find()
     .where('pattern')
-    .in(patterns);
+    .in(context.patterns);
   logger.debug(`AnnotationSets.length = ${annoSets.length}`);
   context.body = annoSets;
   logger.verbose(`AnnotationSets retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
 }
 
 async function getByPopulateVP(context) {
-  const strictMatching = context.query.strictMatching !== 'false';
-  const patterns = await getController.getPatterns(context.processedQuery, strictMatching);
   const startTime = process.hrtime();
   const annoSets = await AnnotationSet
     .find()
     .where('pattern')
-    .in(patterns)
+    .in(context.patterns)
     .populate([{
       path: 'pattern',
       populate: {
@@ -115,7 +110,10 @@ async function getByPopulateVP(context) {
 
 async function getByVP(context) {
   logger.info(`Querying for all AnnotationSets with a valence pattern matching: ${context.query.vp}`);
+  const strictVUMatching = context.query.strictVUMatching === 'true';
+  const withExtraCoreFEs = context.query.withExtraCoreFEs !== 'false';
   const populate = context.query.populate === 'true';
+  context.patterns = await getController.getPatterns(context.processedQuery, strictVUMatching, withExtraCoreFEs);
   logger.info(`Return populated documents: ${populate}`);
   if (populate) {
     await getByPopulateVP(context);

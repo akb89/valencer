@@ -56,13 +56,11 @@ async function getByID(context) {
 }
 
 async function getByNoPopulateVP(context) {
-  const strictMatching = context.query.strictMatching !== 'false';
-  const patterns = await getController.getPatterns(context.processedQuery, strictMatching);
   const startTime = process.hrtime();
   const lexUnitIDs = await AnnotationSet
     .find()
     .where('pattern')
-    .in(patterns)
+    .in(context.patterns)
     .distinct('lexUnit');
   logger.info(`${lexUnitIDs.length} unique LexUnits found for specified valence pattern: ${context.query.vp}`);
   context.body = lexUnitIDs.sort();
@@ -70,16 +68,11 @@ async function getByNoPopulateVP(context) {
 }
 
 async function getByPopulateVP(context) {
-  const strictMatching = context.query.strictMatching !== 'false';
-  const patterns = await getController.getPatterns(context.processedQuery, strictMatching);
-  if (patterns.length !== 1) {
-    logger.error('patterns.length should be 1!');
-  }
   const startTime = process.hrtime();
   const lexUnitIDs = await AnnotationSet
     .find()
     .where('pattern')
-    .in(patterns)
+    .in(context.patterns)
     .distinct('lexUnit');
   const lexUnits = await LexUnit
     .find()
@@ -103,7 +96,10 @@ async function getByPopulateVP(context) {
 
 async function getByVP(context) {
   logger.info(`Querying for all LexUnits with a valence pattern matching: ${context.query.vp}`);
+  const strictVUMatching = context.query.strictVUMatching === 'true';
+  const withExtraCoreFEs = context.query.withExtraCoreFEs !== 'false';
   const populate = context.query.populate === 'true';
+  context.patterns = await getController.getPatterns(context.processedQuery, strictVUMatching, withExtraCoreFEs);
   logger.info(`Return populated documents: ${populate}`);
   if (populate) {
     await getByPopulateVP(context);

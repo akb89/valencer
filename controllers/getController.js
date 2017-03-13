@@ -7,16 +7,9 @@ import config from './../config';
 const Promise = bluebird.Promise;
 const logger = config.logger;
 
-/**
- * Retrieve valenceUnit objects from the db matching any combination of
- * FE.PT.GF, in any order, and with potentially unspecified elements:
- * FE.PT.GF / PT.FE.GF / PT.GF / GF.FE / FE / GF etc.
- * @param unit: an array of FE/PT/GF tags: ['FE', 'PT', 'GF'] corresponding to a
- * single valenceUnit inside a tokenArray pattern (@see processor:process)
- */
-async function getValenceUnits(unit) {
+
+async function getUnitWithFEIDs(unit) {
   logger.debug(`Fetching valence units for unit: ${unit}`);
-  logger.debug('Looking for Frame Element');
   const unitWithFEIDs = [];
   for (const token of unit) {
     logger.debug(`Processing token = ${token}`);
@@ -27,6 +20,17 @@ async function getValenceUnits(unit) {
       unitWithFEIDs.add(token);
     }
   }
+  return unitWithFEIDs;
+}
+
+/**
+ * Retrieve valenceUnit objects from the db matching any combination of
+ * FE.PT.GF, in any order, and with potentially unspecified elements:
+ * FE.PT.GF / PT.FE.GF / PT.GF / GF.FE / FE / GF etc.
+ * @param unit: an array of FE/PT/GF tags: ['FE', 'PT', 'GF'] corresponding to a
+ * single valenceUnit inside a tokenArray pattern (@see processor:process)
+ */
+async function __getValenceUnits(unitWithFEIDs) {
   for (const token of unitWithFEIDs) {
     logger.info(`token = ${token}`);
   }
@@ -72,6 +76,11 @@ async function getValenceUnits(unit) {
   }
   logger.debug(`expVU = ${JSON.stringify(expVU)}`);
   return ValenceUnit.find(expVU);
+}
+
+async function getValenceUnits(unit) {
+  const unitWithFEIDs = await getUnitWithFEIDs(unit);
+  return __getValenceUnits(unitWithFEIDs);
 }
 
 async function $getPatterns(valenceUnitsArray) {
@@ -139,28 +148,95 @@ async function $getPatterns(valenceUnitsArray) {
   return patterns;
 }
 
+function isFullyFormedFEVU(unitWithFEIDs) {
+  for (const token of unitWithFEIDs) {
+    logger.debug(`validating token = ${token}`);
+    if (typeof token !== 'string' && (typeof token === 'number' || !token.some(isNaN))) {
+      return true;
+    }
+  }
+  return false;
+}
 
-async function getPatterns(tokenArray, strictVPMatching) {
+// TODO: add unit tests for strictMatching
+async function getPatterns(tokenArray, strictVUMatching, withExtraCoreFEs) {
+  logger.info(`strictVUMatching = ${strictVUMatching}`);
+  logger.info(`withExtraCoreFEs = ${withExtraCoreFEs}`);
   let startTime = process.hrtime();
+  const fullyFormedFEVU = [];
   const valenceUnitsArray = await Promise
     .all(tokenArray
-      .map(async unit => await getValenceUnits(unit)));
-  logger.info(`strictVPMatching = ${strictVPMatching}`);
+      .map(async (unit) => {
+        const unitWithFEIDs = await getUnitWithFEIDs(unit);
+        logger.debug(`unitWithFEIDs = ${unitWithFEIDs}`);
+        logger.debug(`isFullyFormedFEVU = ${isFullyFormedFEVU(unitWithFEIDs)}`);
+        fullyFormedFEVU.add(isFullyFormedFEVU(unitWithFEIDs));
+        return __getValenceUnits(unitWithFEIDs);
+      }));
   logger.verbose(`ValenceUnits retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
   logger.debug(`ValenceUnits.length = ${valenceUnitsArray.length}`);
-
+  logger.debug(`ValenceUnits = ${valenceUnitsArray}`);
   startTime = process.hrtime();
   const patterns = await $getPatterns(valenceUnitsArray);
   logger.debug(`Unfiltered patterns length = ${patterns.length}`);
-  if (strictVPMatching) {
+  logger.debug(`tokenArray = ${tokenArray}`);
+  if (strictVUMatching) {
     const strictMatchingPatterns = patterns.filter(pattern => pattern.valenceUnits.length === tokenArray.length);
+    logger.info(`Retrieving patterns stricly matching number of valenceUnits specified in input (#${tokenArray.length})`);
     logger.info(`Patterns length = ${strictMatchingPatterns.length}`);
     logger.verbose(`Patterns retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
     return strictMatchingPatterns;
   }
-  logger.info(`Patterns length = ${patterns.length}`);
-  logger.verbose(`Patterns retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
-  return patterns;
+  if (!fullyFormedFEVU.includes(false)) {
+    if (withExtraCoreFEs) {
+      // Return all possibilities, regardless of whether or not
+      // FEs are core or non-core
+      logger.info('Retrieving patterns with non-strict matching and all extra FEs (core and non-core)');
+      logger.info(`Patterns length = ${patterns.length}`);
+      logger.verbose(`Patterns retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+      return patterns;
+    }
+    // We allow returning patterns with more than the specified VUs, only if
+    // those VUs contain non-core FEs. Ex: Donor.NP.Ext Recipient.NP.Obj ->
+    // Donor.NP.Ext Recipient.NP.Obj Time.PP[at].Dep as Time is a non-core FE
+    // in this particular case
+    const flatTokenArray = Array.prototype.concat.apply([], tokenArray);
+    const validPatterns = [];
+    logger.debug(`patterns = ${patterns}`);
+    for (const pattern of patterns) {
+      logger.debug(`pattern = ${pattern}`);
+      let isValidPattern = true;
+      for (const vuID of pattern.valenceUnits) {
+        const valenceUnit = await ValenceUnit.findOne().where('_id').equals(vuID);
+        logger.debug(`valenceUnit = ${valenceUnit}`);
+        logger.debug(`valenceUnit.fe = ${valenceUnit.FE}`);
+        const fe = await FrameElement.findOne().where('_id').equals(valenceUnit.FE);
+        logger.debug(`fe = ${fe}`);
+        if (!flatTokenArray.includes(fe.name) && fe.coreType === 'Core') {
+          isValidPattern = false;
+        }
+      }
+      if (isValidPattern) {
+        validPatterns.add(pattern);
+      }
+    }
+    logger.info('Retreiving patterns with non-strict matching and non-core FEs')
+    logger.info(`Patterns length = ${validPatterns.length}`);
+    logger.verbose(`Patterns retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+    logger.debug(`validPatterns = ${validPatterns}`);
+    return validPatterns;
+  }
+  if (withExtraCoreFEs) {
+    // Default case to returning all FEs regardless of core or non-core if at
+    // least one FE is not specified: fullyFormedFEVU.includes(false) --> true
+    logger.info('Retrieving patterns with non-strict matching and all extra FEs (core and non-core)');
+    logger.info(`Patterns length = ${patterns.length}`);
+    logger.verbose(`Patterns retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+    return patterns;
+  }
+  // In this case user asked for non-strict matching of vus with only extra
+  // non-core FEs, but there is at least one unspecified FE.
+  throw ApiError.InvalidQueryParams(`The Valencer API cannot process queries with strictVUMatching parameter set to false and withExtraCoreFEs parameter set to false if at least one FE is unspecified in the input Valence Pattern`);
 }
 
 export default {

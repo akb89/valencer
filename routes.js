@@ -60,9 +60,12 @@ const router = new Router();
  * combination of triplets FE.PT.GF
  * @apiParam {Boolean}    [populate=false]     Specify whether documents
  * should be populated.
- * @apiParam {Boolean}    [strictMatching=true]     Specify whether valence
- * patterns should match exactly (or whether loose matching with non-core FEs
- * can be tolerated).
+ * @apiParam {Boolean}    [strictVUMatching=false]     Specify whether
+ * the number of valence units should match exactly. Ex: Querying for
+ * Donor.NP.Ext with strictVUMatching=true will return all patterns with only
+ * one valenceUnit
+ * @apiParam {Boolean}    [withExtraCoreFEs=true] Specify whether, in cases of
+ * non-strict valence unit matching, extra Frame Elements can be core FEs.
  */
 
 /**

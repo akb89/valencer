@@ -79,53 +79,61 @@ describe('getController#getPatterns', () => {
       valenceUnits: [aNPObj, bNPObj, aNPObj, cNPExt],
     });
     await pattern6.save();
+    const pattern7 = new Pattern({
+      valenceUnits: [bNPObj, bNPObj, cNPExt],
+    });
+    await pattern7.save();
   });
   after(() => {
     mongoose.disconnect();
     mockgoose.reset();
   });
   it('#getPatterns should return the correct number of patterns when processing FE.PT.GF combinations', async () => {
-    const patterns = await getController.getPatterns([['A', 'NP', 'Obj'], ['B', 'NP', 'Obj']]);
+    const patterns = await getController.getPatterns([['A', 'NP', 'Obj'], ['B', 'NP', 'Obj']], false, true);
     patterns.length.should.equal(4);
   });
   it('#getPatterns should return the correct number of patterns when processing long FE.PT.GF combinations', async () => {
-    const patterns = await getController.getPatterns([['A', 'NP', 'Obj'], ['B', 'NP', 'Obj'], ['C', 'NP', 'Ext'], ['D', 'PP[about]', 'Ext']]);
+    const patterns = await getController.getPatterns([['A', 'NP', 'Obj'], ['B', 'NP', 'Obj'], ['C', 'NP', 'Ext'], ['D', 'PP[about]', 'Ext']], false, true);
     patterns.length.should.equal(1);
   });
   it('#getPatterns should return the correct number of patterns when processing FE PT.GF', async () => {
-    const patterns = await getController.getPatterns([['A'], ['NP', 'Ext']]);
+    const patterns = await getController.getPatterns([['A'], ['NP', 'Ext']], false, true);
     patterns.length.should.equal(4);
   });
   it('#getPatterns should return the correct number of patterns when processing FE combinations', async () => {
-    const patterns = await getController.getPatterns([['D'], ['A']]);
+    const patterns = await getController.getPatterns([['D'], ['A']], false, true);
     patterns.length.should.equal(3);
   });
   it('#getPatterns should return the correct number of patterns when processing single PT', async () => {
-    const patterns = await getController.getPatterns([['NP']]);
-    patterns.length.should.equal(6);
+    const patterns = await getController.getPatterns([['NP']], false, true);
+    patterns.length.should.equal(7);
   });
   it('#getPatterns should return the correct number of patterns when processing PT GF', async () => {
-    const patterns = await getController.getPatterns([['NP'], ['Obj']]);
-    patterns.length.should.equal(5);
+    const patterns = await getController.getPatterns([['NP'], ['Obj']], false, true);
+    patterns.length.should.equal(6);
   });
   it('#getPatterns should return the correct number of patterns when processing PT GF PT', async () => {
-    const patterns = await getController.getPatterns([['NP'], ['Obj'], ['NP']]);
-    patterns.length.should.equal(3);
-  });
-  it('#getPatterns should return the correct number of patterns when processing up to two PT.GF', async () => {
-    const patterns = await getController.getPatterns([['NP', 'Obj'], ['NP', 'Obj']]);
+    const patterns = await getController.getPatterns([['NP'], ['Obj'], ['NP']], false, true);
     patterns.length.should.equal(4);
   });
+  it('#getPatterns should return the correct number of patterns when processing up to two PT.GF', async () => {
+    const patterns = await getController.getPatterns([['NP', 'Obj'], ['NP', 'Obj']], false, true);
+    patterns.length.should.equal(5);
+  });
   it('#getPatterns should return the correct number of patterns when processing up to three PT.GF', async () => {
-    const patterns = await getController.getPatterns([['NP', 'Obj'], ['NP', 'Obj'], ['NP', 'Obj']]);
+    const patterns = await getController.getPatterns([['NP', 'Obj'], ['NP', 'Obj'], ['NP', 'Obj']], false, true);
     patterns.length.should.equal(1);
   });
   it('#getPatterns should return the correct number of patterns when processing FE PT GF', async () => {
-    const patterns = await getController.getPatterns([['A'], ['PP[about]'], ['Ext']]);
+    const patterns = await getController.getPatterns([['A'], ['PP[about]'], ['Ext']], false, true);
     patterns.length.should.equal(2);
   });
   it('#getPatterns should return the correct number of patterns when processing long tokenArrays', async () => {
-    const patterns = await getController.getPatterns([['Ext'], ['NP'], ['NP'], ['NP']]);
+    const patterns = await getController.getPatterns([['Ext'], ['NP'], ['NP'], ['NP']], false, true);
     patterns.length.should.equal(2);
+  });
+  it('#getPatterns should return the correct number of patterns when querying strictVUMatching', async () => {
+    const patterns = await getController.getPatterns([['A', 'NP', 'Obj'], ['B', 'NP', 'Obj'], ['C', 'NP', 'Ext']], true, true);
+    patterns.length.should.equal(1);
   });
 });
