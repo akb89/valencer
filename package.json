@@ -29,7 +29,7 @@
   },
   "apidoc": {
     "name": "valencer-doc",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "Documentation for the Valencer API",
     "title": "Valencer API Doc",
     "url": "https://akb89.github.io/valencer/",

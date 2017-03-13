@@ -11,22 +11,26 @@ const router = new Router();
 
 /**
  * @apiDefine NotFoundIDError
+ * @apiVersion 2.0.0
  * @apiError (Error 404) NotFoundError The id was not found
  */
 
 /**
  * @apiDefine NotFoundVPError
+ * @apiVersion 2.0.0
  * @apiError (Error 404) NotFoundError A valence unit of the vp was not found
  */
 
 /**
  * @apiDefine InvalidQuery
+ * @apiVersion 2.0.0
  * @apiError (Error 400) InvalidQuery The specified query is null, empty or
  * combines :id and vp in request
  */
 
 /**
  * @apiDefine InvalidQueryParamsID
+ * @apiVersion 2.0.0
  * @apiError (Error 400) InvalidQueryParams The populate parameter is neither
  * <code>true</code> nor <code>false</code> or the specified :id is
  * neither a <code>Number</code> nor a valid <code>ObjectID</code>
@@ -34,6 +38,7 @@ const router = new Router();
 
 /**
  * @apiDefine InvalidQueryParamsVP
+ * @apiVersion 2.0.0
  * @apiError (Error 400) InvalidQueryParams The populate parameter is neither
  * <code>true</code> nor <code>false</code> or the vp parameter contains either
  * an invalid character, an invalid sequence of characters or more than 3
@@ -42,7 +47,7 @@ const router = new Router();
 
 /**
  * @apiDefine idParam
- *
+ * @apiVersion 2.0.0
  * @apiParam {Number}     id          The id
  * @apiParam {Boolean} [populate=false]    Specify whether documents
  * should be populated
@@ -50,19 +55,19 @@ const router = new Router();
 
 /**
  * @apiDefine vpParam
- *
+ * @apiVersion 2.0.0
  * @apiParam {String}     vp          The Valence Pattern: a
  * combination of triplets FE.PT.GF
  * @apiParam {Boolean}    [populate=false]     Specify whether documents
  * should be populated.
  * @apiParam {Boolean}    [strictMatching=true]     Specify whether valence
- * patterns should match exactly (or whether they should tolerate partial
- * matching with non-core Frame Elements)
+ * patterns should match exactly (or whether loose matching with non-core FEs
+ * can be tolerated).
  */
 
 /**
  * @apiDefine AnnotationSetSuccess
- *
+ * @apiVersion 2.0.0
  * @apiSuccess  {Number}   _id        The AnnotationSet id
  * @apiSuccess  {Number}   lexUnit    The LexUnit id
  * @apiSuccess  {Number}   sentence   The Sentence id
@@ -71,7 +76,7 @@ const router = new Router();
 
 /**
  * @apiDefine AnnotationSetSuccessPopulated
- *
+ * @apiVersion 2.0.0
  * @apiSuccess   {Number}    _id                          The AnnotationSet id
  * @apiSuccess   {Object}    lexUnit                      The LexUnit
  * @apiSuccess   {Number}    lexUnit._id                  The LexUnit id
@@ -130,6 +135,7 @@ const router = new Router();
 
 /**
  * @apiDefine FrameSuccess
+ * @apiVersion 2.0.0
  * @apiSuccess   {Number}    _id            The Frame id
  * @apiSuccess   {String}    name           The Frame name
  * @apiSuccess   {String}    definition     The Frame definition
@@ -144,6 +150,7 @@ const router = new Router();
 
 /**
  * @apiDefine FrameSuccessPopulated
+ * @apiVersion 2.0.0
  * @apiSuccess   {Number}    _id            The Frame id
  * @apiSuccess   {String}    name           The Frame name
  * @apiSuccess   {String}    definition     The Frame definition
@@ -170,6 +177,7 @@ const router = new Router();
 
 /**
  * @apiDefine LexUnitSuccess
+ * @apiVersion 2.0.0
  * @apiSuccess   {Number}    _id                  The LexUnit id
  * @apiSuccess   {String}    name                 The LexUnit name
  * @apiSuccess   {String}    pos                  The LexUnit part of speech
@@ -185,6 +193,7 @@ const router = new Router();
 
 /**
  * @apiDefine LexUnitSuccessPopulated
+ * @apiVersion 2.0.0
  * @apiSuccess   {Number}    _id                  The LexUnit id
  * @apiSuccess   {String}    name                 The LexUnit name
  * @apiSuccess   {String}    pos                  The LexUnit part of speech
@@ -222,12 +231,14 @@ const router = new Router();
 
 /**
  * @apiDefine PatternSuccess
+ * @apiVersion 2.0.0
  * @apiSuccess   {Object}    _id            The Pattern ObjectID
  * @apiSuccess   {Object[]}  valenceUnits   The Pattern ValenceUnits ObjectIDs
  */
 
 /**
  * @apiDefine PatternSuccessPopulated
+ * @apiVersion 2.0.0
  * @apiSuccess   {Object}    _id            The Pattern ObjectID
  * @apiSuccess   {Object[]}  valenceUnits   The Pattern ValenceUnits
  * @apiSuccess   {Object}  valenceUnits._id   The ValenceUnits ObjectIDs
@@ -238,6 +249,7 @@ const router = new Router();
 
 /**
  * @apiDefine ValenceUnitSuccess
+ * @apiVersion 2.0.0
  * @apiSuccess   {Object}  _id  The ObjectID
  * @apiSuccess   {String}  FE   The frame element name
  * @apiSuccess   {String}  PT   The phrase type
