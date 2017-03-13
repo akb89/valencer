@@ -48,7 +48,8 @@ async function getByID(context) {
 }
 
 async function getByNoPopulateVP(context) {
-  const patterns = await getController.getPatterns(context.processedQuery);
+  const strictMatching = context.query.strictMatching !== 'false';
+  const patterns = await getController.getPatterns(context.processedQuery, strictMatching);
   const startTime = process.hrtime();
   logger.info(`${patterns.length} unique Patterns found for specified valence pattern: ${context.query.vp}`);
   context.body = patterns.sort();
@@ -56,7 +57,8 @@ async function getByNoPopulateVP(context) {
 }
 
 async function getByPopulateVP(context) {
-  const patterns = await getController.getPatterns(context.processedQuery);
+  const strictMatching = context.query.strictMatching !== 'false';
+  const patterns = await getController.getPatterns(context.processedQuery, strictMatching);
   const startTime = process.hrtime();
   const outpatterns = await Pattern
     .find()

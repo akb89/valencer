@@ -28,7 +28,11 @@
     "url": "https://github.com/akb89/valencer/issues"
   },
   "apidoc": {
+    "name": "valencer-doc",
+    "version": "1.0.0",
+    "description": "Documentation for the Valencer API",
     "title": "Valencer API Doc",
+    "url": "https://akb89.github.io/valencer/",
     "header": {
       "title": "General",
       "filename": "header.md"

@@ -56,7 +56,8 @@ async function getByID(context) {
 }
 
 async function getByNoPopulateVP(context) {
-  const patterns = await getController.getPatterns(context.processedQuery);
+  const strictMatching = context.query.strictMatching !== 'false';
+  const patterns = await getController.getPatterns(context.processedQuery, strictMatching);
   const startTime = process.hrtime();
   const lexUnitIDs = await AnnotationSet
     .find()
@@ -69,7 +70,8 @@ async function getByNoPopulateVP(context) {
 }
 
 async function getByPopulateVP(context) {
-  const patterns = await getController.getPatterns(context.processedQuery);
+  const strictMatching = context.query.strictMatching !== 'false';
+  const patterns = await getController.getPatterns(context.processedQuery, strictMatching);
   if (patterns.length !== 1) {
     logger.error('patterns.length should be 1!');
   }

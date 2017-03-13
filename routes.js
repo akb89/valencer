@@ -7,12 +7,7 @@ import valenceUnitController from './controllers/valenceUnitController';
 import validator from './middlewares/validator';
 import processor from './middlewares/processor';
 
-import testController from './controllers/testController';
-
 const router = new Router();
-
-router.get('/test',
-  testController.test);
 
 /**
  * @apiDefine NotFoundIDError
@@ -60,6 +55,9 @@ router.get('/test',
  * combination of triplets FE.PT.GF
  * @apiParam {Boolean}    [populate=false]     Specify whether documents
  * should be populated.
+ * @apiParam {Boolean}    [strictMatching=true]     Specify whether valence
+ * patterns should match exactly (or whether they should tolerate partial
+ * matching with non-core Frame Elements)
  */
 
 /**
@@ -248,7 +246,7 @@ router.get('/test',
 
 /**
  * @api {get} /annoSet/:id GetAnnoSet
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetAnnoSet
  * @apiGroup AnnotationSet
  * @apiDescription Get AnnotationSet with id. Returns at most one
@@ -269,7 +267,7 @@ router.get('/annoSet/:id',
 
 /**
  * @api {get} /annoSets GetAnnoSets
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetAnnoSets
  * @apiGroup AnnotationSet
  * @apiDescription Get all AnnotationSets with pattern matching input
@@ -290,7 +288,7 @@ router.get('/annoSets',
 
 /**
  * @api {get} /frame/:id GetFrame
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetFrame
  * @apiGroup Frame
  * @apiDescription Get Frame with id. Returns at most one
@@ -311,7 +309,7 @@ router.get('/frame/:id',
 
 /**
  * @api {get} /frames GetFrames
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetFrames
  * @apiGroup Frame
  * @apiDescription Get all Frames with pattern matching input vp. Returns an
@@ -332,7 +330,7 @@ router.get('/frames',
 
 /**
  * @api {get} /lexUnit/:id GetLexUnit
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetLexUnit
  * @apiGroup LexUnit
  * @apiDescription Get LexUnit with id. Returns at most one
@@ -353,7 +351,7 @@ router.get('/lexUnit/:id',
 
 /**
  * @api {get} /lexUnits GetLexUnits
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetLexUnits
  * @apiGroup LexUnit
  * @apiDescription Get all LexUnits with pattern matching input vp. Returns an
@@ -374,7 +372,7 @@ router.get('/lexUnits',
 
 /**
  * @api {get} /pattern/:id GetPattern
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetPattern
  * @apiGroup Pattern
  * @apiDescription Get Pattern with id. Returns at most one
@@ -395,7 +393,7 @@ router.get('/pattern/:id',
 
 /**
  * @api {get} /patterns GetPatterns
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetPatterns
  * @apiGroup Pattern
  * @apiDescription Get all Patterns with pattern matching input vp. Returns an
@@ -416,7 +414,7 @@ router.get('/patterns',
 
 /**
  * @api {get} /valenceUnit/:id GetValenceUnit
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetValenceUnit
  * @apiGroup ValenceUnit
  * @apiDescription Get ValenceUnit with id. Returns at most one
@@ -436,7 +434,7 @@ router.get('/valenceUnit/:id',
 
 /**
  * @api {get} /valenceUnits GetValenceUnits
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetValenceUnits
  * @apiGroup ValenceUnit
  * @apiDescription Get all ValenceUnits with pattern matching input vp. Returns

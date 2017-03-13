@@ -71,20 +71,6 @@ async function getValenceUnits(unit) {
     expVU.GF = valenceUnit.GF;
   }
   logger.debug(`expVU = ${JSON.stringify(expVU)}`);
-  /*
-  if(expVU.FE){
-
-  }else{
-    return ValenceUnit.find(expVU);
-  }
-  return ValenceUnit
-    .find({
-      FE: {
-        $in: expVU.FE,
-      },
-      PT: expVU.PT,
-      GF: expVU.GF,
-    });*/
   return ValenceUnit.find(expVU);
 }
 
@@ -153,28 +139,26 @@ async function $getPatterns(valenceUnitsArray) {
   return patterns;
 }
 
-/**
- * Right now getPatterns only returns patterns matching input exactly.
- * Ultimately, inclusion with non-core FEs should be made available
- * @method getPatterns
- * @param  {[type]}    tokenArray [description]
- * @return {Promise}   [description]
- */
-async function getPatterns(tokenArray) {
+
+async function getPatterns(tokenArray, strictVPMatching) {
   let startTime = process.hrtime();
   const valenceUnitsArray = await Promise
     .all(tokenArray
       .map(async unit => await getValenceUnits(unit)));
-
+  logger.info(`strictVPMatching = ${strictVPMatching}`);
   logger.verbose(`ValenceUnits retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
   logger.debug(`ValenceUnits.length = ${valenceUnitsArray.length}`);
 
   startTime = process.hrtime();
   const patterns = await $getPatterns(valenceUnitsArray);
-  logger.debug(`Patterns length = ${patterns.length}`);
-  // Strict matching of patterns
-  const strictMatchingPatterns = patterns.filter(pattern => pattern.valenceUnits.length === tokenArray.length);
-  logger.debug(`Strict matching patterns length = ${strictMatchingPatterns.length}`);
+  logger.debug(`Unfiltered patterns length = ${patterns.length}`);
+  if (strictVPMatching) {
+    const strictMatchingPatterns = patterns.filter(pattern => pattern.valenceUnits.length === tokenArray.length);
+    logger.info(`Patterns length = ${strictMatchingPatterns.length}`);
+    logger.verbose(`Patterns retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
+    return strictMatchingPatterns;
+  }
+  logger.info(`Patterns length = ${patterns.length}`);
   logger.verbose(`Patterns retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
   return patterns;
 }

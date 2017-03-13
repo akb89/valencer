@@ -66,7 +66,8 @@ async function getByID(context) {
 }
 
 async function getByNoPopulateVP(context) {
-  const patterns = await getController.getPatterns(context.processedQuery);
+  const strictMatching = context.query.strictMatching !== 'false';
+  const patterns = await getController.getPatterns(context.processedQuery, strictMatching);
   logger.debug(`Patterns.length = ${patterns.length}`);
   const startTime = process.hrtime();
   const annoSets = await AnnotationSet
@@ -79,7 +80,8 @@ async function getByNoPopulateVP(context) {
 }
 
 async function getByPopulateVP(context) {
-  const patterns = await getController.getPatterns(context.processedQuery);
+  const strictMatching = context.query.strictMatching !== 'false';
+  const patterns = await getController.getPatterns(context.processedQuery, strictMatching);
   const startTime = process.hrtime();
   const annoSets = await AnnotationSet
     .find()
