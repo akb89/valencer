@@ -1,6 +1,6 @@
 {
   "name": "Valencer",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "A REST API to query valence patterns in FrameNet",
   "keywords": [
     "FrameNet",
@@ -69,7 +69,7 @@
     "eslint-plugin-react": "^6.4.1",
     "istanbul": "^1.1.0-alpha.1",
     "mocha": "^3.2.0",
-    "mockgoose": "^7.0.6",
+    "mockgoose": "^6.0.6",
     "rewire": "^2.5.2"
   }
 }
