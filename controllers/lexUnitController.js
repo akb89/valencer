@@ -100,7 +100,9 @@ async function getByVP(context) {
   const withExtraCoreFEs = context.query.withExtraCoreFEs !== 'false';
   const populate = context.query.populate === 'true';
   context.patterns = await getController.getPatterns(context.processedQuery, strictVUMatching, withExtraCoreFEs);
-  logger.info(`Return populated documents: ${populate}`);
+  logger.verbose(`Return populated documents: ${populate}`);
+  logger.verbose(`Strictly matching input valence units: ${strictVUMatching}`);
+  logger.verbose(`Including extra core Frame Elements: ${withExtraCoreFEs}`);
   if (populate) {
     await getByPopulateVP(context);
   } else {

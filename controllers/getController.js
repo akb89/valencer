@@ -9,10 +9,8 @@ const logger = config.logger;
 
 
 async function getUnitWithFEIDs(unit) {
-  logger.debug(`Fetching valence units for unit: ${unit}`);
   const unitWithFEIDs = [];
   for (const token of unit) {
-    logger.debug(`Processing token = ${token}`);
     const fes = await FrameElement.find().where('name').equals(token);
     if (fes.length) {
       unitWithFEIDs.add(fes.map(fe => fe._id));
@@ -30,10 +28,7 @@ async function getUnitWithFEIDs(unit) {
  * @param unit: an array of FE/PT/GF tags: ['FE', 'PT', 'GF'] corresponding to a
  * single valenceUnit inside a tokenArray pattern (@see processor:process)
  */
-async function __getValenceUnits(unitWithFEIDs) {
-  for (const token of unitWithFEIDs) {
-    logger.info(`token = ${token}`);
-  }
+async function $getValenceUnits(unitWithFEIDs) {
   const valenceUnit = {
     FE: undefined,
     PT: undefined,
@@ -74,13 +69,12 @@ async function __getValenceUnits(unitWithFEIDs) {
   if (valenceUnit.GF !== undefined) {
     expVU.GF = valenceUnit.GF;
   }
-  logger.debug(`expVU = ${JSON.stringify(expVU)}`);
   return ValenceUnit.find(expVU);
 }
 
 async function getValenceUnits(unit) {
   const unitWithFEIDs = await getUnitWithFEIDs(unit);
-  return __getValenceUnits(unitWithFEIDs);
+  return $getValenceUnits(unitWithFEIDs);
 }
 
 async function $getPatterns(valenceUnitsArray) {
@@ -150,7 +144,6 @@ async function $getPatterns(valenceUnitsArray) {
 
 function isFullyFormedFEVU(unitWithFEIDs) {
   for (const token of unitWithFEIDs) {
-    logger.debug(`validating token = ${token}`);
     if (typeof token !== 'string' && (typeof token === 'number' || !token.some(isNaN))) {
       return true;
     }
@@ -160,30 +153,24 @@ function isFullyFormedFEVU(unitWithFEIDs) {
 
 // TODO: add unit tests for strictMatching
 async function getPatterns(tokenArray, strictVUMatching, withExtraCoreFEs) {
-  logger.info(`strictVUMatching = ${strictVUMatching}`);
-  logger.info(`withExtraCoreFEs = ${withExtraCoreFEs}`);
   let startTime = process.hrtime();
   const fullyFormedFEVU = [];
   const valenceUnitsArray = await Promise
     .all(tokenArray
       .map(async (unit) => {
         const unitWithFEIDs = await getUnitWithFEIDs(unit);
-        logger.debug(`unitWithFEIDs = ${unitWithFEIDs}`);
-        logger.debug(`isFullyFormedFEVU = ${isFullyFormedFEVU(unitWithFEIDs)}`);
         fullyFormedFEVU.add(isFullyFormedFEVU(unitWithFEIDs));
-        return __getValenceUnits(unitWithFEIDs);
+        return $getValenceUnits(unitWithFEIDs);
       }));
   logger.verbose(`ValenceUnits retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
   logger.debug(`ValenceUnits.length = ${valenceUnitsArray.length}`);
-  logger.debug(`ValenceUnits = ${valenceUnitsArray}`);
   startTime = process.hrtime();
   const patterns = await $getPatterns(valenceUnitsArray);
   logger.debug(`Unfiltered patterns length = ${patterns.length}`);
-  logger.debug(`tokenArray = ${tokenArray}`);
   if (strictVUMatching) {
     const strictMatchingPatterns = patterns.filter(pattern => pattern.valenceUnits.length === tokenArray.length);
     logger.info(`Retrieving patterns stricly matching number of valenceUnits specified in input (#${tokenArray.length})`);
-    logger.info(`Patterns length = ${strictMatchingPatterns.length}`);
+    logger.info(`Filtered patterns length = ${strictMatchingPatterns.length}`);
     logger.verbose(`Patterns retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
     return strictMatchingPatterns;
   }
@@ -192,7 +179,7 @@ async function getPatterns(tokenArray, strictVUMatching, withExtraCoreFEs) {
       // Return all possibilities, regardless of whether or not
       // FEs are core or non-core
       logger.info('Retrieving patterns with non-strict matching and all extra FEs (core and non-core)');
-      logger.info(`Patterns length = ${patterns.length}`);
+      logger.info(`Filtered patterns length = ${patterns.length}`);
       logger.verbose(`Patterns retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
       return patterns;
     }
@@ -202,16 +189,11 @@ async function getPatterns(tokenArray, strictVUMatching, withExtraCoreFEs) {
     // in this particular case
     const flatTokenArray = Array.prototype.concat.apply([], tokenArray);
     const validPatterns = [];
-    logger.debug(`patterns = ${patterns}`);
     for (const pattern of patterns) {
-      logger.debug(`pattern = ${pattern}`);
       let isValidPattern = true;
       for (const vuID of pattern.valenceUnits) {
         const valenceUnit = await ValenceUnit.findOne().where('_id').equals(vuID);
-        logger.debug(`valenceUnit = ${valenceUnit}`);
-        logger.debug(`valenceUnit.fe = ${valenceUnit.FE}`);
         const fe = await FrameElement.findOne().where('_id').equals(valenceUnit.FE);
-        logger.debug(`fe = ${fe}`);
         if (!flatTokenArray.includes(fe.name) && fe.coreType === 'Core') {
           isValidPattern = false;
         }
@@ -220,10 +202,9 @@ async function getPatterns(tokenArray, strictVUMatching, withExtraCoreFEs) {
         validPatterns.add(pattern);
       }
     }
-    logger.info('Retreiving patterns with non-strict matching and non-core FEs')
+    logger.info('Retreiving patterns with non-strict matching and non-core FEs');
     logger.info(`Patterns length = ${validPatterns.length}`);
     logger.verbose(`Patterns retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
-    logger.debug(`validPatterns = ${validPatterns}`);
     return validPatterns;
   }
   if (withExtraCoreFEs) {
@@ -236,7 +217,7 @@ async function getPatterns(tokenArray, strictVUMatching, withExtraCoreFEs) {
   }
   // In this case user asked for non-strict matching of vus with only extra
   // non-core FEs, but there is at least one unspecified FE.
-  throw ApiError.InvalidQueryParams(`The Valencer API cannot process queries with strictVUMatching parameter set to false and withExtraCoreFEs parameter set to false if at least one FE is unspecified in the input Valence Pattern`);
+  throw ApiError.InvalidQueryParams('The Valencer API cannot process queries with strictVUMatching parameter set to false and withExtraCoreFEs parameter set to false if at least one FE is unspecified in the input Valence Pattern');
 }
 
 export default {

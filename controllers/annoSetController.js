@@ -71,7 +71,7 @@ async function getByNoPopulateVP(context) {
     .find()
     .where('pattern')
     .in(context.patterns);
-  logger.debug(`AnnotationSets.length = ${annoSets.length}`);
+  logger.info(`${annoSets.length} unique AnnotationSets found for specified valence pattern: ${context.query.vp}`);
   context.body = annoSets;
   logger.verbose(`AnnotationSets retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
 }
@@ -103,7 +103,7 @@ async function getByPopulateVP(context) {
     }, {
       path: 'labels',
     }]);
-  logger.debug(`AnnotationSets.length = ${annoSets.length}`);
+  logger.info(`${annoSets.length} unique AnnotationSets found for specified valence pattern: ${context.query.vp}`);
   context.body = annoSets;
   logger.verbose(`AnnotationSets retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
 }
@@ -114,7 +114,9 @@ async function getByVP(context) {
   const withExtraCoreFEs = context.query.withExtraCoreFEs !== 'false';
   const populate = context.query.populate === 'true';
   context.patterns = await getController.getPatterns(context.processedQuery, strictVUMatching, withExtraCoreFEs);
-  logger.info(`Return populated documents: ${populate}`);
+  logger.verbose(`Return populated documents: ${populate}`);
+  logger.verbose(`Strictly matching input valence units: ${strictVUMatching}`);
+  logger.verbose(`Including extra core Frame Elements: ${withExtraCoreFEs}`);
   if (populate) {
     await getByPopulateVP(context);
   } else {
