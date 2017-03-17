@@ -1,6 +1,6 @@
 {
   "name": "Valencer",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A REST API to query valence patterns in FrameNet",
   "keywords": [
     "FrameNet",
@@ -63,9 +63,9 @@
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
     "eslint": "^3.17.1",
-    "eslint-config-airbnb": "^14.1.0",
+    "eslint-config-airbnb": "^13.0.0",
     "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-jsx-a11y": "^4.0.0",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.4.1",
     "istanbul": "^1.1.0-alpha.1",
     "mocha": "^3.2.0",
