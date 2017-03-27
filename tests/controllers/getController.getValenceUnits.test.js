@@ -1,9 +1,10 @@
-import chai from 'chai';
-import mongoose from 'mongoose';
-import mockgoose from 'mockgoose';
-import rewire from 'rewire';
-import chaiAsPromised from 'chai-as-promised';
-import { ValenceUnit } from 'noframenet-core';
+const chai = require('chai');
+const mongoose = require('mongoose');
+const mockgoose = require('mockgoose');
+const rewire = require('rewire');
+const chaiAsPromised = require('chai-as-promised');
+const FrameElement = require('noframenet-core').FrameElement;
+const ValenceUnit = require('noframenet-core').ValenceUnit;
 
 chai.use(chaiAsPromised);
 const should = chai.should();
@@ -14,26 +15,46 @@ describe('getController#getValenceUnits', () => {
     await mockgoose(mongoose);
     await mongoose.connect('mongodb://valencer.io/tests');
     mockgoose.reset();
+    const aFE = new FrameElement({
+      _id: 1,
+      name: 'A',
+    });
+    await aFE.save();
+    const bFE = new FrameElement({
+      _id: 2,
+      name: 'B',
+    });
+    await bFE.save();
+    const cFE = new FrameElement({
+      _id: 3,
+      name: 'C',
+    });
+    await cFE.save();
+    const dFE = new FrameElement({
+      _id: 4,
+      name: 'D',
+    });
+    await dFE.save();
     const aNPObj = new ValenceUnit({
-      FE: 'A',
+      FE: 1,
       PT: 'NP',
       GF: 'Obj',
     });
     await aNPObj.save();
     const bNPObj = new ValenceUnit({
-      FE: 'B',
+      FE: 2,
       PT: 'NP',
       GF: 'Obj',
     });
     await bNPObj.save();
     const cNPExt = new ValenceUnit({
-      FE: 'C',
+      FE: 3,
       PT: 'NP',
       GF: 'Ext',
     });
     await cNPExt.save();
     const dPPaExt = new ValenceUnit({
-      FE: 'D',
+      FE: 4,
       PT: 'PP[about]',
       GF: 'Ext',
     });
@@ -46,21 +67,21 @@ describe('getController#getValenceUnits', () => {
   it('#getValenceUnits should be able to process FE.PT.GF', async () => {
     const set = await getValenceUnits(['A', 'NP', 'Obj']);
     set.length.should.equal(1);
-    set.toArray()[0].FE.should.equal('A');
+    set.toArray()[0].FE.should.equal(1);
     set.toArray()[0].PT.should.equal('NP');
     set.toArray()[0].GF.should.equal('Obj');
   });
   it('#getValenceUnits should be able to process PT.FE.GF', async () => {
     const set = await getValenceUnits(['NP', 'A', 'Obj']);
     set.length.should.equal(1);
-    set.toArray()[0].FE.should.equal('A');
+    set.toArray()[0].FE.should.equal(1);
     set.toArray()[0].PT.should.equal('NP');
     set.toArray()[0].GF.should.equal('Obj');
   });
   it('#getValenceUnits should be able to process GF.PT.FE', async () => {
     const set = await getValenceUnits(['Obj', 'NP', 'A']);
     set.length.should.equal(1);
-    set.toArray()[0].FE.should.equal('A');
+    set.toArray()[0].FE.should.equal(1);
     set.toArray()[0].PT.should.equal('NP');
     set.toArray()[0].GF.should.equal('Obj');
   });
@@ -79,8 +100,5 @@ describe('getController#getValenceUnits', () => {
   it('#getValenceUnits should be able to process FE.GF', async () => {
     const set = await getValenceUnits(['A', 'Obj']);
     set.length.should.equal(1);
-  });
-  it('#getValenceUnits should throw a NotFoundException on unknown units', () => {
-
   });
 });

@@ -1,6 +1,5 @@
 node_modules/
 .idea
-config/
 *.swp
 *.pyc
 *.o

@@ -1,7 +1,7 @@
-import { AnnotationSet } from 'noframenet-core';
-import getController from './getController';
-import ApiError from './../exceptions/apiException';
-import config from '../config';
+const AnnotationSet = require('noframenet-core').AnnotationSet;
+const getController = require('./getController');
+const ApiError = require('./../exceptions/apiException');
+const config = require('../config');
 
 const logger = config.logger;
 
@@ -66,25 +66,22 @@ async function getByID(context) {
 }
 
 async function getByNoPopulateVP(context) {
-  const patterns = await getController.getPatterns(context.processedQuery);
-  logger.debug(`Patterns.length = ${patterns.length}`);
   const startTime = process.hrtime();
   const annoSets = await AnnotationSet
     .find()
     .where('pattern')
-    .in(patterns);
-  logger.debug(`AnnotationSets.length = ${annoSets.length}`);
+    .in(context.patterns);
+  logger.info(`${annoSets.length} unique AnnotationSets found for specified valence pattern: ${context.query.vp}`);
   context.body = annoSets;
   logger.verbose(`AnnotationSets retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
 }
 
 async function getByPopulateVP(context) {
-  const patterns = await getController.getPatterns(context.processedQuery);
   const startTime = process.hrtime();
   const annoSets = await AnnotationSet
     .find()
     .where('pattern')
-    .in(patterns)
+    .in(context.patterns)
     .populate([{
       path: 'pattern',
       populate: {
@@ -106,15 +103,20 @@ async function getByPopulateVP(context) {
     }, {
       path: 'labels',
     }]);
-  logger.debug(`AnnotationSets.length = ${annoSets.length}`);
+  logger.info(`${annoSets.length} unique AnnotationSets found for specified valence pattern: ${context.query.vp}`);
   context.body = annoSets;
   logger.verbose(`AnnotationSets retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
 }
 
 async function getByVP(context) {
   logger.info(`Querying for all AnnotationSets with a valence pattern matching: ${context.query.vp}`);
+  const strictVUMatching = context.query.strictVUMatching === 'true';
+  const withExtraCoreFEs = context.query.withExtraCoreFEs !== 'false';
   const populate = context.query.populate === 'true';
-  logger.info(`Return populated documents: ${populate}`);
+  context.patterns = await getController.getPatterns(context.processedQuery, strictVUMatching, withExtraCoreFEs);
+  logger.verbose(`Return populated documents: ${populate}`);
+  logger.verbose(`Strictly matching input valence units: ${strictVUMatching}`);
+  logger.verbose(`Including extra core Frame Elements: ${withExtraCoreFEs}`);
   if (populate) {
     await getByPopulateVP(context);
   } else {
@@ -122,7 +124,7 @@ async function getByVP(context) {
   }
 }
 
-export default {
+module.exports = {
   getByID,
   getByVP,
 };

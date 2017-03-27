@@ -1,7 +1,9 @@
-import { AnnotationSet, Frame, LexUnit } from 'noframenet-core';
-import getController from './getController';
-import ApiError from './../exceptions/apiException';
-import config from '../config';
+const AnnotationSet = require('noframenet-core').AnnotationSet;
+const Frame = require('noframenet-core').Frame;
+const LexUnit = require('noframenet-core').LexUnit;
+const getController = require('./getController');
+const ApiError = require('./../exceptions/apiException');
+const config = require('../config');
 
 const logger = config.logger;
 
@@ -53,7 +55,8 @@ async function getByID(context) {
 }
 
 async function getByNoPopulateVP(context) {
-  const patterns = await getController.getPatterns(context.processedQuery);
+  const strictMatching = context.query.strictMatching !== 'false';
+  const patterns = await getController.getPatterns(context.processedQuery, strictMatching);
   const startTime = process.hrtime();
   const lexUnitIDs = await AnnotationSet
     .find()
@@ -71,7 +74,8 @@ async function getByNoPopulateVP(context) {
 }
 
 async function getByPopulateVP(context) {
-  const patterns = await getController.getPatterns(context.processedQuery);
+  const strictMatching = context.query.strictMatching !== 'false';
+  const patterns = await getController.getPatterns(context.processedQuery, strictMatching);
   const startTime = process.hrtime();
   const lexUnitIDs = await AnnotationSet
     .find()
@@ -111,7 +115,7 @@ async function getByVP(context) {
   }
 }
 
-export default {
+module.exports = {
   getByID,
   getByVP,
 };

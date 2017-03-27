@@ -1,5 +1,5 @@
-import chai from 'chai';
-import validator from './../../middlewares/validator';
+const chai = require('chai');
+const validator = require('./../../middlewares/validator');
 
 const should = chai.should();
 

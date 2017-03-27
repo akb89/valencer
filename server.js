@@ -6,20 +6,19 @@
  *       \_/ \__,_|_|\___|_| |_|\___\___|_|
  *
  */
-import Koa from 'koa';
-import winstonKoaLogger from 'winston-koa-logger';
-import cors from 'kcors';
-import mongoose from 'mongoose';
-import router from './routes';
-import config from './config';
+const Koa = require('koa');
+const cors = require('kcors');
+const mongoose = require('mongoose');
+const router = require('./routes');
+const config = require('./config');
 
 const logger = config.logger;
 const app = new Koa();
 
 app.use(cors());
-app.use(winstonKoaLogger(logger));
 // app.keys = ['my-secret-key'];
 // app.use(authenticate());
+
 app.use(async (context, next) => {
   try {
     await next();
@@ -43,6 +42,16 @@ function connectToDatabase(uri) {
     mongoose.connect(uri);
   });
 }
+/*
+async function connectToDatabase(uri) {
+  return async () => {
+    await mongoose.connection
+      .on('error', error => logger.error(error))
+      .on('close', () => logger.info('Database connection closed.'))
+      .once('open', () => mongoose.connections[0]);
+    await mongoose.connect(uri);
+  };
+}*/
 
 function printLogo() {
   logger.info('            _                                 ');

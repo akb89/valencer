@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import bluebird from 'bluebird';
+const mongoose = require('mongoose');
+const bluebird = require('bluebird');
 
 mongoose.Promise = bluebird;
 
@@ -14,4 +14,4 @@ patternSchema.index({
   valenceUnits: 1,
 });
 
-export default mongoose.model('TMPattern', patternSchema, '_tmpatterns');
+module.exports = mongoose.model('TMPattern', patternSchema, '_tmpatterns');

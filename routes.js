@@ -1,32 +1,36 @@
-import Router from 'koa-router';
-import annoSetController from './controllers/annoSetController';
-import frameController from './controllers/frameController';
-import lexUnitController from './controllers/lexUnitController';
-import patternController from './controllers/patternController';
-import valenceUnitController from './controllers/valenceUnitController';
-import validator from './middlewares/validator';
-import processor from './middlewares/processor';
+const Router = require('koa-router');
+const annoSetController = require('./controllers/annoSetController');
+const frameController = require('./controllers/frameController');
+const lexUnitController = require('./controllers/lexUnitController');
+const patternController = require('./controllers/patternController');
+const valenceUnitController = require('./controllers/valenceUnitController');
+const validator = require('./middlewares/validator');
+const processor = require('./middlewares/processor');
 
 const router = new Router();
 
 /**
  * @apiDefine NotFoundIDError
+ * @apiVersion 3.0.0
  * @apiError (Error 404) NotFoundError The id was not found
  */
 
 /**
  * @apiDefine NotFoundVPError
+ * @apiVersion 3.0.0
  * @apiError (Error 404) NotFoundError A valence unit of the vp was not found
  */
 
 /**
  * @apiDefine InvalidQuery
+ * @apiVersion 3.0.0
  * @apiError (Error 400) InvalidQuery The specified query is null, empty or
  * combines :id and vp in request
  */
 
 /**
  * @apiDefine InvalidQueryParamsID
+ * @apiVersion 3.0.0
  * @apiError (Error 400) InvalidQueryParams The populate parameter is neither
  * <code>true</code> nor <code>false</code> or the specified :id is
  * neither a <code>Number</code> nor a valid <code>ObjectID</code>
@@ -34,6 +38,7 @@ const router = new Router();
 
 /**
  * @apiDefine InvalidQueryParamsVP
+ * @apiVersion 3.0.0
  * @apiError (Error 400) InvalidQueryParams The populate parameter is neither
  * <code>true</code> nor <code>false</code> or the vp parameter contains either
  * an invalid character, an invalid sequence of characters or more than 3
@@ -42,7 +47,7 @@ const router = new Router();
 
 /**
  * @apiDefine idParam
- *
+ * @apiVersion 3.0.0
  * @apiParam {Number}     id          The id
  * @apiParam {Boolean} [populate=false]    Specify whether documents
  * should be populated
@@ -50,16 +55,22 @@ const router = new Router();
 
 /**
  * @apiDefine vpParam
- *
+ * @apiVersion 3.0.0
  * @apiParam {String}     vp          The Valence Pattern: a
  * combination of triplets FE.PT.GF
  * @apiParam {Boolean}    [populate=false]     Specify whether documents
  * should be populated.
+ * @apiParam {Boolean}    [strictVUMatching=false]     Specify whether
+ * the number of valence units should match exactly. Ex: Querying for
+ * Donor.NP.Ext with strictVUMatching=true will return all patterns with only
+ * one valenceUnit
+ * @apiParam {Boolean}    [withExtraCoreFEs=true] Specify whether, in cases of
+ * non-strict valence unit matching, extra Frame Elements can be core FEs.
  */
 
 /**
  * @apiDefine AnnotationSetSuccess
- *
+ * @apiVersion 3.0.0
  * @apiSuccess  {Number}   _id        The AnnotationSet id
  * @apiSuccess  {Number}   lexUnit    The LexUnit id
  * @apiSuccess  {Number}   sentence   The Sentence id
@@ -68,7 +79,7 @@ const router = new Router();
 
 /**
  * @apiDefine AnnotationSetSuccessPopulated
- *
+ * @apiVersion 3.0.0
  * @apiSuccess   {Number}    _id                          The AnnotationSet id
  * @apiSuccess   {Object}    lexUnit                      The LexUnit
  * @apiSuccess   {Number}    lexUnit._id                  The LexUnit id
@@ -127,6 +138,7 @@ const router = new Router();
 
 /**
  * @apiDefine FrameSuccess
+ * @apiVersion 3.0.0
  * @apiSuccess   {Number}    _id            The Frame id
  * @apiSuccess   {String}    name           The Frame name
  * @apiSuccess   {String}    definition     The Frame definition
@@ -141,6 +153,7 @@ const router = new Router();
 
 /**
  * @apiDefine FrameSuccessPopulated
+ * @apiVersion 3.0.0
  * @apiSuccess   {Number}    _id            The Frame id
  * @apiSuccess   {String}    name           The Frame name
  * @apiSuccess   {String}    definition     The Frame definition
@@ -167,6 +180,7 @@ const router = new Router();
 
 /**
  * @apiDefine LexUnitSuccess
+ * @apiVersion 3.0.0
  * @apiSuccess   {Number}    _id                  The LexUnit id
  * @apiSuccess   {String}    name                 The LexUnit name
  * @apiSuccess   {String}    pos                  The LexUnit part of speech
@@ -182,6 +196,7 @@ const router = new Router();
 
 /**
  * @apiDefine LexUnitSuccessPopulated
+ * @apiVersion 3.0.0
  * @apiSuccess   {Number}    _id                  The LexUnit id
  * @apiSuccess   {String}    name                 The LexUnit name
  * @apiSuccess   {String}    pos                  The LexUnit part of speech
@@ -219,12 +234,14 @@ const router = new Router();
 
 /**
  * @apiDefine PatternSuccess
+ * @apiVersion 3.0.0
  * @apiSuccess   {Object}    _id            The Pattern ObjectID
  * @apiSuccess   {Object[]}  valenceUnits   The Pattern ValenceUnits ObjectIDs
  */
 
 /**
  * @apiDefine PatternSuccessPopulated
+ * @apiVersion 3.0.0
  * @apiSuccess   {Object}    _id            The Pattern ObjectID
  * @apiSuccess   {Object[]}  valenceUnits   The Pattern ValenceUnits
  * @apiSuccess   {Object}  valenceUnits._id   The ValenceUnits ObjectIDs
@@ -235,6 +252,7 @@ const router = new Router();
 
 /**
  * @apiDefine ValenceUnitSuccess
+ * @apiVersion 3.0.0
  * @apiSuccess   {Object}  _id  The ObjectID
  * @apiSuccess   {String}  FE   The frame element name
  * @apiSuccess   {String}  PT   The phrase type
@@ -243,7 +261,7 @@ const router = new Router();
 
 /**
  * @api {get} /annoSet/:id GetAnnoSet
- * @apiVersion 1.0.0
+ * @apiVersion 3.0.0
  * @apiName GetAnnoSet
  * @apiGroup AnnotationSet
  * @apiDescription Get AnnotationSet with id. Returns at most one
@@ -264,7 +282,7 @@ router.get('/annoSet/:id',
 
 /**
  * @api {get} /annoSets GetAnnoSets
- * @apiVersion 1.0.0
+ * @apiVersion 3.0.0
  * @apiName GetAnnoSets
  * @apiGroup AnnotationSet
  * @apiDescription Get all AnnotationSets with pattern matching input
@@ -285,7 +303,7 @@ router.get('/annoSets',
 
 /**
  * @api {get} /frame/:id GetFrame
- * @apiVersion 1.0.0
+ * @apiVersion 3.0.0
  * @apiName GetFrame
  * @apiGroup Frame
  * @apiDescription Get Frame with id. Returns at most one
@@ -306,7 +324,7 @@ router.get('/frame/:id',
 
 /**
  * @api {get} /frames GetFrames
- * @apiVersion 1.0.0
+ * @apiVersion 3.0.0
  * @apiName GetFrames
  * @apiGroup Frame
  * @apiDescription Get all Frames with pattern matching input vp. Returns an
@@ -327,7 +345,7 @@ router.get('/frames',
 
 /**
  * @api {get} /lexUnit/:id GetLexUnit
- * @apiVersion 1.0.0
+ * @apiVersion 3.0.0
  * @apiName GetLexUnit
  * @apiGroup LexUnit
  * @apiDescription Get LexUnit with id. Returns at most one
@@ -348,7 +366,7 @@ router.get('/lexUnit/:id',
 
 /**
  * @api {get} /lexUnits GetLexUnits
- * @apiVersion 1.0.0
+ * @apiVersion 3.0.0
  * @apiName GetLexUnits
  * @apiGroup LexUnit
  * @apiDescription Get all LexUnits with pattern matching input vp. Returns an
@@ -369,7 +387,7 @@ router.get('/lexUnits',
 
 /**
  * @api {get} /pattern/:id GetPattern
- * @apiVersion 1.0.0
+ * @apiVersion 3.0.0
  * @apiName GetPattern
  * @apiGroup Pattern
  * @apiDescription Get Pattern with id. Returns at most one
@@ -390,7 +408,7 @@ router.get('/pattern/:id',
 
 /**
  * @api {get} /patterns GetPatterns
- * @apiVersion 1.0.0
+ * @apiVersion 3.0.0
  * @apiName GetPatterns
  * @apiGroup Pattern
  * @apiDescription Get all Patterns with pattern matching input vp. Returns an
@@ -411,7 +429,7 @@ router.get('/patterns',
 
 /**
  * @api {get} /valenceUnit/:id GetValenceUnit
- * @apiVersion 1.0.0
+ * @apiVersion 3.0.0
  * @apiName GetValenceUnit
  * @apiGroup ValenceUnit
  * @apiDescription Get ValenceUnit with id. Returns at most one
@@ -431,7 +449,7 @@ router.get('/valenceUnit/:id',
 
 /**
  * @api {get} /valenceUnits GetValenceUnits
- * @apiVersion 1.0.0
+ * @apiVersion 3.0.0
  * @apiName GetValenceUnits
  * @apiGroup ValenceUnit
  * @apiDescription Get all ValenceUnits with pattern matching input vp. Returns
@@ -449,4 +467,4 @@ router.get('/valenceUnits',
   processor.processvp,
   valenceUnitController.getByVP);
 
-export default router;
+module.exports = router;

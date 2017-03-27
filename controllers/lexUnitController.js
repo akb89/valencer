@@ -1,7 +1,8 @@
-import { AnnotationSet, LexUnit } from 'noframenet-core';
-import getController from './getController';
-import ApiError from './../exceptions/apiException';
-import config from '../config';
+const AnnotationSet = require('noframenet-core').AnnotationSet;
+const LexUnit = require('noframenet-core').LexUnit;
+const getController = require('./getController');
+const ApiError = require('./../exceptions/apiException');
+const config = require('../config');
 
 const logger = config.logger;
 
@@ -56,12 +57,11 @@ async function getByID(context) {
 }
 
 async function getByNoPopulateVP(context) {
-  const patterns = await getController.getPatterns(context.processedQuery);
   const startTime = process.hrtime();
   const lexUnitIDs = await AnnotationSet
     .find()
     .where('pattern')
-    .in(patterns)
+    .in(context.patterns)
     .distinct('lexUnit');
   logger.info(`${lexUnitIDs.length} unique LexUnits found for specified valence pattern: ${context.query.vp}`);
   context.body = lexUnitIDs.sort();
@@ -69,12 +69,11 @@ async function getByNoPopulateVP(context) {
 }
 
 async function getByPopulateVP(context) {
-  const patterns = await getController.getPatterns(context.processedQuery);
   const startTime = process.hrtime();
   const lexUnitIDs = await AnnotationSet
     .find()
     .where('pattern')
-    .in(patterns)
+    .in(context.patterns)
     .distinct('lexUnit');
   const lexUnits = await LexUnit
     .find()
@@ -98,8 +97,13 @@ async function getByPopulateVP(context) {
 
 async function getByVP(context) {
   logger.info(`Querying for all LexUnits with a valence pattern matching: ${context.query.vp}`);
+  const strictVUMatching = context.query.strictVUMatching === 'true';
+  const withExtraCoreFEs = context.query.withExtraCoreFEs !== 'false';
   const populate = context.query.populate === 'true';
-  logger.info(`Return populated documents: ${populate}`);
+  context.patterns = await getController.getPatterns(context.processedQuery, strictVUMatching, withExtraCoreFEs);
+  logger.verbose(`Return populated documents: ${populate}`);
+  logger.verbose(`Strictly matching input valence units: ${strictVUMatching}`);
+  logger.verbose(`Including extra core Frame Elements: ${withExtraCoreFEs}`);
   if (populate) {
     await getByPopulateVP(context);
   } else {
@@ -107,7 +111,7 @@ async function getByVP(context) {
   }
 }
 
-export default {
+module.exports = {
   getByID,
   getByVP,
 };

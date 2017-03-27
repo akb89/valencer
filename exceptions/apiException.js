@@ -1,4 +1,4 @@
-import GenericException from './genericException';
+const GenericException = require('./genericException');
 
 function NoAuthorizationHeaderError() {
   return new GenericException('NoAuthorizationHeaderError', 1,
@@ -42,7 +42,7 @@ function NotFoundError(message) {
   return new GenericException('NotFoundError', 8, new Error(message), 404);
 }
 
-export default {
+module.exports = {
   NoAuthorizationHeaderError,
   NoTwoPartAuthorizationError,
   InvalidAPIKey,

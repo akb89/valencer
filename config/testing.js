@@ -1,4 +1,4 @@
-import logger from './../logger/logger';
+const logger = require('./../logger/logger');
 
 const testing = {
   logger: logger.warn,

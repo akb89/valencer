@@ -1,7 +1,7 @@
-import { Pattern } from 'noframenet-core';
-import getController from './getController';
-import ApiError from './../exceptions/apiException';
-import config from '../config';
+const Pattern = require('noframenet-core').Pattern;
+const getController = require('./getController');
+const ApiError = require('./../exceptions/apiException');
+const config = require('../config');
 
 const logger = config.logger;
 
@@ -48,7 +48,8 @@ async function getByID(context) {
 }
 
 async function getByNoPopulateVP(context) {
-  const patterns = await getController.getPatterns(context.processedQuery);
+  const strictMatching = context.query.strictMatching !== 'false';
+  const patterns = await getController.getPatterns(context.processedQuery, strictMatching);
   const startTime = process.hrtime();
   logger.info(`${patterns.length} unique Patterns found for specified valence pattern: ${context.query.vp}`);
   context.body = patterns.sort();
@@ -56,7 +57,8 @@ async function getByNoPopulateVP(context) {
 }
 
 async function getByPopulateVP(context) {
-  const patterns = await getController.getPatterns(context.processedQuery);
+  const strictMatching = context.query.strictMatching !== 'false';
+  const patterns = await getController.getPatterns(context.processedQuery, strictMatching);
   const startTime = process.hrtime();
   const outpatterns = await Pattern
     .find()
@@ -81,7 +83,7 @@ async function getByVP(context) {
   }
 }
 
-export default {
+module.exports = {
   getByID,
   getByVP,
 };
