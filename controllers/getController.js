@@ -1,8 +1,11 @@
-import { FrameElement, Pattern, ValenceUnit, Set } from 'noframenet-core';
-import bluebird from 'bluebird';
-import TMPattern from './../models/tmpattern';
-import ApiError from './../exceptions/apiException';
-import config from './../config';
+const FrameElement = require('noframenet-core').FrameElement;
+const Pattern = require('noframenet-core').Pattern;
+const ValenceUnit = require('noframenet-core').ValenceUnit;
+const Set = require('noframenet-core').Set;
+const bluebird = require('bluebird');
+const TMPattern = require('./../models/tmpattern');
+const ApiError = require('./../exceptions/apiException');
+const config = require('./../config');
 
 const Promise = bluebird.Promise;
 const logger = config.logger;
@@ -151,7 +154,6 @@ function isFullyFormedFEVU(unitWithFEIDs) {
   return false;
 }
 
-// TODO: add unit tests for strictMatching
 async function getPatterns(tokenArray, strictVUMatching, withExtraCoreFEs) {
   let startTime = process.hrtime();
   const fullyFormedFEVU = [];
@@ -167,6 +169,10 @@ async function getPatterns(tokenArray, strictVUMatching, withExtraCoreFEs) {
   startTime = process.hrtime();
   const patterns = await $getPatterns(valenceUnitsArray);
   logger.debug(`Unfiltered patterns length = ${patterns.length}`);
+  if (patterns.length === 0) {
+    const vp = tokenArray.map(unitArray => unitArray.join('.')).join(' ');
+    logger.warn(`Patterns length is null for valence pattern = ${vp}`);
+  }
   if (strictVUMatching) {
     const strictMatchingPatterns = patterns.filter(pattern => pattern.valenceUnits.length === tokenArray.length);
     logger.info(`Retrieving patterns stricly matching number of valenceUnits specified in input (#${tokenArray.length})`);
@@ -220,7 +226,7 @@ async function getPatterns(tokenArray, strictVUMatching, withExtraCoreFEs) {
   throw ApiError.InvalidQueryParams('The Valencer API cannot process queries with strictVUMatching parameter set to false and withExtraCoreFEs parameter set to false if at least one FE is unspecified in the input Valence Pattern');
 }
 
-export default {
+module.exports = {
   getPatterns,
   getValenceUnits,
 };

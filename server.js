@@ -6,11 +6,11 @@
  *       \_/ \__,_|_|\___|_| |_|\___\___|_|
  *
  */
-import Koa from 'koa';
-import cors from 'kcors';
-import mongoose from 'mongoose';
-import router from './routes';
-import config from './config';
+const Koa = require('koa');
+const cors = require('kcors');
+const mongoose = require('mongoose');
+const router = require('./routes');
+const config = require('./config');
 
 const logger = config.logger;
 const app = new Koa();

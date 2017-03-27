@@ -1,6 +1,6 @@
 {
   "name": "Valencer",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "A REST API to query valence patterns in FrameNet",
   "keywords": [
     "FrameNet",
@@ -16,8 +16,9 @@
     "test": "NODE_ENV=testing ./node_modules/.bin/mocha --compilers js:babel-core/register --require babel-polyfill './tests/**/*.@(js)' --reporter spec",
     "cover": "NODE_ENV=testing ./node_modules/.bin/istanbul cover _mocha -- ./tests/**/*.test.js --compilers js:babel-register --require babel-polyfill",
     "doc": "rm -rf docs/ && ./node_modules/apidoc/bin/apidoc -i ./ -o ./docs/ -e node_modules",
-    "dev": "NODE_ENV=development ./node_modules/babel-cli/bin/babel-node.js server.js",
-    "start": "NODE_ENV=production ./node_modules/babel-cli/bin/babel-node.js server.js"
+    "dev": "NODE_ENV=development node server.js",
+    "start": "NODE_ENV=production node server.js",
+    "startmongo": "mongod &"
   },
   "homepage": "https://github.com/akb89/valencer#readme",
   "repository": {
@@ -29,7 +30,7 @@
   },
   "apidoc": {
     "name": "valencer-doc",
-    "version": "2.0.0",
+    "version": "3.0.0",
     "description": "Documentation for the Valencer API",
     "title": "Valencer API Doc",
     "url": "https://akb89.github.io/valencer/",
@@ -47,16 +48,17 @@
     "kcors": "^2.2.0",
     "koa": "^2.2.0",
     "koa-router": "^7.0.1",
-    "moment": "^2.17.1",
+    "moment": "^2.18.1",
     "mongodb": "^2.2.25",
-    "mongoose": "^4.9.0",
-    "noframenet-core": "^3.1.2"
+    "mongoose": "^4.9.2",
+    "noframenet-core": "^3.1.2",
+    "winston": "^2.3.1"
   },
   "devDependencies": {
     "apidoc": "^0.17.5",
     "babel-cli": "^6.24.0",
     "babel-core": "^6.24.0",
-    "babel-eslint": "^7.1.1",
+    "babel-eslint": "^7.2.1",
     "babel-polyfill": "^6.23.0",
     "babel-preset-es2015": "^6.24.0",
     "babel-preset-stage-0": "^6.22.0",

@@ -1,7 +1,7 @@
-import { Pattern } from 'noframenet-core';
-import getController from './getController';
-import ApiError from './../exceptions/apiException';
-import config from '../config';
+const Pattern = require('noframenet-core').Pattern;
+const getController = require('./getController');
+const ApiError = require('./../exceptions/apiException');
+const config = require('../config');
 
 const logger = config.logger;
 
@@ -83,7 +83,7 @@ async function getByVP(context) {
   }
 }
 
-export default {
+module.exports = {
   getByID,
   getByVP,
 };

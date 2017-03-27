@@ -1,5 +1,4 @@
-// Because of the export default works with babel, we need to use classic require
-import logger from './../logger/logger';
+const logger = require('./../logger/logger');
 
 const env = process.env.NODE_ENV || 'development';
 let tmp;
@@ -11,6 +10,4 @@ try {
   process.exit(1);
 }
 
-const config = tmp;
-
-export default config;
+module.exports = tmp;

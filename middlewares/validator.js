@@ -1,5 +1,5 @@
-import config from '../config';
-import ApiError from './../exceptions/apiException';
+const ApiError = require('./../exceptions/apiException');
+const config = require('./../config');
 
 const logger = config.logger;
 
@@ -73,6 +73,6 @@ function validate(context, next) {
   return next();
 }
 
-export default {
+module.exports = {
   validate,
 };

@@ -1,8 +1,8 @@
-import crypto from 'crypto';
-import moment from 'moment';
-import ApiErrors from './../exceptions/apiException';
-import User from './../models/user';
-import config from './../config';
+const crypto = require('crypto');
+const moment = require('moment');
+const ApiError = require('./../exceptions/apiException');
+const User = require('./../models/user');
+const config = require('./../config');
 
 async function verifyApiSignature(context, next) {
   const req = context.request;
@@ -14,12 +14,12 @@ async function verifyApiSignature(context, next) {
 
   const authorization = req.header.authorization;
   if (!authorization) {
-    throw ApiErrors.NoAuthorizationHeaderError;
+    throw ApiError.NoAuthorizationHeaderError;
   }
 
   const twoPartAuth = authorization.split(':');
   if (twoPartAuth.length !== 2) {
-    throw ApiErrors.NoTwoPartAuthorizationError;
+    throw ApiError.NoTwoPartAuthorizationError;
   }
 
   const apiKey = twoPartAuth[0];
@@ -28,7 +28,7 @@ async function verifyApiSignature(context, next) {
     key: apiKey,
   });
   if (apiInfo.length === 0) {
-    throw ApiErrors.InvalidAPIKey;
+    throw ApiError.InvalidAPIKey;
   }
   apiInfo = apiInfo[0];
 
@@ -43,7 +43,7 @@ async function verifyApiSignature(context, next) {
     .digest('hex');
 
   if (hash !== sign) {
-    throw ApiErrors.InvalidSignature;
+    throw ApiError.InvalidSignature;
   }
 
   // Test timestamp
@@ -55,7 +55,7 @@ async function verifyApiSignature(context, next) {
     (timestamp >= legitInterval[0] && timestamp <= legitInterval[1]);
 
   if (!intervalIsOkay) {
-    throw ApiErrors.InvalidTimestamp;
+    throw ApiError.InvalidTimestamp;
   }
 
   apiInfo.timestamp = now;
@@ -63,6 +63,6 @@ async function verifyApiSignature(context, next) {
   return await next(); // TODO: added return here. Check
 }
 
-export default {
+module.exports = {
   authenticate: verifyApiSignature,
 };

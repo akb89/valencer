@@ -42,7 +42,7 @@ function toTokenArray(valenceArray) {
   return tokenArray;
 }
 
-export default {
+module.exports = {
   toValenceArray,
   toTokenArray,
 };

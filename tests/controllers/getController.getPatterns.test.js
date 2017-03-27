@@ -1,8 +1,10 @@
-import chai from 'chai';
-import mongoose from 'mongoose';
-import mockgoose from 'mockgoose';
-import { FrameElement, Pattern, ValenceUnit } from 'noframenet-core';
-import getController from './../../controllers/getController';
+const chai = require('chai');
+const mongoose = require('mongoose');
+const mockgoose = require('mockgoose');
+const FrameElement = require('noframenet-core').FrameElement;
+const Pattern = require('noframenet-core').Pattern;
+const ValenceUnit = require('noframenet-core').ValenceUnit;
+const getController = require('./../../controllers/getController');
 
 const should = chai.should();
 

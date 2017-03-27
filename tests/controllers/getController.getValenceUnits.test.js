@@ -1,9 +1,10 @@
-import chai from 'chai';
-import mongoose from 'mongoose';
-import mockgoose from 'mockgoose';
-import rewire from 'rewire';
-import chaiAsPromised from 'chai-as-promised';
-import { FrameElement, ValenceUnit } from 'noframenet-core';
+const chai = require('chai');
+const mongoose = require('mongoose');
+const mockgoose = require('mockgoose');
+const rewire = require('rewire');
+const chaiAsPromised = require('chai-as-promised');
+const FrameElement = require('noframenet-core').FrameElement;
+const ValenceUnit = require('noframenet-core').ValenceUnit;
 
 chai.use(chaiAsPromised);
 const should = chai.should();

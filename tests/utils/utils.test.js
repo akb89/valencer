@@ -1,5 +1,5 @@
-import chai from 'chai';
-import utils from './../../utils/utils';
+const chai = require('chai');
+const utils = require('./../../utils/utils');
 
 const should = chai.should();
 

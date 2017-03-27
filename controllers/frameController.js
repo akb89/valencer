@@ -1,7 +1,9 @@
-import { AnnotationSet, Frame, LexUnit } from 'noframenet-core';
-import getController from './getController';
-import ApiError from './../exceptions/apiException';
-import config from '../config';
+const AnnotationSet = require('noframenet-core').AnnotationSet;
+const Frame = require('noframenet-core').Frame;
+const LexUnit = require('noframenet-core').LexUnit;
+const getController = require('./getController');
+const ApiError = require('./../exceptions/apiException');
+const config = require('../config');
 
 const logger = config.logger;
 
@@ -113,7 +115,7 @@ async function getByVP(context) {
   }
 }
 
-export default {
+module.exports = {
   getByID,
   getByVP,
 };

@@ -1,5 +1,5 @@
-import utils from './../utils/utils';
-import config from '../config';
+const utils = require('./../utils/utils');
+const config = require('../config');
 
 const logger = config.logger;
 
@@ -15,7 +15,7 @@ function processid(context, next) {
   return next();
 }
 
-export default {
+module.exports = {
   processvp,
   processid,
 };

@@ -1,4 +1,4 @@
-import logger from './../logger/logger';
+const logger = require('./../logger/logger');
 
 const production = {
   dbUri: 'mongodb://localhost:27017/noframenet15',
