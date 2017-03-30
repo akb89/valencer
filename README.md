@@ -26,7 +26,7 @@ Welcome to **Valencer**, a RESTful API to query combinations of syntactic realiz
 
 ## Requirements
 - [Mongo](https://docs.mongodb.com/manual/administration/install-community/)
-- [Node](https://nodejs.org/en/download/)
+- [Node](https://nodejs.org/en/download/) >= v7.6
 
 To import FrameNet data to a Mongo database, check out [NoFrameNet](https://github.com/akb89/noframenet)
 
