@@ -18,7 +18,7 @@
     "doc": "rm -rf docs/ && ./node_modules/apidoc/bin/apidoc -i ./ -o ./docs/ -e node_modules",
     "dev": "NODE_ENV=development node server.js",
     "start": "NODE_ENV=production node server.js",
-    "startmongo": "mongod &"
+    "startmongo": "/usr/local/share/mongodb-3.4.3/bin/mongod --fork --logpath /tmp/mongod.valencer.log --config ./config/mongod.conf"
   },
   "homepage": "https://github.com/akb89/valencer#readme",
   "repository": {

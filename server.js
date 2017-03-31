@@ -23,8 +23,7 @@ app.use(async (context, next) => {
   try {
     await next();
   } catch (err) {
-    logger.error(err.message);
-    logger.debug(err);
+    logger.error(err);
     err.expose = true; // expose the error to the context;
     context.status = err.status || 500;
     context.body = err.message;
