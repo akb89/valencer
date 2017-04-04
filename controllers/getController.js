@@ -2,6 +2,7 @@ const FrameElement = require('noframenet-core').FrameElement;
 const Pattern = require('noframenet-core').Pattern;
 const ValenceUnit = require('noframenet-core').ValenceUnit;
 const Set = require('noframenet-core').Set;
+const mongoose = require('mongoose');
 const bluebird = require('bluebird');
 const TMPattern = require('./../models/tmpattern');
 const ApiError = require('./../exceptions/apiException');
@@ -80,18 +81,29 @@ async function getValenceUnits(unit) {
   return $getValenceUnits(unitWithFEIDs);
 }
 
-async function $getPatterns(valenceUnitsArray) {
-  await Pattern
+async function $getPatterns(valenceUnitsArray, queryIdentifier) {
+  const $tmpatterns = await Pattern
+    .collection
     .aggregate([{
       $match: {
         valenceUnits: {
           $in: valenceUnitsArray[0].map(vu => vu._id),
         },
       },
-    }, {
-      $out: '_tmpatterns',
-    }]);
-  const patterns = await TMPattern.find();
+    }], {
+      cursor: {},
+    }).toArray();
+  await TMPattern.insertMany($tmpatterns.map(($tmpattern) => {
+    const tmpinstance = new TMPattern({
+      valenceUnits: $tmpattern.valenceUnits,
+      query: queryIdentifier,
+      pattern: $tmpattern._id,
+    });
+    return tmpinstance;
+  }));
+  const patterns = await TMPattern.find({
+    query: queryIdentifier,
+  });
   if (valenceUnitsArray.length > 1) {
     let tmpatterns;
     for (let i = 1; i < valenceUnitsArray.length; i += 1) {
@@ -100,8 +112,10 @@ async function $getPatterns(valenceUnitsArray) {
         merge.addEach(valenceUnitsArray[j]);
       }
       const tmp = await TMPattern
+        .collection
         .aggregate([{
           $match: {
+            query: queryIdentifier,
             valenceUnits: {
               $in: valenceUnitsArray[i].map(vu => vu._id),
             },
@@ -117,7 +131,9 @@ async function $getPatterns(valenceUnitsArray) {
           },
         }, {
           $group: {
-            _id: '$_id',
+            _id: {
+              pattern: '$pattern',
+            },
             count: {
               $sum: 1,
             },
@@ -128,20 +144,43 @@ async function $getPatterns(valenceUnitsArray) {
               $gte: i + 1,
             },
           },
-        }]);
-      await Pattern.aggregate([{
-        $match: {
-          _id: {
-            $in: tmp.map(t => t._id),
+        }], {
+          cursor: {},
+        }).toArray();
+      const $patterns = await Pattern
+        .collection
+        .aggregate([{
+          $match: {
+            _id: {
+              $in: tmp.map(t => t._id.pattern),
+            },
           },
-        },
-      }, {
-        $out: '_tmpatterns',
-      }]);
-      tmpatterns = await TMPattern.find();
+        }], {
+          cursor: {},
+        }).toArray();
+      await TMPattern.deleteMany({
+        query: queryIdentifier,
+      });
+      await TMPattern.insertMany($patterns.map(($pattern) => {
+        const tmpinstance = new TMPattern({
+          valenceUnits: $pattern.valenceUnits,
+          query: queryIdentifier,
+          pattern: $pattern._id,
+        });
+        return tmpinstance;
+      }));
+      tmpatterns = await TMPattern.find({
+        query: queryIdentifier,
+      });
     }
+    await TMPattern.deleteMany({
+      query: queryIdentifier,
+    });
     return tmpatterns;
   }
+  await TMPattern.deleteMany({
+    query: queryIdentifier,
+  });
   return patterns;
 }
 
@@ -167,7 +206,8 @@ async function getPatterns(tokenArray, strictVUMatching, withExtraCoreFEs) {
   logger.verbose(`ValenceUnits retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
   logger.debug(`ValenceUnits.length = ${valenceUnitsArray.length}`);
   startTime = process.hrtime();
-  const patterns = await $getPatterns(valenceUnitsArray);
+  const queryIdentifier = new mongoose.Types.ObjectId();
+  const patterns = await $getPatterns(valenceUnitsArray, queryIdentifier);
   logger.debug(`Unfiltered patterns length = ${patterns.length}`);
   if (patterns.length === 0) {
     const vp = tokenArray.map(unitArray => unitArray.join('.')).join(' ');
