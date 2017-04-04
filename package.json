@@ -14,7 +14,7 @@
   "scripts": {
     "lint": "./node_modules/.bin/eslint . --ext .js",
     "test": "NODE_ENV=testing ./node_modules/.bin/mocha './tests/**/*.@(js)' --reporter spec",
-    "cover": "NODE_ENV=testing ./node_modules/.bin/istanbul cover _mocha -- ./tests/**/*.test.js --compilers js:babel-register --require babel-polyfill",
+    "cover": "NODE_ENV=testing ./node_modules/.bin/istanbul cover _mocha -- ./tests/**/*.test.js",
     "doc": "rm -rf docs/ && ./node_modules/apidoc/bin/apidoc -i ./ -o ./docs/ -e node_modules",
     "dev": "NODE_ENV=development node server.js",
     "start": "NODE_ENV=production node server.js",
