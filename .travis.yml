@@ -4,6 +4,8 @@ node_js:
 addons:
     code_climate:
         repo_token: b5beab30d6c5f64c881325111106a0e29ea3255f29736afa910974a2b9306c22
+services:
+  - mongodb
 script:
     - npm run cover
 after_success:
