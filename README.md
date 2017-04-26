@@ -3,7 +3,6 @@
 [![Build][travis-image]][travis-url]
 [![Dependencies][david-image]][david-url]
 [![MIT License][license-image]][license-url]
-[![Code Coverage][coverage-image]][coverage-url]
 [![Code Quality][quality-image]][quality-url]
 [![FrameNet][framenet-image]][framenet-url]
 
