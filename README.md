@@ -2,9 +2,10 @@
 [![GitHub release][release-image]][release-url]
 [![Build][travis-image]][travis-url]
 [![Dependencies][david-image]][david-url]
-[![MIT License][license-image]][license-url]
+[![Code Coverage][coverage-image]][coverage-url]
 [![Code Quality][quality-image]][quality-url]
 [![FrameNet][framenet-image]][framenet-url]
+[![MIT License][license-image]][license-url]
 
 Welcome to **Valencer**, a RESTful API to query combinations of syntactic realizations of the arguments of a predicate &ndash; aka *valence patterns* &ndash; in the FrameNet database.
 
