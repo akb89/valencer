@@ -1,6 +1,6 @@
 {
   "name": "Valencer",
-  "version": "3.0.3",
+  "version": "3.1.1n",
   "description": "A REST API to query valence patterns in FrameNet",
   "keywords": [
     "FrameNet",
@@ -13,13 +13,12 @@
   "main": "server.js",
   "scripts": {
     "lint": "./node_modules/.bin/eslint . --ext .js",
-    "test": "NODE_ENV=testing ./node_modules/.bin/mocha './tests/**/*.@(js)' --reporter spec",
+    "test": "npm run startmongo && NODE_ENV=testing ./node_modules/.bin/mocha './tests/**/*.@(js)' --reporter spec",
     "cover": "NODE_ENV=testing ./node_modules/.bin/istanbul cover _mocha -- ./tests/**/*.test.js",
     "doc": "rm -rf docs/ && ./node_modules/apidoc/bin/apidoc -i ./ -o ./docs/ -e node_modules",
     "dev": "NODE_ENV=development node server.js",
     "start": "NODE_ENV=production node server.js",
     "startmongo": "ps -ax | grep -v grep | grep mongo > /dev/null 2>&1 || mongod --fork --logpath /tmp/mongod.valencer.log --config ./config/mongod.conf",
-    "startmongotest": "",
     "flow": "flow",
     "posttest": "./node_modules/.bin/flow"
   },
@@ -48,25 +47,26 @@
   },
   "dependencies": {
     "bluebird": "^3.5.0",
-    "kcors": "^2.2.0",
+    "flow": "^0.2.3",
+    "kcors": "^2.2.1",
     "koa": "^2.2.0",
-    "koa-router": "^7.0.1",
+    "koa-router": "^7.2.0",
     "moment": "^2.18.1",
-    "mongoose": "^4.9.2",
+    "mongoose": "^4.10.4",
     "noframenet-core": "^3.2.0",
     "winston": "^2.3.1"
   },
   "devDependencies": {
-    "apidoc": "^0.17.5",
-    "chai": "^3.5.0",
+    "apidoc": "^0.17.6",
+    "chai": "^4.0.2",
     "eslint": "^3.17.1",
     "eslint-config-airbnb": "^13.0.0",
-    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-import": "^2.3.0",
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.4.1",
-    "flow-bin": "^0.45.0",
-    "istanbul": "^1.1.0-alpha.1",
-    "mocha": "^3.2.0",
+    "flow-bin": "^0.47.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.4.2",
     "rewire": "^2.5.2"
   }
 }
