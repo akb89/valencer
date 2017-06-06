@@ -1,20 +1,19 @@
 const chai = require('chai');
 const mongoose = require('mongoose');
-const mockgoose = require('mockgoose');
 const rewire = require('rewire');
-const chaiAsPromised = require('chai-as-promised');
 const FrameElement = require('noframenet-core').FrameElement;
 const ValenceUnit = require('noframenet-core').ValenceUnit;
+const config = require('./../../config');
 
-chai.use(chaiAsPromised);
 const should = chai.should();
 const getValenceUnits = rewire('./../../controllers/getController.js').__get__('getValenceUnits');
+mongoose.Promise = require('bluebird');
 
 describe('getController#getValenceUnits', () => {
   before(async () => {
-    await mockgoose(mongoose);
-    await mongoose.connect('mongodb://valencer.io/tests');
-    mockgoose.reset();
+    if (mongoose.connection.readyState === 0) {
+      await mongoose.connect(config.dbUri);
+    }
     const aFE = new FrameElement({
       _id: 1,
       name: 'A',
@@ -60,9 +59,8 @@ describe('getController#getValenceUnits', () => {
     });
     await dPPaExt.save();
   });
-  after(() => {
-    mongoose.disconnect();
-    mockgoose.reset();
+  after(async () => {
+    await mongoose.connection.dropDatabase();
   });
   it('#getValenceUnits should be able to process FE.PT.GF', async () => {
     const set = await getValenceUnits(['A', 'NP', 'Obj']);

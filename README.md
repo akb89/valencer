@@ -25,7 +25,7 @@ Welcome to **Valencer**, a RESTful API to query combinations of syntactic realiz
 ```
 
 ## Requirements
-- [Mongo](https://docs.mongodb.com/manual/administration/install-community/)
+- [Mongo](https://docs.mongodb.com/manual/administration/install-community/) >= v3.4
 - [Node](https://nodejs.org/en/download/) >= v7.6
 
 To import FrameNet data to a Mongo database, check out [NoFrameNet](https://github.com/akb89/noframenet)
@@ -74,8 +74,8 @@ For additional details regarding the background of the API, its architecture and
 [release-url]:https://github.com/akb89/valencer/releases/latest
 [travis-image]:https://img.shields.io/travis/akb89/valencer.svg?style=flat-square
 [travis-url]:https://travis-ci.org/akb89/valencer
-[coverage-image]:https://img.shields.io/codeclimate/coverage/github/akb89/valencer.svg?style=flat-square
-[coverage-url]:https://codeclimate.com/github/akb89/valencer/coverage
+[coverage-image]:https://img.shields.io/coveralls/valencer/valencer.svg?style=flat-square
+[coverage-url]:https://coveralls.io/github/akb89/valencer
 [quality-image]:https://img.shields.io/codeclimate/github/akb89/valencer.svg?style=flat-square
 [quality-url]:https://codeclimate.com/github/akb89/valencer
 [framenet-image]:https://img.shields.io/badge/framenet-1.5%E2%87%A1-blue.svg?style=flat-square

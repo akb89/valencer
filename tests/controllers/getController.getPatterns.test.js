@@ -1,18 +1,19 @@
 const chai = require('chai');
 const mongoose = require('mongoose');
-const mockgoose = require('mockgoose');
 const FrameElement = require('noframenet-core').FrameElement;
 const Pattern = require('noframenet-core').Pattern;
 const ValenceUnit = require('noframenet-core').ValenceUnit;
+const config = require('./../../config');
 const getController = require('./../../controllers/getController');
 
 const should = chai.should();
+mongoose.Promise = require('bluebird');
 
 describe('getController#getPatterns', () => {
   before(async () => {
-    await mockgoose(mongoose);
-    await mongoose.connect('mongodb://valencer.io/tests');
-    mockgoose.reset();
+    if (mongoose.connection.readyState === 0) {
+      await mongoose.connect(config.dbUri);
+    }
     const aFE = new FrameElement({
       _id: 1,
       name: 'A',
@@ -104,9 +105,8 @@ describe('getController#getPatterns', () => {
     });
     await pattern8.save();
   });
-  after(() => {
-    mongoose.disconnect();
-    mockgoose.reset();
+  after(async () => {
+    await mongoose.connection.dropDatabase();
   });
   it('#getPatterns should return the correct number of patterns when processing FE.PT.GF combinations', async () => {
     const patterns = await getController.getPatterns([['A', 'NP', 'Obj'], ['B', 'NP', 'Obj']], false, true);

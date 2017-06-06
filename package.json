@@ -1,6 +1,6 @@
 {
   "name": "Valencer",
-  "version": "3.0.2",
+  "version": "3.1.1",
   "description": "A REST API to query valence patterns in FrameNet",
   "keywords": [
     "FrameNet",
@@ -12,13 +12,17 @@
   "license": "MIT",
   "main": "server.js",
   "scripts": {
-    "lint": "./node_modules/.bin/eslint . --ext .js",
-    "test": "NODE_ENV=testing ./node_modules/.bin/mocha --compilers js:babel-core/register --require babel-polyfill './tests/**/*.@(js)' --reporter spec",
-    "cover": "NODE_ENV=testing ./node_modules/.bin/istanbul cover _mocha -- ./tests/**/*.test.js --compilers js:babel-register --require babel-polyfill",
     "doc": "rm -rf docs/ && ./node_modules/apidoc/bin/apidoc -i ./ -o ./docs/ -e node_modules",
     "dev": "NODE_ENV=development node server.js",
     "start": "NODE_ENV=production node server.js",
-    "startmongo": "mongod &"
+    "lint": "./node_modules/.bin/eslint . --ext .js",
+    "postlint": "flow",
+    "startmongo": "ps -ax | grep -v grep | grep mongo > /dev/null 2>&1 || mongod --fork --logpath ./mongod.valencer.log --pidfilepath $PWD/mongo.pid --config ./config/mongod.conf",
+    "cleantestenv": "[ ! -f mongo.pid ] || (kill $(cat mongo.pid) && rm mongo.pid && rm mongod.valencer.log)",
+    "pretest": "npm run startmongo",
+    "test": "NODE_ENV=testing nyc --reporter=text mocha ./tests/**/*.test.js && npm run cleantestenv || npm run cleantestenv",
+    "posttest": "npm run lint",
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "homepage": "https://github.com/akb89/valencer#readme",
   "repository": {
@@ -45,33 +49,28 @@
   },
   "dependencies": {
     "bluebird": "^3.5.0",
-    "kcors": "^2.2.0",
+    "kcors": "^2.2.1",
     "koa": "^2.2.0",
-    "koa-router": "^7.0.1",
+    "koa-router": "^7.2.0",
     "moment": "^2.18.1",
-    "mongodb": "^2.2.25",
-    "mongoose": "^4.9.2",
+    "mongoose": "^4.10.4",
     "noframenet-core": "^3.2.0",
     "winston": "^2.3.1"
   },
   "devDependencies": {
-    "apidoc": "^0.17.5",
-    "babel-cli": "^6.24.0",
-    "babel-core": "^6.24.0",
-    "babel-eslint": "^7.2.1",
-    "babel-polyfill": "^6.23.0",
-    "babel-preset-es2015": "^6.24.0",
-    "babel-preset-stage-0": "^6.22.0",
+    "apidoc": "^0.17.6",
     "chai": "^3.5.0",
-    "chai-as-promised": "^6.0.0",
+    "coveralls": "^2.13.1",
     "eslint": "^3.17.1",
     "eslint-config-airbnb": "^13.0.0",
-    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-import": "^2.3.0",
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.4.1",
-    "istanbul": "^1.1.0-alpha.1",
-    "mocha": "^3.2.0",
-    "mockgoose": "^6.0.6",
+    "flow": "^0.2.3",
+    "flow-bin": "^0.47.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.4.2",
+    "nyc": "^11.0.2",
     "rewire": "^2.5.2"
   }
 }

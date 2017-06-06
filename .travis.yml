@@ -4,7 +4,8 @@ node_js:
 addons:
     code_climate:
         repo_token: b5beab30d6c5f64c881325111106a0e29ea3255f29736afa910974a2b9306c22
-script:
-    - npm run cover
+services:
+  - mongodb
 after_success:
+  - npm run coverage
   - env CODECLIMATE_REPO_TOKEN=b5beab30d6c5f64c881325111106a0e29ea3255f29736afa910974a2b9306c22 codeclimate-test-reporter < coverage/lcov.info

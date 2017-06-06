@@ -23,8 +23,7 @@ app.use(async (context, next) => {
   try {
     await next();
   } catch (err) {
-    logger.error(err.message);
-    logger.debug(err);
+    logger.error(err);
     err.expose = true; // expose the error to the context;
     context.status = err.status || 500;
     context.body = err.message;
@@ -42,16 +41,6 @@ function connectToDatabase(uri) {
     mongoose.connect(uri);
   });
 }
-/*
-async function connectToDatabase(uri) {
-  return async () => {
-    await mongoose.connection
-      .on('error', error => logger.error(error))
-      .on('close', () => logger.info('Database connection closed.'))
-      .once('open', () => mongoose.connections[0]);
-    await mongoose.connect(uri);
-  };
-}*/
 
 function printLogo() {
   logger.info('            _                                 ');

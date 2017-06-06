@@ -8,3 +8,4 @@ node_modules/
 apidoc/
 requests.md
 coverage/
+.nyc_output
