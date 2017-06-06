@@ -41,16 +41,6 @@ function connectToDatabase(uri) {
     mongoose.connect(uri);
   });
 }
-/*
-async function connectToDatabase(uri) {
-  return async () => {
-    await mongoose.connection
-      .on('error', error => logger.error(error))
-      .on('close', () => logger.info('Database connection closed.'))
-      .once('open', () => mongoose.connections[0]);
-    await mongoose.connect(uri);
-  };
-}*/
 
 function printLogo() {
   logger.info('            _                                 ');
