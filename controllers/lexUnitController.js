@@ -100,7 +100,9 @@ async function getByVP(context) {
   const strictVUMatching = context.query.strictVUMatching === 'true';
   const withExtraCoreFEs = context.query.withExtraCoreFEs !== 'false';
   const populate = context.query.populate === 'true';
-  context.patterns = await getController.getPatterns(context.processedQuery, strictVUMatching, withExtraCoreFEs);
+  context.patterns = await getController.getPatterns(context.processedQuery,
+    strictVUMatching,
+    withExtraCoreFEs);
   logger.verbose(`Return populated documents: ${populate}`);
   logger.verbose(`Strictly matching input valence units: ${strictVUMatching}`);
   logger.verbose(`Including extra core Frame Elements: ${withExtraCoreFEs}`);

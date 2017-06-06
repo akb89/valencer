@@ -214,7 +214,8 @@ async function getPatterns(tokenArray, strictVUMatching, withExtraCoreFEs) {
     logger.warn(`Patterns length is null for valence pattern = ${vp}`);
   }
   if (strictVUMatching) {
-    const strictMatchingPatterns = patterns.filter(pattern => pattern.valenceUnits.length === tokenArray.length);
+    const strictMatchingPatterns = patterns
+      .filter(pattern => pattern.valenceUnits.length === tokenArray.length);
     logger.info(`Retrieving patterns stricly matching number of valenceUnits specified in input (#${tokenArray.length})`);
     logger.info(`Filtered patterns length = ${strictMatchingPatterns.length}`);
     logger.verbose(`Patterns retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
