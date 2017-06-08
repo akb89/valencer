@@ -53,7 +53,7 @@ function validateQueryVPcontainsNoInvalidCharacters(context, next) {
 function validateQueryVPcontainsNoInvalidSequence(context, next) {
   const invalidSequenceIndex = context.query.vp.search(/(\s{2,}|\.{2,}|\[{2,}|]{2,}|\.\s|\.\[|\s\.|^[.\s]|[.\s]$)/);
   if (invalidSequenceIndex !== -1) {
-    throw ApiError.InvalidQueryParams(`Invalid sequence in context.query.vp = '${vp}' starting at index = ${invalidSequenceIndex}`);
+    throw ApiError.InvalidQueryParams(`Invalid sequence in context.query.vp = '${context.query.vp}' starting at index = ${invalidSequenceIndex}`);
   }
   return next();
 }
@@ -74,7 +74,7 @@ function countValenceTokens(vp) {
 // Check if a valenceUnit contains more than 3 tokens (Should always be at most FE.PT.GF)
 function validateQueryVPvalenceUnitLength(context, next) {
   if (countValenceTokens(context.query.vp) > 3) {
-    throw ApiError.InvalidQueryParams(`MaxValenceLengthExceeded in context.query.vp = '${vp}'. A valence can only contain up to 3 tokens FE.PT.GF separated by a dot`);
+    throw ApiError.InvalidQueryParams(`MaxValenceLengthExceeded in context.query.vp = '${context.query.vp}'. A valence can only contain up to 3 tokens FE.PT.GF separated by a dot`);
   }
   return next();
 }
@@ -105,6 +105,8 @@ function validateQueryWithExtraCoreFEsParameter(context, next) {
       && context.query.withExtraCoreFEs !== 'true'
       && context.query.withExtraCoreFEs !== 'false') {
     throw ApiError.InvalidQueryParams('context.query.withExtraCoreFEs parameter should be true or false');
+  }
+  return next();
 }
 
 function containsFrameElement(valenceUnitAsArrayWithFEids) {
