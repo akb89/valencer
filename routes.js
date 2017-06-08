@@ -4,8 +4,15 @@ const frameController = require('./controllers/frameController');
 const lexUnitController = require('./controllers/lexUnitController');
 const patternController = require('./controllers/patternController');
 const valenceUnitController = require('./controllers/valenceUnitController');
-const validator = require('./middlewares/validator');
 const processor = require('./middlewares/processor');
+const validator = require('./middlewares/validator');
+
+const pkgVersion = process.env.npm_package_version;
+const apiVersion = `/v3`;
+
+const valencer = new Router({
+  prefix: apiVersion,
+});
 
 const router = new Router();
 
@@ -298,8 +305,12 @@ router.get('/annoSet/:id',
  */
 router.get('/annoSets',
   validator.validate,
-  processor.processvp,
-  annoSetController.getByVP);
+  formatter.formatValencePatternToArrayOfArrayOfTokens,
+  formatter.replaceFrameElementNamesByFrameElementIds,
+  validator.checkParameters,
+  processor.retrieveValenceUnits,
+  processor.retrievePatterns,
+  annotationSets.getByValencePattern);
 
 /**
  * @api {get} /frame/:id GetFrame
@@ -463,8 +474,11 @@ router.get('/valenceUnit/:id',
  * @apiUse InvalidQueryParamsVP
  */
 router.get('/valenceUnits',
+//TODO: add specific validator
   validator.validate,
   processor.processvp,
   valenceUnitController.getByVP);
 
-module.exports = router;
+valencer.use('/:lang_iso_code/:dataset_version', router.routes());
+
+module.exports = valencer;

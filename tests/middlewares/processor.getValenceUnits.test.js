@@ -6,10 +6,10 @@ const ValenceUnit = require('noframenet-core').ValenceUnit;
 const config = require('./../../config');
 
 const should = chai.should();
-const getValenceUnits = rewire('./../../controllers/getController.js').__get__('getValenceUnits');
+const getValenceUnits = rewire('./../../middlewares/processor').__get__('getValenceUnits');
 mongoose.Promise = require('bluebird');
 
-describe('getController#getValenceUnits', () => {
+describe('processor#getValenceUnits', () => {
   before(async () => {
     if (mongoose.connection.readyState === 0) {
       await mongoose.connect(config.dbUri);
