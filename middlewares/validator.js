@@ -3,38 +3,38 @@ const config = require('./../config');
 
 const logger = config.logger;
 
-function validateQueryNotNullOrUndefined(context, next) {
-  logger.debug(`Validating query: ${JSON.stringify(context.query)}`);
-  if (!context.query) {
-    throw ApiError.InvalidQuery('context.query object is null or undefined');
+function validateQueryNotEmpty(context, next) {
+  //logger.debug(`Validating query: ${JSON.stringify(context.query)}`);
+  if (!context.query || context.query.trim().length === 0) {
+    throw ApiError.InvalidQuery('context.query object is empty, null or undefined');
   }
   return next();
 }
 
-function validateParamsNotNullOrUndefined(context, next) {
-  logger.debug(`Validating params: ${JSON.stringify(context.params)}`);
-  if (!context.params) {
-    throw ApiError.InvalidParams('context.params object is null or undefined');
+function validateParamsNotEmpty(context, next) {
+  //logger.debug(`Validating params: ${JSON.stringify(context.params)}`);
+  if (!context.params || context.params.trim().length === 0) {
+    throw ApiError.InvalidParams('context.params object is empty, null or undefined');
   }
   return next();
 }
 
 function validateQueryVPnotEmpty(context, next) {
   if (!context.query.vp || context.query.vp.trim().length === 0) {
-    throw ApiError.InvalidQuery('context.query.vp parameter is not specified');
+    throw ApiError.InvalidQueryParams('context.query.vp parameter is empty, null or undefined');
   }
   return next();
 }
 
 function validateParamsIDnotEmpty(context, next) {
   if (!context.params.id || context.params.id.trim().length === 0) {
-    throw ApiError.InvalidParams('context.params.id parameter is not specified');
+    throw ApiError.InvalidParams('context.params.id parameter is empty, null or undefined');
   }
   return next();
 }
 
 function validateParamsIDisNumberOrObjectID(context, next) {
-  if (!/[a-fA-F0-9]{24}$/.test(context.params.id)) {
+  if (isNaN(context.params.id) && !/[a-fA-F0-9]{24}$/.test(context.params.id)) {
     throw ApiError.InvalidParams('context.params.id should be a Number or an ObjectID');
   }
   return next();
@@ -42,7 +42,7 @@ function validateParamsIDisNumberOrObjectID(context, next) {
 
 // Check for invalid characters (regex, everything except . and +)
 function validateQueryVPcontainsNoInvalidCharacters(context, next) {
-  const invalidCharacterIndex = context.query.vp.search(/[^.\s\w[\]]/);
+  const invalidCharacterIndex = context.query.vp.search(/[^a-zA-Z.+]/);
   if (invalidCharacterIndex !== -1) {
     throw ApiError.InvalidQueryParams(`Invalid character in context.query.vp = '${context.query.vp}' at index = ${invalidCharacterIndex}`);
   }
@@ -51,7 +51,7 @@ function validateQueryVPcontainsNoInvalidCharacters(context, next) {
 
 // Check for invalid combinations: ++ +. .+ start. end. start+ end+
 function validateQueryVPcontainsNoInvalidSequence(context, next) {
-  const invalidSequenceIndex = context.query.vp.search(/(\s{2,}|\.{2,}|\[{2,}|]{2,}|\.\s|\.\[|\s\.|^[.\s]|[.\s]$)/);
+  const invalidSequenceIndex = context.query.vp.search(/((\+|\.){2,}|\.\+|\+\.|^(\.|\+)|(\.|\+)$)/);
   if (invalidSequenceIndex !== -1) {
     throw ApiError.InvalidQueryParams(`Invalid sequence in context.query.vp = '${context.query.vp}' starting at index = ${invalidSequenceIndex}`);
   }
@@ -136,14 +136,14 @@ function validateQueryParametersCombination(context, next) {
   if (!context.query.strictVUMatching
       && !context.query.withExtraCoreFEs
       && containsUnspecifiedFrameElement(context.valencer.query.vp.withFEids)) {
-    throw ApiError.InvalidQueryParams('The Valencer API cannot process queries with strictVUMatching parameter set to false and withExtraCoreFEs parameter set to false if at least one Frame Element is unspecified in the input Valence Pattern');
+    throw ApiError.InvalidQueryParams('the Valencer API cannot process queries with strictVUMatching parameter set to false and withExtraCoreFEs parameter set to false if at least one Frame Element is unspecified in the input Valence Pattern');
   }
   return next();
 }
 
 module.exports = {
-  validateQueryNotNullOrUndefined,
-  validateParamsNotNullOrUndefined,
+  validateQueryNotEmpty,
+  validateParamsNotEmpty,
   validateQueryVPnotEmpty,
   validateParamsIDnotEmpty,
   validateParamsIDisNumberOrObjectID,
