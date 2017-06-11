@@ -1,11 +1,11 @@
 // A.B.C+D.E.F+G.H.I --> [A.B.C, D.E.F, G.H.I]
 function toValenceArray(string) {
   const trimmedStr = string.trim();
-  if (/\s/.test(trimmedStr)) {
+  if (/\+/.test(trimmedStr)) {
     const array = [];
     let iterator = 0;
     for (let i = 0; i < trimmedStr.length; i += 1) {
-      if (/\s/.test(trimmedStr.charAt(i))) {
+      if (/\+/.test(trimmedStr.charAt(i))) {
         if (iterator !== i) {
           array.push(trimmedStr.substring(iterator, i));
         }

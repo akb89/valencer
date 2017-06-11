@@ -4,10 +4,10 @@ const utils = require('./../../utils/utils');
 const should = chai.should();
 
 describe('utils', () => {
-  it('#toValenceArray should convert a string to an array of sub-strings where each array element is a substring of the input string separated by a space', () => {
-    utils.toValenceArray('A.B.C D.E.F G.H.I').should.deep.equal(['A.B.C', 'D.E.F', 'G.H.I']);
+  it('#toValenceArray should convert a string to an array of sub-strings where each array element is a substring of the input string separated by a +', () => {
+    utils.toValenceArray('A.B.C+D.E.F+G.H.I').should.deep.equal(['A.B.C', 'D.E.F', 'G.H.I']);
   });
-  it('#toValenceArray should return an array containing a single element if the input string does not contain any space', () => {
+  it('#toValenceArray should return an array containing a single element if the input string does not contain any +', () => {
     utils.toValenceArray('Test').should.deep.equal(['Test']);
   });
   it('#toTokenArray should convert a valenceUnit array of sub-strings separated by a dot to an array of strings', () => {
