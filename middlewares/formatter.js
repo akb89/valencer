@@ -16,22 +16,34 @@ const logger = config.logger;
 function getFormattedValencePattern(vp) {
   logger.debug(`Formatting valence pattern: ${vp}`);
   const formattedValencePattern = utils.toTokenArray(utils.toValenceArray(vp));
-  logger.debug(`Formatted valence pattern: ${formattedValencePattern}`);
+  logger.debug(`Formatted valence pattern: ${JSON.stringify(formattedValencePattern)}`);
   return formattedValencePattern;
 }
 
+/**
+ * Converts a full string formatted valence pattern
+ * 'FE_1.PT_1.GF_1+FE_2.PT_2.GF_2+...+FE_n.PT_n.GF_n'
+ * to an array of array of tokens:
+ * [['FE_1', 'PT_1', 'GF_1'], ['FE_2', 'PT_2', 'GF_2'], ..., ['FE_n', 'PT_n', 'GF_n']]
+ */
 function formatValencePatternToArrayOfArrayOfTokens(context, next) {
+  context.valencer = {};
+  context.valencer.query = {};
+  context.valencer.query.vp = {};
   context.valencer.query.vp.raw = context.query.vp;
   context.valencer.query.vp.formatted = getFormattedValencePattern(context.query.vp);
   return next();
 }
 
 /**
- * Takes a formatted query output by
- * Converts a full string formatted ValenceUnit [FE, PT, GF] to an array where
- * the Frame Element name has been replaced by an array containing all the
- * Frame Element ids matching the given name.
- * [FE, PT, GF] --> [[id_1, ... , id_n], PT, GF]
+ * Takes a full string formatted valencer pattern
+ * [['FE_1', 'PT_1', 'GF_1'], ['FE_2', 'PT_2', 'GF_2'], ..., ['FE_n', 'PT_n',
+ * 'GF_n']]
+ * and replace each Frame Element name by an array of Frame Element ids
+ * matching the given Frame Element name in the database.
+ * Frame Element ids matching the given name
+ * [[[fe_1_id_1,...,fe_1_id_n], 'PT_1', 'GF_1'], ...,
+ * [[fe_n_id_1,...,fn_n_id_n], 'PT_n', 'GF_n']]
  */
 async function getValenceUnitAsArrayWithFEids(valenceUnitAsArray) {
   const valenceUnitArrayWithFEids = [];
