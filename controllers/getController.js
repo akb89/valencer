@@ -152,7 +152,7 @@ async function $getPatterns(valenceUnitsArray, queryIdentifier) {
         .aggregate([{
           $match: {
             _id: {
-              $in: tmp.map(t => t._id.pattern),
+              $in: tmp.map(t => t.pattern),
             },
           },
         }], {

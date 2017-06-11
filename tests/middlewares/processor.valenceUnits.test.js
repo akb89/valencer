@@ -9,7 +9,7 @@ const should = chai.should();
 const getValenceUnits = rewire('./../../middlewares/processor').__get__('getValenceUnits');
 mongoose.Promise = require('bluebird');
 
-describe('processor#getValenceUnits', () => {
+describe('processor.valenceUnits', () => {
   before(async () => {
     if (mongoose.connection.readyState === 0) {
       await mongoose.connect(config.dbUri);
@@ -63,28 +63,28 @@ describe('processor#getValenceUnits', () => {
     await mongoose.connection.dropDatabase();
   });
   it('#getValenceUnits should be able to process FE.PT.GF', async () => {
-    const set = await getValenceUnits(['A', 'NP', 'Obj']);
+    const set = await getValenceUnits([[1], 'NP', 'Obj']);
     set.length.should.equal(1);
     set.toArray()[0].FE.should.equal(1);
     set.toArray()[0].PT.should.equal('NP');
     set.toArray()[0].GF.should.equal('Obj');
   });
   it('#getValenceUnits should be able to process PT.FE.GF', async () => {
-    const set = await getValenceUnits(['NP', 'A', 'Obj']);
+    const set = await getValenceUnits(['NP', [1], 'Obj']);
     set.length.should.equal(1);
     set.toArray()[0].FE.should.equal(1);
     set.toArray()[0].PT.should.equal('NP');
     set.toArray()[0].GF.should.equal('Obj');
   });
   it('#getValenceUnits should be able to process GF.PT.FE', async () => {
-    const set = await getValenceUnits(['Obj', 'NP', 'A']);
+    const set = await getValenceUnits(['Obj', 'NP', [1]]);
     set.length.should.equal(1);
     set.toArray()[0].FE.should.equal(1);
     set.toArray()[0].PT.should.equal('NP');
     set.toArray()[0].GF.should.equal('Obj');
   });
   it('#getValenceUnits should be able to process FE', async () => {
-    const set = await getValenceUnits(['A']);
+    const set = await getValenceUnits([[1]]);
     set.length.should.equal(1);
   });
   it('#getValenceUnits should be able to process PT', async () => {
@@ -96,7 +96,10 @@ describe('processor#getValenceUnits', () => {
     set.length.should.equal(2);
   });
   it('#getValenceUnits should be able to process FE.GF', async () => {
-    const set = await getValenceUnits(['A', 'Obj']);
+    const set = await getValenceUnits([[1], 'Obj']);
     set.length.should.equal(1);
+  });
+  it('#retrieveValenceUnits', () => {
+    (() => 1).should.equal(2);
   });
 });

@@ -7,7 +7,7 @@
 const FrameElement = require('noframenet-core').FrameElement;
 const Pattern = require('noframenet-core').Pattern;
 const ValenceUnit = require('noframenet-core').ValenceUnit;
-const Set = require('noframenet-core').Set;
+//const Set = require('noframenet-core').Set;
 const mongoose = require('mongoose');
 const bluebird = require('bluebird');
 const TMPattern = require('./../models/tmpattern');
@@ -18,7 +18,7 @@ const Promise = bluebird.Promise;
 const logger = config.logger;
 
 /**
- * Retrieve valenceUnit objects from the db matching any combination of
+ * Retrieve an array of valenceUnit objects from the db matching any combination of
  * FE.PT.GF, in any order, and with potentially unspecified elements:
  * FE.PT.GF / PT.FE.GF / PT.GF / GF.FE / FE / GF etc.
  * @param unit: an array of FE/PT/GF tags: ['FE', 'PT', 'GF'] corresponding to a
@@ -68,7 +68,7 @@ async function getValenceUnits(valenceUnitAsArrayWithFEids) {
   return ValenceUnit.find(expVU);
 }
 
-async function getValenceUnitsArray(formattedValencePatternArrayWithFEids){
+async function getValenceUnitsArray(formattedValencePatternArrayWithFEids) {
   return Promise.all(formattedValencePatternArrayWithFEids.map(
     async valenceUnitAsArrayWithFEids => getValenceUnits(valenceUnitAsArrayWithFEids))
   );
@@ -76,36 +76,121 @@ async function getValenceUnitsArray(formattedValencePatternArrayWithFEids){
 
 /**
  * Returns an array of array of valenceUnit objects.
- * @method retrieveValenceUnits
- * @param  {[type]}             context [description]
- * @param  {Function}           next    [description]
- * @return {[type]}             [description]
  */
 async function retrieveValenceUnits(context, next) {
-  context.valencer.results.valenceUnitsArray =
-    await getValenceUnitsArray(context.valencer.query.vp.withFEids);
+  context.valencer.results = {};
+  context.valencer.results.valenceUnits = await getValenceUnitsArray(context.valencer.query.vp.withFEids);
   return next();
 }
 
-async function getAllPatterns(valenceUnitsArray, queryIdentifier){
-
+async function getPatternsIDs(arrayOfArrayOfValenceUnitObjectIDs, queryIdentifier) {
+  let tmpatterns = await Pattern.collection.aggregate([{
+    $match: {
+      valenceUnits: {
+        $in: arrayOfArrayOfValenceUnitObjectIDs[0],
+      },
+    } }, {
+      $project: {
+        _id: false,
+        valenceUnits: true,
+        query: queryIdentifier,
+        pattern: '$_id',
+      },
+    }], {
+      cursor: {},
+    }).toArray();
+  console.log(tmpatterns);
+  if (arrayOfArrayOfValenceUnitObjectIDs.length > 1) {
+    await TMPattern.collection.insertMany(tmpatterns, {
+      ordered: false,
+    });
+    const merge = new Set(arrayOfArrayOfValenceUnitObjectIDs[0]);
+    let patternsIDs;
+    for (let i = 1; i < arrayOfArrayOfValenceUnitObjectIDs.length; i += 1) {
+      if (patternsIDs) {
+        await TMPattern.deleteMany({
+          query: queryIdentifier,
+        });
+        tmpatterns = await Pattern.collection.aggregate([{
+          $match: {
+            _id: {
+              $in: patternsIDs,
+            },
+          } }, {
+            $project: {
+              _id: false,
+              valenceUnits: true,
+              query: queryIdentifier,
+              pattern: '$_id',
+            },
+          }], {
+            cursor: {},
+          }).toArray();
+        await TMPattern.collection.insertMany(tmpatterns, {
+          ordered: false,
+        });
+      }
+      merge.addEach(arrayOfArrayOfValenceUnitObjectIDs[i]);
+      patternsIDs = await TMPattern
+        .collection
+        .aggregate([{
+          $match: {
+            query: queryIdentifier,
+            valenceUnits: {
+              $in: arrayOfArrayOfValenceUnitObjectIDs[i],
+            },
+          },
+        }, {
+          $unwind: '$valenceUnits',
+        }, {
+          $match: {
+            valenceUnits: {
+              $in: [...merge],
+            },
+          },
+        }, {
+          $group: {
+            _id: {
+              pattern: '$pattern',
+            },
+            count: {
+              $sum: 1,
+            },
+          },
+        }, {
+          $match: {
+            count: {
+              $gte: i + 1,
+            },
+          },
+        }, {
+          $project: {
+            _id: '$_id.pattern',
+          },
+        }], {
+          cursor: {},
+        }).toArray();
+      console.log(patternsIDs);
+    }
+    await TMPattern.deleteMany({
+      query: queryIdentifier,
+    });
+    return patternsIDs;
+  }
+  return tmpatterns.map(tmpattern => tmpattern.pattern);
 }
 
-async function getPatterns(valenceUnitsArray, strictVUMatching, withExtraCoreFEs){
+async function getPatterns(valenceUnitsArrayOfArray, strictVUMatching, withExtraCoreFEs) {
   const queryIdentifier = new mongoose.Types.ObjectId();
-  const allPatterns = await getAllPatterns(valenceUnitsArray, queryIdentifier);
-  if (strictVUMatching) {
-    const strictMatchingPatterns = allPatterns
-      .filter(pattern => pattern.valenceUnits.length === valenceUnitsArray.length);
-    return strictMatchingPatterns.map(pattern => pattern.pattern);
-  }
+  const patternIDs = await getPatternsIDs(valenceUnitsArrayOfArray, queryIdentifier);
+  return Pattern.find().where('_id').in(patternIDs);
 }
 
 async function retrievePatterns(context, next) {
   context.valencer.results.patterns =
-    await getPatterns(context.valencer.results.valenceUnitsArray,
-                      context.valencer.query.params.strictVUMatching,
-                      context.valencer.query.params.withExtraCoreFEs);
+    await getPatterns(context.valencer.results.valenceUnits,
+                      context.query.strictVUMatching,
+                      context.query.withExtraCoreFEs);
   return next();
 }
 
