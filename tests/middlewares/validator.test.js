@@ -5,7 +5,7 @@ const should = chai.should();
 
 describe('validator', () => {
   it('#validateQueryNotNullOrUndefined should throw InvalidQuery when context.query object is null or undefined', () => {
-    const next = {};
+    const next = () => {};
     const context = { query: null };
     (() => validator.validateQueryNotEmpty(context, next)).should.throw('InvalidQuery: context.query object is empty, null or undefined');
     context.query = undefined;
@@ -112,6 +112,5 @@ describe('validator', () => {
     context.query.strictVUMatching = true;
     context.query.withExtraCoreFEs = true;
     (() => validator.validateQueryParametersCombination(context, next)).should.not.throw();
-
   });
 });
