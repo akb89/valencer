@@ -21,6 +21,7 @@
     "cleantestenv": "[ ! -f mongo.pid ] || (kill $(cat mongo.pid) && rm mongo.pid && rm mongod.valencer.log)",
     "pretest": "npm run startmongo",
     "test": "NODE_ENV=testing nyc --reporter=text mocha ./tests/**/*.test.js && npm run cleantestenv || npm run cleantestenv",
+    "singletest": "NODE_ENV=testing nyc --reporter=text mocha ./tests/middlewares/processor.patterns.test.js",
     "posttest": "npm run lint",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
@@ -51,6 +52,7 @@
     "bluebird": "^3.5.0",
     "kcors": "^2.2.1",
     "koa": "^2.2.0",
+    "koa-compose": "^4.0.0",
     "koa-router": "^7.2.0",
     "moment": "^2.18.1",
     "mongoose": "^4.10.4",
