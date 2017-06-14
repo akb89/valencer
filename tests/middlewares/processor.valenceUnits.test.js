@@ -6,7 +6,7 @@ const ValenceUnit = require('noframenet-core').ValenceUnit;
 const config = require('./../../config');
 
 const should = chai.should();
-const getValenceUnits = rewire('./../../middlewares/processor').__get__('getValenceUnits');
+const getValenceUnitsIDs = rewire('./../../middlewares/processor').__get__('getValenceUnitsIDs');
 mongoose.Promise = require('bluebird');
 
 describe('processor.valenceUnits', () => {
@@ -62,44 +62,58 @@ describe('processor.valenceUnits', () => {
   after(async () => {
     await mongoose.connection.dropDatabase();
   });
-  it('#getValenceUnits should be able to process FE.PT.GF', async () => {
-    const set = await getValenceUnits([[1], 'NP', 'Obj']);
-    set.length.should.equal(1);
-    set.toArray()[0].FE.should.equal(1);
-    set.toArray()[0].PT.should.equal('NP');
-    set.toArray()[0].GF.should.equal('Obj');
+  it('#getValenceUnitsIDs should be able to process FE.PT.GF', async () => {
+    const vusIDs = await getValenceUnitsIDs([[1], 'NP', 'Obj']);
+    const vus = await ValenceUnit.find().where('_id').in(vusIDs);
+    vusIDs.length.should.equal(1);
+    vus.toArray()[0].FE.should.equal(1);
+    vus.toArray()[0].PT.should.equal('NP');
+    vus.toArray()[0].GF.should.equal('Obj');
   });
-  it('#getValenceUnits should be able to process PT.FE.GF', async () => {
-    const set = await getValenceUnits(['NP', [1], 'Obj']);
-    set.length.should.equal(1);
-    set.toArray()[0].FE.should.equal(1);
-    set.toArray()[0].PT.should.equal('NP');
-    set.toArray()[0].GF.should.equal('Obj');
+
+  it('#getValenceUnitsIDs should be able to process PT.FE.GF', async () => {
+    const vusIDs = await getValenceUnitsIDs(['NP', [1], 'Obj']);
+    const vus = await ValenceUnit.find().where('_id').in(vusIDs);
+    vusIDs.length.should.equal(1);
+    vus.toArray()[0].FE.should.equal(1);
+    vus.toArray()[0].PT.should.equal('NP');
+    vus.toArray()[0].GF.should.equal('Obj');
   });
-  it('#getValenceUnits should be able to process GF.PT.FE', async () => {
-    const set = await getValenceUnits(['Obj', 'NP', [1]]);
-    set.length.should.equal(1);
-    set.toArray()[0].FE.should.equal(1);
-    set.toArray()[0].PT.should.equal('NP');
-    set.toArray()[0].GF.should.equal('Obj');
+  it('#getValenceUnitsIDs should be able to process GF.PT.FE', async () => {
+    const vusIDs = await getValenceUnitsIDs(['Obj', 'NP', [1]]);
+    const vus = await ValenceUnit.find().where('_id').in(vusIDs);
+    vusIDs.length.should.equal(1);
+    vus.toArray()[0].FE.should.equal(1);
+    vus.toArray()[0].PT.should.equal('NP');
+    vus.toArray()[0].GF.should.equal('Obj');
   });
-  it('#getValenceUnits should be able to process FE', async () => {
-    const set = await getValenceUnits([[1]]);
-    set.length.should.equal(1);
+  it('#getValenceUnitsIDs should be able to process FE', async () => {
+    const vusIDs = await getValenceUnitsIDs([[1]]);
+    vusIDs.length.should.equal(1);
   });
-  it('#getValenceUnits should be able to process PT', async () => {
-    const set = await getValenceUnits(['NP']);
-    set.length.should.equal(3);
+  it('#getValenceUnitsIDs should be able to process PT', async () => {
+    const vusIDs = await getValenceUnitsIDs(['NP']);
+    vusIDs.length.should.equal(3);
   });
-  it('#getValenceUnits should be able to process PT.GF', async () => {
-    const set = await getValenceUnits(['NP', 'Obj']);
-    set.length.should.equal(2);
+  it('#getValenceUnitsIDs should be able to process PT.GF', async () => {
+    const vusIDs = await getValenceUnitsIDs(['NP', 'Obj']);
+    vusIDs.length.should.equal(2);
   });
-  it('#getValenceUnits should be able to process FE.GF', async () => {
-    const set = await getValenceUnits([[1], 'Obj']);
-    set.length.should.equal(1);
+  it('#getValenceUnitsIDs should be able to process FE.GF', async () => {
+    const vusIDs = await getValenceUnitsIDs([[1], 'Obj']);
+    vusIDs.length.should.equal(1);
   });
-  it('#retrieveValenceUnits', () => {
-    (() => 1).should.equal(2);
+  it('#getValenceUnitsIDs should return an empty array when all tokens are found in the database but not in the given configuration', async () => {
+    const vusIDs = await getValenceUnitsIDs([[3], 'PP[about]', 'Obj']);
+    vusIDs.length.should.equal(0);
+    vusIDs.should.deep.equal([]);
+  });
+  it('#getValenceUnitsIDs should throw a NotFoundError when a given PT and/or GF is not in the database', async () => {
+    try {
+      await getValenceUnitsIDs([[3], 'Test']);
+    } catch (err) {
+      err.name.should.equal('NotFoundError');
+      err.message.should.equal('Could not find token in FrameNet database: Test');
+    }
   });
 });
