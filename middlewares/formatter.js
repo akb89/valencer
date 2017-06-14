@@ -8,9 +8,11 @@
   * It transforms , and to an array of array with Frame Element ids then.
   */
 const FrameElement = require('noframenet-core').FrameElement;
+const bluebird = require('bluebird');
 const utils = require('./../utils/utils');
 const config = require('../config');
 
+const Promise = bluebird.Promise;
 const logger = config.logger;
 
 function getFormattedValencePattern(vp) {
@@ -46,21 +48,17 @@ function formatValencePatternToArrayOfArrayOfTokens(context, next) {
  * [[fe_n_id_1,...,fn_n_id_n], 'PT_n', 'GF_n']]
  */
 async function getValenceUnitAsArrayWithFEids(valenceUnitAsArray) {
-  const valenceUnitArrayWithFEids = [];
-  for (const token of valenceUnitAsArray) {
+  return valenceUnitAsArray.reduce(async (valenceUnitArrayWithFEidsPromise, token) => {
+    const valenceUnitArrayWithFEids = await valenceUnitArrayWithFEidsPromise;
     const fes = await FrameElement.find().where('name').equals(token);
-    if (fes.length) {
-      valenceUnitArrayWithFEids.add(fes.map(fe => fe._id));
-    } else {
-      valenceUnitArrayWithFEids.add(token);
-    }
-  }
-  return valenceUnitArrayWithFEids;
+    valenceUnitArrayWithFEids.push(fes.length ? fes.map(fe => fe._id) : token);
+    return valenceUnitArrayWithFEids;
+  }, []);
 }
 
 async function getValencePatternAsArrayWithFEids(formattedVP) {
   return Promise.all(formattedVP
-    .map(async vUnitArray => await getValenceUnitAsArrayWithFEids(vUnitArray)));
+    .map(async vUnitArray => getValenceUnitAsArrayWithFEids(vUnitArray)));
 }
 
 async function replaceFrameElementNamesByFrameElementIds(context, next) {
