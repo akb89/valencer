@@ -1,3 +1,5 @@
+const combinatorics = require('js-combinatorics');
+
 // A.B.C+D.E.F+G.H.I --> [A.B.C, D.E.F, G.H.I]
 function toValenceArray(string) {
   const trimmedStr = string.trim();
@@ -42,7 +44,22 @@ function toTokenArray(valenceArray) {
   return tokenArray;
 }
 
+function getKCombinations(array, k) {
+  // TODO: is using the generator more efficient?
+  return combinatorics.combination(array, k).toArray();
+}
+
+function getKNCombinations(k, n) {
+  // Get all combinations of k elements in an array of n elements
+  const array = [];
+  for (let i = 0; i < n; i += 1) {
+    array.push(i);
+  }
+  return getKCombinations(array, k);
+}
+
 module.exports = {
   toValenceArray,
   toTokenArray,
+  getKNCombinations,
 };

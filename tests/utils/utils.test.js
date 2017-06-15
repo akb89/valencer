@@ -29,4 +29,14 @@ describe('utils', () => {
     utils.toTokenArray(['A', 'B.C', 'D.E.F']).should.deep
       .equal([['A'], ['B', 'C'], ['D', 'E', 'F']]);
   });
+  it('#getKNCombinations should return the correct number of combinations', () => {
+    utils.getKNCombinations(1, 3).length.should.equal(3);
+    utils.getKNCombinations(2, 4).length.should.equal(6);
+    utils.getKNCombinations(2, 5).length.should.equal(10);
+    utils.getKNCombinations(3, 5).length.should.equal(10);
+    utils.getKNCombinations(3, 6).length.should.equal(20);
+    utils.getKNCombinations(7, 10).length.should.equal(120);
+    utils.getKNCombinations(5, 5).length.should.equal(1);
+    utils.getKNCombinations(1, 1).length.should.equal(1);
+  });
 });
