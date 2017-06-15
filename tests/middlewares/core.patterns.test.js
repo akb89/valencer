@@ -3,15 +3,14 @@ const mongoose = require('mongoose');
 const rewire = require('rewire');
 const FrameElement = require('noframenet-core').FrameElement;
 const Pattern = require('noframenet-core').Pattern;
-const TMPattern = require('./../../models/tmpattern');
 const ValenceUnit = require('noframenet-core').ValenceUnit;
 const config = require('./../../config');
 
 const should = chai.should();
-const getPatternsIDs = rewire('./../../middlewares/processor').__get__('getPatternsIDs');
+const getPatternsIDs = rewire('./../../middlewares/core/patterns').__get__('getPatternsIDs');
 mongoose.Promise = require('bluebird');
 
-describe('processor.patterns.all', () => {
+describe('core.patterns', () => {
   let aNPObj;
   let bNPObj;
   let cNPExt;
@@ -20,12 +19,10 @@ describe('processor.patterns.all', () => {
   let eNPNP;
   let eNPDep;
   let eNPObj;
-  let queryIdentifier;
   before(async () => {
     if (mongoose.connection.readyState === 0) {
       await mongoose.connect(config.dbUri);
     }
-    queryIdentifier = new mongoose.Types.ObjectId();
     const aFE = new FrameElement({
       _id: 1,
       name: 'A',
@@ -142,7 +139,7 @@ describe('processor.patterns.all', () => {
   after(async () => {
     await mongoose.connection.dropDatabase();
   });
-  /*it('#getPatternsIDs should return correct patterns when processing a single arrayOfValenceUnitIDs', async () => {
+  it('#getPatternsIDs should return correct patterns when processing a single arrayOfValenceUnitIDs', async () => {
     const patterns = await getPatternsIDs([[aNPObj._id, bNPObj._id, cNPExt._id]]);
     patterns.length.should.equal(8);
   });
@@ -157,8 +154,8 @@ describe('processor.patterns.all', () => {
   });
   it('#getPatternsIDs should not insert TMPatterns when processing a single arrayOfValenceUnitIDs', async () => {
     await getPatternsIDs([[aNPObj._id, bNPObj._id, cNPExt._id]]);
-    const tmpatterns = await TMPattern.find();
-    tmpatterns.length.should.equal(0);
+    //const tmpatterns = await TMPattern.find();
+    //tmpatterns.length.should.equal(0);
   });
   it('#getPatternsIDs should return correct patterns when processing an arrayOfArrayOfValenceUnitIDs of length 2', async () => {
     const patterns = await getPatternsIDs([[aNPObj._id], [bNPObj._id, cNPExt._id]]);
@@ -180,18 +177,18 @@ describe('processor.patterns.all', () => {
   });
   it('#getPatternsIDs should have removed all TMPatterns matching the queryIdentifier when processing an arrayOfArrayOfValenceUnitIDs of length 2', async () => {
     await getPatternsIDs([[aNPObj._id, bNPObj._id], [cNPExt._id, dPPaboutExt._id]]);
-    const tmpatterns = await TMPattern.find();
-    tmpatterns.length.should.equal(0);
+    //const tmpatterns = await TMPattern.find();
+    //tmpatterns.length.should.equal(0);
   });
   it('#getPatternsIDs should return correct patterns when processing an arrayOfArrayOfValenceUnitIDs of length 3', async () => {
     const patterns = await getPatternsIDs([[aNPObj._id], [bNPObj._id], [cNPExt._id, dPPaboutExt._id]]);
     patterns.length.should.equal(2);
-  });*/
+  });
   it('#getPatternsIDs should return correct patterns when processing an arrayOfArrayOfValenceUnitIDs of length 3', async () => {
     const patterns = await getPatternsIDs([[aNPObj._id, bNPObj._id, cNPExt._id], [dPPaboutExt._id, eSfinADJ._id], [eSfinADJ._id]]);
     patterns.length.should.equal(1);
   });
-  /*it('#getPatternsIDs should return correct patterns when processing an arrayOfArrayOfValenceUnitIDs of length 3', async () => {
+  it('#getPatternsIDs should return correct patterns when processing an arrayOfArrayOfValenceUnitIDs of length 3', async () => {
     const patterns = await getPatternsIDs([[eNPDep._id], [eNPDep._id], [eNPDep._id]]);
     patterns.length.should.equal(0);
   });
@@ -211,10 +208,10 @@ describe('processor.patterns.all', () => {
   });
   it('#getPatternsIDs should have removed all TMPatterns matching the queryIdentifier when processing an arrayOfArrayOfValenceUnitIDs of length 3', async () => {
     await getPatternsIDs([[aNPObj._id], [bNPObj._id], [cNPExt._id, dPPaboutExt._id]]);
-    const tmpatterns = await TMPattern.find();
-    tmpatterns.length.should.equal(0);
+    //const tmpatterns = await TMPattern.find();
+    //tmpatterns.length.should.equal(0);
   });
   it('#', async () => {
-
-  });*/
+    //Test pattern of length 1
+  });
 });
