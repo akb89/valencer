@@ -4,16 +4,10 @@
  * All other FrameNet middlewares are wrappers around core to pass parameters
  * and process the output
  */
-const FrameElement = require('noframenet-core').FrameElement;
 const Pattern = require('noframenet-core').Pattern;
-const ValenceUnit = require('noframenet-core').ValenceUnit;
-const mongoose = require('mongoose');
-const bluebird = require('bluebird');
-const ApiError = require('./../../exceptions/apiException');
 const config = require('./../../config');
 const utils = require('./../../utils/utils');
 
-const Promise = bluebird.Promise;
 const logger = config.logger;
 
 async function getPatternsIDs(arrayOfArrayOfValenceUnitIDs) {
@@ -33,14 +27,10 @@ async function getPatternsIDs(arrayOfArrayOfValenceUnitIDs) {
   }
   let patternsIDs;
   for (let i = arrayOfArrayOfValenceUnitIDs.length; i > 1; i -= 1) {
-    console.log(`i = ${i}`);
     const combinations = utils.getKNCombinations(i, arrayOfArrayOfValenceUnitIDs.length);
-    console.log(combinations);
     for (const combination of combinations) {
-      console.log(combination);
       const merge = new Set();
       for (let k = 0; k < combination.length; k += 1) {
-        console.log(`k = ${k}`);
         merge.addEach(arrayOfArrayOfValenceUnitIDs[combination[k]]);
         if (!patternsIDs) {
           patternsIDs = await Pattern.collection.aggregate([{
@@ -50,7 +40,6 @@ async function getPatternsIDs(arrayOfArrayOfValenceUnitIDs) {
           if (patternsIDs.length === 0) {
             return patternsIDs;
           }
-          console.log(patternsIDs);
         } else {
           patternsIDs = await Pattern.collection.aggregate([{
             $match: {
@@ -61,32 +50,9 @@ async function getPatternsIDs(arrayOfArrayOfValenceUnitIDs) {
           if (patternsIDs.length === 0) {
             return patternsIDs;
           }
-          console.log(patternsIDs);
         }
       }
-      console.log(merge);
       const mergeArray = [...merge];
-      const test = await Pattern.collection.aggregate([{
-        $match: { _id: { $in: patternsIDs } },
-      }, {
-        $unwind: '$valenceUnits',
-      }, {
-        $match: { valenceUnits: { $in: mergeArray } },
-      }]).map(tmp => tmp._id).toArray();
-      console.log(test);
-      const test2 = await Pattern.collection.aggregate([{
-        $match: { _id: { $in: patternsIDs } },
-      }, {
-        $unwind: '$valenceUnits',
-      }, {
-        $match: { valenceUnits: { $in: mergeArray } },
-      }, {
-        $group: {
-          _id: '$_id',
-          count: { $sum: 1 },
-        },
-      }]).map(tmp => tmp._id).toArray();
-      console.log(test2);
       patternsIDs = await Pattern.collection.aggregate([{
         $match: { _id: { $in: patternsIDs } },
       }, {
@@ -108,7 +74,6 @@ async function getPatternsIDs(arrayOfArrayOfValenceUnitIDs) {
       if (patternsIDs.length === 0) {
         return patternsIDs;
       }
-      console.log(patternsIDs);
     }
   }
   return patternsIDs;

@@ -19,6 +19,8 @@ describe('core.patterns', () => {
   let eNPNP;
   let eNPDep;
   let eNPObj;
+  let fPPinDep;
+  let gPPtoObj;
   before(async () => {
     if (mongoose.connection.readyState === 0) {
       await mongoose.connect(config.dbUri);
@@ -51,6 +53,18 @@ describe('core.patterns', () => {
       coreType: 'Core',
     });
     await eFE.save();
+    const fFE = new FrameElement({
+      _id: 6,
+      name: 'F',
+      coreType: 'Core',
+    });
+    await fFE.save();
+    const gFE = new FrameElement({
+      _id: 7,
+      name: 'G',
+      coreType: 'Core',
+    });
+    await gFE.save();
     aNPObj = new ValenceUnit({
       FE: 1,
       PT: 'NP',
@@ -99,6 +113,18 @@ describe('core.patterns', () => {
       GF: 'Obj',
     });
     await eNPDep.save();
+    fPPinDep = new ValenceUnit({
+      FE: 6,
+      PT: 'PP[in]',
+      GF: 'Dep',
+    });
+    await fPPinDep.save();
+    gPPtoObj = new ValenceUnit({
+      FE: 7,
+      PT: 'PP[to]',
+      GF: 'Obj',
+    });
+    await gPPtoObj.save();
     const pattern1 = new Pattern({
       valenceUnits: [aNPObj, dPPaboutExt],
     });
@@ -135,35 +161,58 @@ describe('core.patterns', () => {
       valenceUnits: [eNPDep, eNPDep, eNPObj, eNPObj],
     });
     await pattern9.save();
+    const pattern10 = new Pattern({
+      valenceUnits: [aNPObj, bNPObj, eNPDep, fPPinDep],
+    });
+    await pattern10.save();
+    const pattern11 = new Pattern({
+      valenceUnits: [aNPObj, dPPaboutExt, eNPDep, fPPinDep],
+    });
+    await pattern11.save();
+    const pattern12 = new Pattern({
+      valenceUnits: [aNPObj, bNPObj, cNPExt, eNPDep, fPPinDep],
+    });
+    await pattern12.save();
+    const pattern13 = new Pattern({
+      valenceUnits: [aNPObj, bNPObj, cNPExt, eNPDep, fPPinDep, eNPDep, eNPDep],
+    });
+    await pattern13.save();
+    const pattern14 = new Pattern({
+      valenceUnits: [fPPinDep, gPPtoObj, fPPinDep, fPPinDep, gPPtoObj, fPPinDep, gPPtoObj],
+    });
+    await pattern14.save();
+    const pattern15 = new Pattern({
+      valenceUnits: [fPPinDep, fPPinDep, gPPtoObj, gPPtoObj, fPPinDep],
+    });
+    await pattern15.save();
+    const pattern16 = new Pattern({
+      valenceUnits: [fPPinDep, fPPinDep, gPPtoObj, gPPtoObj, fPPinDep, gPPtoObj],
+    });
+    await pattern16.save();
   });
   after(async () => {
     await mongoose.connection.dropDatabase();
   });
   it('#getPatternsIDs should return correct patterns when processing a single arrayOfValenceUnitIDs', async () => {
     const patterns = await getPatternsIDs([[aNPObj._id, bNPObj._id, cNPExt._id]]);
-    patterns.length.should.equal(8);
+    patterns.length.should.equal(12);
   });
   it('#getPatternsIDs should return correct patterns when processing a single arrayOfValenceUnitIDs', async () => {
     const patterns = await getPatternsIDs([[aNPObj._id, bNPObj._id, eSfinADJ._id, dPPaboutExt._id]]);
-    patterns.length.should.equal(7);
+    patterns.length.should.equal(11);
   });
   it('#getPatternsIDs should return an empty array when processing a single arrayOfValenceUnitIDs not matching any pattern in the database', async () => {
     const patterns = await getPatternsIDs([[eNPNP._id]]);
     patterns.length.should.equal(0);
     patterns.should.deep.equal([]);
   });
-  it('#getPatternsIDs should not insert TMPatterns when processing a single arrayOfValenceUnitIDs', async () => {
-    await getPatternsIDs([[aNPObj._id, bNPObj._id, cNPExt._id]]);
-    //const tmpatterns = await TMPattern.find();
-    //tmpatterns.length.should.equal(0);
-  });
   it('#getPatternsIDs should return correct patterns when processing an arrayOfArrayOfValenceUnitIDs of length 2', async () => {
     const patterns = await getPatternsIDs([[aNPObj._id], [bNPObj._id, cNPExt._id]]);
-    patterns.length.should.equal(4);
+    patterns.length.should.equal(7);
   });
   it('#getPatternsIDs should return correct patterns when processing an arrayOfArrayOfValenceUnitIDs of length 2', async () => {
     const patterns = await getPatternsIDs([[aNPObj._id, bNPObj._id], [cNPExt._id, dPPaboutExt._id]]);
-    patterns.length.should.equal(6);
+    patterns.length.should.equal(9);
   });
   it('#getPatternsIDs should return an empty array when processing an arrayOfArrayOfValenceUnitIDs of length 2 not matching any pattern in the database', async () => {
     const patterns = await getPatternsIDs([[dPPaboutExt._id], [eNPObj._id]]);
@@ -175,14 +224,9 @@ describe('core.patterns', () => {
     patterns.length.should.equal(0);
     patterns.should.deep.equal([]);
   });
-  it('#getPatternsIDs should have removed all TMPatterns matching the queryIdentifier when processing an arrayOfArrayOfValenceUnitIDs of length 2', async () => {
-    await getPatternsIDs([[aNPObj._id, bNPObj._id], [cNPExt._id, dPPaboutExt._id]]);
-    //const tmpatterns = await TMPattern.find();
-    //tmpatterns.length.should.equal(0);
-  });
   it('#getPatternsIDs should return correct patterns when processing an arrayOfArrayOfValenceUnitIDs of length 3', async () => {
     const patterns = await getPatternsIDs([[aNPObj._id], [bNPObj._id], [cNPExt._id, dPPaboutExt._id]]);
-    patterns.length.should.equal(2);
+    patterns.length.should.equal(4);
   });
   it('#getPatternsIDs should return correct patterns when processing an arrayOfArrayOfValenceUnitIDs of length 3', async () => {
     const patterns = await getPatternsIDs([[aNPObj._id, bNPObj._id, cNPExt._id], [dPPaboutExt._id, eSfinADJ._id], [eSfinADJ._id]]);
@@ -190,7 +234,7 @@ describe('core.patterns', () => {
   });
   it('#getPatternsIDs should return correct patterns when processing an arrayOfArrayOfValenceUnitIDs of length 3', async () => {
     const patterns = await getPatternsIDs([[eNPDep._id], [eNPDep._id], [eNPDep._id]]);
-    patterns.length.should.equal(0);
+    patterns.length.should.equal(1);
   });
   it('#getPatternsIDs should return correct patterns when processing an arrayOfArrayOfValenceUnitIDs of length 3', async () => {
     const patterns = await getPatternsIDs([[eNPDep._id], [eNPDep._id], [eNPObj._id]]);
@@ -206,12 +250,48 @@ describe('core.patterns', () => {
     patterns.length.should.equal(0);
     patterns.should.deep.equal([]);
   });
-  it('#getPatternsIDs should have removed all TMPatterns matching the queryIdentifier when processing an arrayOfArrayOfValenceUnitIDs of length 3', async () => {
-    await getPatternsIDs([[aNPObj._id], [bNPObj._id], [cNPExt._id, dPPaboutExt._id]]);
-    //const tmpatterns = await TMPattern.find();
-    //tmpatterns.length.should.equal(0);
+  it('#getPatternsIDs should return correct patterns when processing an arrayOfArrayOfValenceUnitIDs of length 4', async () => {
+    const patterns = await getPatternsIDs([[aNPObj._id, bNPObj._id, cNPExt._id], [dPPaboutExt._id, eNPDep._id], [fPPinDep._id], [eNPDep._id]]);
+    patterns.length.should.equal(2);
   });
-  it('#', async () => {
-    //Test pattern of length 1
+  it('#getPatternsIDs should return an empty array when processing an arrayOfArrayOfValenceUnitIDs of length 4 not matching any pattern in the database', async () => {
+    const patterns = await getPatternsIDs([[aNPObj._id, bNPObj._id, cNPExt._id], [dPPaboutExt._id, eNPDep._id], [fPPinDep._id], [gPPtoObj._id]]);
+    patterns.length.should.equal(0);
+    patterns.should.deep.equal([]);
+  });
+  it('#getPatternsIDs should return correct patterns when processing an arrayOfArrayOfValenceUnitIDs of length 5', async () => {
+    const patterns = await getPatternsIDs([[aNPObj._id, bNPObj._id, cNPExt._id], [dPPaboutExt._id, eNPDep._id], [fPPinDep._id], [eNPDep._id], [gPPtoObj._id, eNPDep._id]]);
+    patterns.length.should.equal(1);
+  });
+  it('#getPatternsIDs should return an empty array when processing an arrayOfArrayOfValenceUnitIDs of length 5 not matching any pattern in the database', async () => {
+    const patterns = await getPatternsIDs([[aNPObj._id, bNPObj._id, cNPExt._id], [cNPExt._id], [dPPaboutExt._id, eNPDep._id], [gPPtoObj._id, eNPDep._id], [cNPExt._id]]);
+    patterns.length.should.equal(0);
+    patterns.should.deep.equal([]);
+  });
+  it('#getPatternsIDs should return correct patterns when processing an arrayOfArrayOfValenceUnitIDs of length 5', async () => {
+    const patterns = await getPatternsIDs([[gPPtoObj._id], [gPPtoObj._id], [fPPinDep._id], [fPPinDep._id], [fPPinDep._id]]);
+    patterns.length.should.equal(3);
+  });
+  it('#getPatternsIDs should return correct patterns when processing an arrayOfArrayOfValenceUnitIDs of length 6', async () => {
+    const patterns = await getPatternsIDs([[gPPtoObj._id], [gPPtoObj._id], [gPPtoObj._id], [fPPinDep._id], [fPPinDep._id], [fPPinDep._id]]);
+    patterns.length.should.equal(2);
+  });
+  it('#getPatternsIDs should return an empty array when processing an arrayOfArrayOfValenceUnitIDs of length 6 not matching any pattern in the database', async () => {
+    const patterns = await getPatternsIDs([[fPPinDep._id, gPPtoObj._id], [eNPDep._id, cNPExt._id, aNPObj._id, gPPtoObj._id], [fPPinDep._id], [aNPObj._id], [gPPtoObj._id, fPPinDep._id], [aNPObj._id, fPPinDep._id, eNPDep._id, dPPaboutExt._id], [gPPtoObj._id, fPPinDep._id]]);
+    patterns.length.should.equal(0);
+    patterns.should.deep.equal([]);
+  });
+  it('#getPatternsIDs should return correct patterns when processing an arrayOfArrayOfValenceUnitIDs of length 7', async () => {
+    const patterns = await getPatternsIDs([[gPPtoObj._id], [gPPtoObj._id], [gPPtoObj._id], [fPPinDep._id], [fPPinDep._id], [fPPinDep._id], [fPPinDep._id]]);
+    patterns.length.should.equal(1);
+  });
+  it('#getPatternsIDs should return correct patterns when processing an arrayOfArrayOfValenceUnitIDs of length 7', async () => {
+    const patterns = await getPatternsIDs([[aNPObj._id, dPPaboutExt._id, gPPtoObj._id], [fPPinDep._id, gPPtoObj._id], [eNPDep._id, cNPExt._id, aNPObj._id, gPPtoObj._id], [fPPinDep._id], [gPPtoObj._id, fPPinDep._id], [aNPObj._id, fPPinDep._id, eNPDep._id, dPPaboutExt._id], [gPPtoObj._id, fPPinDep._id]]);
+    patterns.length.should.equal(1);
+  });
+  it('#getPatternsIDs should return an empty array when processing an arrayOfArrayOfValenceUnitIDs of length 7 not matching any pattern in the database', async () => {
+    const patterns = await getPatternsIDs([[aNPObj._id, dPPaboutExt._id, gPPtoObj._id], [fPPinDep._id, gPPtoObj._id], [eNPDep._id, cNPExt._id, aNPObj._id, gPPtoObj._id], [cNPExt._id], [gPPtoObj._id, fPPinDep._id], [aNPObj._id, fPPinDep._id, eNPDep._id, dPPaboutExt._id], [gPPtoObj._id, fPPinDep._id]]);
+    patterns.length.should.equal(0);
+    patterns.should.deep.equal([]);
   });
 });
