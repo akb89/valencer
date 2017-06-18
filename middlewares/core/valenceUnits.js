@@ -60,13 +60,11 @@ async function getValenceUnitsIDs(valenceUnitAsArrayWithFEids) {
   if (valenceUnit.GF !== undefined) {
     expVU.GF = valenceUnit.GF;
   }
-  const valenceUnits = await ValenceUnit.find(expVU);
-  return valenceUnits.map(vu => vu._id);
+  return (await ValenceUnit.find(expVU)).map(vu => vu._id);
 }
 
 async function getArrayOfArrayOfValenceUnitsIDs(formattedValencePatternArrayWithFEids) {
-  return Promise.all(formattedValencePatternArrayWithFEids.map(
-    async valenceUnitAsArrayWithFEids => getValenceUnitsIDs(valenceUnitAsArrayWithFEids))
+  return Promise.all(formattedValencePatternArrayWithFEids.map(valenceUnitAsArrayWithFEids => getValenceUnitsIDs(valenceUnitAsArrayWithFEids))
   );
 }
 
