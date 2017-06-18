@@ -112,7 +112,7 @@ describe('core.patterns', () => {
       PT: 'NP',
       GF: 'Obj',
     });
-    await eNPDep.save();
+    await eNPObj.save();
     fPPinDep = new ValenceUnit({
       FE: 6,
       PT: 'PP[in]',
