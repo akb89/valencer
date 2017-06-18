@@ -24,3 +24,6 @@ rules:
 
   #Allow devDependencies for tests
   import/no-extraneous-dependencies: [error, {devDependencies: ['**/*.test.js']}]
+
+  #Allow (pep) Python-style parameters indentation and alignment
+  indent: [error, 2, {FunctionDeclaration: {parameters: first}, FunctionExpression: {parameters: first}, CallExpression: {arguments: first}, ArrayExpression: first, ObjectExpression: first}]
