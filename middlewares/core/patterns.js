@@ -50,13 +50,12 @@ async function getPatternsIDs(arrayOfArrayOfValenceUnitIDs) {
           }
         }
       }
-      const mergeArray = [...merge];
       patternsIDs = await Pattern.collection.aggregate([{
         $match: { _id: { $in: patternsIDs } },
       }, {
         $unwind: '$valenceUnits',
       }, {
-        $match: { valenceUnits: { $in: mergeArray } },
+        $match: { valenceUnits: { $in: [...merge] } },
       }, {
         $group: {
           _id: '$_id',
