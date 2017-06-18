@@ -5,8 +5,8 @@
  * and process the output
  */
 const Pattern = require('noframenet-core').Pattern;
-const config = require('./../../config');
 const utils = require('./../../utils/utils');
+const config = require('./../../config');
 
 const logger = config.logger;
 
@@ -21,9 +21,7 @@ async function getPatternsIDs(arrayOfArrayOfValenceUnitIDs) {
         $project: {
           _id: true,
         },
-      }], {
-        cursor: {},
-      }).map(pattern => pattern._id).toArray();
+      }]).map(pattern => pattern._id).toArray();
   }
   let patternsIDs;
   for (let i = arrayOfArrayOfValenceUnitIDs.length; i > 1; i -= 1) {
@@ -68,9 +66,7 @@ async function getPatternsIDs(arrayOfArrayOfValenceUnitIDs) {
         $match: { count: { $gte: i } },
       }, {
         $project: { _id: true },
-      }], {
-        cursor: {},
-      }).map(tmp => tmp._id).toArray();
+      }]).map(tmp => tmp._id).toArray();
       if (patternsIDs.length === 0) {
         return patternsIDs;
       }
