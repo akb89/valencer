@@ -21,7 +21,7 @@
     "cleantestenv": "[ ! -f mongo.pid ] || (kill $(cat mongo.pid) && rm mongo.pid && rm mongod.valencer.log)",
     "pretest": "npm run startmongo",
     "test": "NODE_ENV=testing nyc --reporter=text mocha ./tests/**/*.test.js && npm run cleantestenv || npm run cleantestenv",
-    "singletest": "NODE_ENV=testing nyc --reporter=text mocha ./tests/middlewares/processor.patterns.test.js",
+    "singletest": "NODE_ENV=testing nyc --reporter=text mocha ./tests/middlewares/core.valenceUnits.test.js",
     "posttest": "npm run lint",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
@@ -50,6 +50,7 @@
   },
   "dependencies": {
     "bluebird": "^3.5.0",
+    "js-combinatorics": "^0.5.2",
     "kcors": "^2.2.1",
     "koa": "^2.2.0",
     "koa-compose": "^4.0.0",
@@ -68,9 +69,6 @@
     "eslint-plugin-import": "^2.3.0",
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.4.1",
-    "flow": "^0.2.3",
-    "flow-bin": "^0.47.0",
-    "istanbul": "^0.4.5",
     "mocha": "^3.4.2",
     "nyc": "^11.0.2",
     "rewire": "^2.5.2"
