@@ -19,6 +19,7 @@ async function getByNoPopulateID(context) {
   }
 }
 
+// TODO : replace findOne with findById in Mongoose
 async function getByPopulateID(context) {
   const startTime = process.hrtime();
   const annoSet = await AnnotationSet
