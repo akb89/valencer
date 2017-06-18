@@ -9,7 +9,7 @@ const getPatterns = require('./../../middlewares/framenet/core').getPatterns;
 const should = chai.should();
 mongoose.Promise = require('bluebird');
 
-describe('frame', () => {
+describe('processors.frame', () => {
   before(async () => {
     if (mongoose.connection.readyState === 0) {
       await mongoose.connect(config.dbUri);
