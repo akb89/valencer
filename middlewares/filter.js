@@ -1,8 +1,10 @@
+const bluebird = require('bluebird');
 const FrameElement = require('noframenet-core').FrameElement;
 const Pattern = require('noframenet-core').Pattern;
 const ValenceUnit = require('noframenet-core').ValenceUnit;
-const utils = require('./../utils/utils');
 const config = require('./../config');
+
+const Promise = bluebird.Promise;
 
 function filterByStrictVUMatching(allPatterns, arrayOfArrayOfValenceUnitIDs) {
   return allPatterns.reduce((filteredPatternsIDs, pattern) => {
@@ -13,27 +15,41 @@ function filterByStrictVUMatching(allPatterns, arrayOfArrayOfValenceUnitIDs) {
   }, []);
 }
 
-async function containsExtraCoreFEs(frameElements, frameElementsNames) {
-  frameElements.reduce((isExtraCoreFE, frameElement) => !frameElementsNames.has(frameElement.name) && frameElement.coreType === 'Core', false);
+function containsExtraCoreFEs(frameElementsNameSet, frameElements) {
+  for (const frameElement of frameElements) {
+    if (!frameElementsNameSet.has(frameElement.name) && frameElement.coreType === 'Core') {
+      return true;
+    }
+  }
+  return false;
 }
 
 async function getFrameElements(pattern) {
-  return Promise.all(pattern.valenceUnits.map(async (valenceUnitID) => {
-    const frameElementID = ValenceUnit.findById(valenceUnitID, { _id: 0, FE: 1 });
-    return FrameElement.findById(frameElementID);
-  }));
+  return Promise.all(pattern.valenceUnits.map(async valenceUnitID => FrameElement.findById((await ValenceUnit.findById(valenceUnitID)).FE)));
 }
 
-function filterByExtraCoreFEs(allPatterns, arrayOfArrayOfValenceUnitIDs) {
-  const frameElementsIDs = new Set(
-    arrayOfArrayOfValenceUnitIDs.map(async valenceUnitsIDs => await ValenceUnit.findById(valenceUnitsIDs[0]._id, { _id: 0, FE: 1 }))
-  );
-  const frameElementsNames = new Set(
-    frameElementsIDs.map(async frameElementID => await FrameElement.findById(frameElementID, { _id: 0, name: 1 }))
-  );
-  return allPatterns.reduce(async (filteredPatternsIDs, pattern) => {
+/**
+ * Return a partial array of FrameElement ids given an input array of
+ * array of valenceunit objects. This function's purpose is to return an
+ * intermediate list of ids in order to ultimately get a set of frame
+ * element names. This is why we only take the first element of each array
+ * (valenceUnitsIDs[0]). By definition, each array should refer to the same
+ * frame element name.
+ */
+async function getFrameElementsIDs(arrayOfArrayOfValenceUnitIDs) {
+  return Promise.all(arrayOfArrayOfValenceUnitIDs.map(async valenceUnitsIDs => (await ValenceUnit.findById(valenceUnitsIDs[0])).FE));
+}
+
+async function getFrameElementsNameSet(frameElementsIDs) {
+  return new Set((await Promise.all(frameElementsIDs.map(async frameElementID => (await FrameElement.findById(frameElementID)).name))));
+}
+
+async function filterByExtraCoreFEs(allPatterns, arrayOfArrayOfValenceUnitIDs) {
+  const frameElementsNameSet = await getFrameElementsNameSet((await getFrameElementsIDs(arrayOfArrayOfValenceUnitIDs)));
+  return allPatterns.reduce(async (filteredPatternsIDsPromise, pattern) => {
+    const filteredPatternsIDs = await filteredPatternsIDsPromise;
     const frameElements = await getFrameElements(pattern);
-    if (!containsExtraCoreFEs(frameElements, frameElementsNames)) {
+    if (!containsExtraCoreFEs(frameElementsNameSet, frameElements)) {
       filteredPatternsIDs.push(pattern._id);
     }
     return filteredPatternsIDs;
@@ -66,7 +82,7 @@ async function getFilteredPatternsIDs(allPatternsIDs,
     return filterByExtraCoreFEs(allPatterns, arrayOfArrayOfValenceUnitIDs);
   }
   // strictVUMatching === true
-  return filterByStrictVUMatching(allPatterns, arrayOfArrayOfValenceUnitIDs)
+  return filterByStrictVUMatching(allPatterns, arrayOfArrayOfValenceUnitIDs);
 }
 
 async function filterPatternsIDs(context, next) {
