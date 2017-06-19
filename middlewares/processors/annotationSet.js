@@ -1,5 +1,4 @@
 const AnnotationSet = require('noframenet-core').AnnotationSet;
-const core = require('./core');
 const ApiError = require('./../../exceptions/apiException');
 const config = require('./../../config');
 
@@ -110,20 +109,7 @@ async function getByPopulateVP(context) {
 }
 
 async function getByVP(context) {
-  logger.info(`Querying for all AnnotationSets with a valence pattern matching: ${context.query.vp}`);
-  const strictVUMatching = context.query.strictVUMatching === 'true';
-  const withExtraCoreFEs = context.query.withExtraCoreFEs !== 'false';
-  const populate = context.query.populate === 'true';
-  context.patterns = await core
-    .getPatterns(context.processedQuery, strictVUMatching, withExtraCoreFEs);
-  logger.verbose(`Return populated documents: ${populate}`);
-  logger.verbose(`Strictly matching input valence units: ${strictVUMatching}`);
-  logger.verbose(`Including extra core Frame Elements: ${withExtraCoreFEs}`);
-  if (populate) {
-    await getByPopulateVP(context);
-  } else {
-    await getByNoPopulateVP(context);
-  }
+  
 }
 
 module.exports = {
