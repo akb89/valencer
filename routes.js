@@ -1,13 +1,20 @@
 const Router = require('koa-router');
-const koaCompose = require('koa-compose');
+const compose = require('koa-compose');
+const database = require('./middlewares/database');
 const formatter = require('./middlewares/formatter');
-const processor = require('./middlewares/processor');
+const filter = require('./middlewares/filter');
+const coreVU = require('./middlewares/core/valenceUnits');
+const coreP = require('./middlewares/core/patterns');
 const validator = require('./middlewares/validator');
 const annotationSet = require('./middlewares/processors/annotationSet');
 const annotationSets = require('./middlewares/processors/annotationSets');
+const utils = require('./utils/utils');
+const config = require('./config');
 
 const pkgVersion = process.env.npm_package_version;
 const apiVersion = `/v${pkgVersion.split('.')[0]}`;
+
+const logger = config.logger;
 
 const valencer = new Router({
   prefix: apiVersion,
@@ -15,7 +22,35 @@ const valencer = new Router({
 
 const router = new Router();
 
-const validateVPquery = koaCompose.compose([
+function initializeValencerContext(context, next) {
+  context.valencer = {};
+  context.valencer.startTime = utils.getStartTime();
+  logger.info(`Processing query = ${JSON.stringify(context.query)}`);
+  return next();
+}
+
+function intializeResultsContext(context, next) {
+  context.valencer.results = {};
+  return next();
+}
+
+function initializeQueryContext(context, next) {
+  context.valencer.query = {};
+  return next();
+}
+
+function initializeQueryVPcontext(context, next) {
+  context.valencer.query.vp = {};
+  return next();
+}
+
+function wrap(context, next) {
+  logger.info(`Query ${JSON.stringify(context.query)} processed in ${utils.getElapsedTime(context.valencer.startTime)}ms`);
+  return next();
+}
+
+const validateVPquery = compose([
+  validator.validatePathToDB,
   validator.validateQueryNotEmpty,
   validator.validateQueryVPnotEmpty,
   validator.validateQueryVPcontainsNoInvalidCharacters,
@@ -25,7 +60,8 @@ const validateVPquery = koaCompose.compose([
   validator.validateQueryStrictVUmatchingParameter,
   validator.validateQueryWithExtraCoreFEsParameter,
 ]);
-const validateParamsQuery = koaCompose.compose([
+const validateParamsQuery = compose([
+  validator.validatePathToDB,
   validator.validateParamsNotEmpty,
   validator.validateParamsIDnotEmpty,
   validator.validateParamsIDisNumberOrObjectID,
@@ -34,30 +70,38 @@ const validateParamsQuery = koaCompose.compose([
   validator.validateQueryWithExtraCoreFEsParameter,
 ]);
 
-const formatVPquery = koaCompose.compose([
+const formatVPquery = compose([
   formatter.formatValencePatternToArrayOfArrayOfTokens,
   formatter.replaceFrameElementNamesByFrameElementIds,
 ]);
 
-const processVPquery = koaCompose.compose([
-  processor.retrieveValenceUnits,
-  processor.retrievePatterns,
+const processVPquery = compose([
+  coreVU.retrieveValenceUnitsIDs,
+  coreP.retrievePatternsIDs,
+  filter.filterPatternsIDs,
 ]);
 
-const composeVPquery = koaCompose.compose([
+const composeVPquery = compose([
+  initializeValencerContext,
   validateVPquery,
+  database.connect,
+  initializeQueryContext,
+  initializeQueryVPcontext,
   formatVPquery,
   validator.validateQueryParametersCombination,
+  intializeResultsContext,
   processVPquery,
 ]);
 
 router.get('/annoSet/:id',
-  validateParamsQuery,
-  annotationSet.getByID);
+           initializeValencerContext,
+           validateParamsQuery,
+           annotationSet.getByID);
 
 router.get('/annoSets',
-  composeVPquery,
-  annotationSets.getByValencePattern);
+           composeVPquery,
+           annotationSets.getByValencePattern,
+           wrap);
 
 valencer.use('/:lang_iso_code/:dataset_version', router.routes());
 
