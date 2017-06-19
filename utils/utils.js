@@ -58,8 +58,19 @@ function getKNCombinations(k, n) {
   return getKCombinations(array, k);
 }
 
+function getStartTime() {
+  return process.hrtime();
+}
+
+// Elapsed time since startTime in ms
+function getElapsedTime(startTime) {
+  return process.hrtime(startTime)[1] / 1000000;
+}
+
 module.exports = {
   toValenceArray,
   toTokenArray,
   getKNCombinations,
+  getStartTime,
+  getElapsedTime,
 };
