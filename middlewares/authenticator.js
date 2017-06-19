@@ -14,12 +14,12 @@ async function verifyApiSignature(context, next) {
 
   const authorization = req.header.authorization;
   if (!authorization) {
-    throw ApiError.NoAuthorizationHeaderError;
+    throw new ApiError.NoAuthorizationHeaderError();
   }
 
   const twoPartAuth = authorization.split(':');
   if (twoPartAuth.length !== 2) {
-    throw ApiError.NoTwoPartAuthorizationError;
+    throw new ApiError.NoTwoPartAuthorizationError();
   }
 
   const apiKey = twoPartAuth[0];
@@ -28,7 +28,7 @@ async function verifyApiSignature(context, next) {
     key: apiKey,
   });
   if (apiInfo.length === 0) {
-    throw ApiError.InvalidAPIKey;
+    throw new ApiError.InvalidAPIKey();
   }
   apiInfo = apiInfo[0];
 
@@ -43,7 +43,7 @@ async function verifyApiSignature(context, next) {
     .digest('hex');
 
   if (hash !== sign) {
-    throw ApiError.InvalidSignature;
+    throw new ApiError.InvalidSignature();
   }
 
   // Test timestamp
@@ -55,7 +55,7 @@ async function verifyApiSignature(context, next) {
     (timestamp >= legitInterval[0] && timestamp <= legitInterval[1]);
 
   if (!intervalIsOkay) {
-    throw ApiError.InvalidTimestamp;
+    throw new ApiError.InvalidTimestamp();
   }
 
   apiInfo.timestamp = now;

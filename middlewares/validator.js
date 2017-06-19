@@ -4,38 +4,40 @@ const config = require('./../config');
 const logger = config.logger;
 
 function validateQueryNotEmpty(context, next) {
-  //logger.debug(`Validating query: ${JSON.stringify(context.query)}`);
-  if (!context.query || context.query.trim().length === 0) {
-    throw ApiError.InvalidQuery('context.query object is empty, null or undefined');
+  if (!context.query) {
+    throw new ApiError.InvalidQuery('context.query object is empty, null or undefined');
   }
+  logger.debug(`context.query object is valid: ${JSON.stringify(context.query)}`);
   return next();
 }
 
 function validateParamsNotEmpty(context, next) {
   //logger.debug(`Validating params: ${JSON.stringify(context.params)}`);
+  //TODO: remove trim
   if (!context.params || context.params.trim().length === 0) {
-    throw ApiError.InvalidParams('context.params object is empty, null or undefined');
+    throw new ApiError.InvalidParams('context.params object is empty, null or undefined');
   }
   return next();
 }
 
 function validateQueryVPnotEmpty(context, next) {
   if (!context.query.vp || context.query.vp.trim().length === 0) {
-    throw ApiError.InvalidQueryParams('context.query.vp parameter is empty, null or undefined');
+    throw new ApiError.InvalidQueryParams('context.query.vp parameter is empty, null or undefined');
   }
+  logger.debug('context.query.vp parameter is not empty');
   return next();
 }
 
 function validateParamsIDnotEmpty(context, next) {
   if (!context.params.id || context.params.id.trim().length === 0) {
-    throw ApiError.InvalidParams('context.params.id parameter is empty, null or undefined');
+    throw new ApiError.InvalidParams('context.params.id parameter is empty, null or undefined');
   }
   return next();
 }
 
 function validateParamsIDisNumberOrObjectID(context, next) {
   if (isNaN(context.params.id) && !/[a-fA-F0-9]{24}$/.test(context.params.id)) {
-    throw ApiError.InvalidParams('context.params.id should be a Number or an ObjectID');
+    throw new ApiError.InvalidParams('context.params.id should be a Number or an ObjectID');
   }
   return next();
 }
@@ -44,8 +46,9 @@ function validateParamsIDisNumberOrObjectID(context, next) {
 function validateQueryVPcontainsNoInvalidCharacters(context, next) {
   const invalidCharacterIndex = context.query.vp.search(/[^a-zA-Z.+]/);
   if (invalidCharacterIndex !== -1) {
-    throw ApiError.InvalidQueryParams(`Invalid character in context.query.vp = '${context.query.vp}' at index = ${invalidCharacterIndex}`);
+    throw new ApiError.InvalidQueryParams(`Invalid character in context.query.vp = '${context.query.vp}' at index = ${invalidCharacterIndex}`);
   }
+  logger.debug('context.query.vp parameter contains no invalid characters');
   return next();
 }
 
@@ -53,8 +56,9 @@ function validateQueryVPcontainsNoInvalidCharacters(context, next) {
 function validateQueryVPcontainsNoInvalidSequence(context, next) {
   const invalidSequenceIndex = context.query.vp.search(/((\+|\.){2,}|\.\+|\+\.|^(\.|\+)|(\.|\+)$)/);
   if (invalidSequenceIndex !== -1) {
-    throw ApiError.InvalidQueryParams(`Invalid sequence in context.query.vp = '${context.query.vp}' starting at index = ${invalidSequenceIndex}`);
+    throw new ApiError.InvalidQueryParams(`Invalid sequence in context.query.vp = '${context.query.vp}' starting at index = ${invalidSequenceIndex}`);
   }
+  logger.debug('context.query.vp parameter contains no invalid sequence');
   return next();
 }
 
@@ -74,8 +78,9 @@ function countValenceTokens(vp) {
 // Check if a valenceUnit contains more than 3 tokens (Should always be at most FE.PT.GF)
 function validateQueryVPvalenceUnitLength(context, next) {
   if (countValenceTokens(context.query.vp) > 3) {
-    throw ApiError.InvalidQueryParams(`MaxValenceLengthExceeded in context.query.vp = '${context.query.vp}'. A valence can only contain up to 3 tokens FE.PT.GF separated by a dot`);
+    throw new ApiError.InvalidQueryParams(`MaxValenceLengthExceeded in context.query.vp = '${context.query.vp}'. A valence can only contain up to 3 tokens FE.PT.GF separated by a dot`);
   }
+  logger.debug('context.query.vp parameter contains valid valence units token counts');
   return next();
 }
 
@@ -84,8 +89,12 @@ function validateQueryPopulateParameter(context, next) {
       && context.query.populate.length !== 0
       && context.query.populate !== 'true'
       && context.query.populate !== 'false') {
-    throw ApiError.InvalidQueryParams('context.query.populate parameter should be true or false');
+    throw new ApiError.InvalidQueryParams('context.query.populate parameter should be true or false');
+  } else if (context.query.populate === undefined) {
+    // Set default to false
+    context.query.populate = 'false';
   }
+  logger.debug(`context.query.populate parameter is valid and set to ${JSON.stringify(context.query.populate)}`);
   return next();
 }
 
@@ -94,8 +103,12 @@ function validateQueryStrictVUmatchingParameter(context, next) {
       && context.query.strictVUMatching.length !== 0
       && context.query.strictVUMatching !== 'true'
       && context.query.strictVUMatching !== 'false') {
-    throw ApiError.InvalidQueryParams('context.query.strictVUMatching parameter should be true or false');
+    throw new ApiError.InvalidQueryParams('context.query.strictVUMatching parameter should be true or false');
+  } else if (context.query.strictVUMatching === undefined) {
+    // Set default to false
+    context.query.strictVUMatching = 'false';
   }
+  logger.debug(`context.query.strictVUMatching parameter is valid and set to ${JSON.stringify(context.query.strictVUMatching)}`);
   return next();
 }
 
@@ -104,8 +117,12 @@ function validateQueryWithExtraCoreFEsParameter(context, next) {
       && context.query.withExtraCoreFEs.length !== 0
       && context.query.withExtraCoreFEs !== 'true'
       && context.query.withExtraCoreFEs !== 'false') {
-    throw ApiError.InvalidQueryParams('context.query.withExtraCoreFEs parameter should be true or false');
+    throw new ApiError.InvalidQueryParams('context.query.withExtraCoreFEs parameter should be true or false');
+  } else if (context.query.withExtraCoreFEs === undefined) {
+    // Set default to true
+    context.query.withExtraCoreFEs = 'true';
   }
+  logger.debug(`context.query.withExtraCoreFEs parameter is valid and set to ${JSON.stringify(context.query.withExtraCoreFEs)}`);
   return next();
 }
 
@@ -136,12 +153,21 @@ function validateQueryParametersCombination(context, next) {
   if (!context.query.strictVUMatching
       && !context.query.withExtraCoreFEs
       && containsUnspecifiedFrameElement(context.valencer.query.vp.withFEids)) {
-    throw ApiError.InvalidQueryParams('the Valencer API cannot process queries with strictVUMatching parameter set to false and withExtraCoreFEs parameter set to false if at least one Frame Element is unspecified in the input Valence Pattern');
+    throw new ApiError.InvalidQueryParams('the Valencer API cannot process queries with strictVUMatching parameter set to false and withExtraCoreFEs parameter set to false if at least one Frame Element is unspecified in the input Valence Pattern');
   }
+  logger.debug('context.query contains valid combinations of strictVUMatching, withExtraCoreFEs and FrameElement combinations');
+  return next();
+}
+
+function validatePathToDB(context, next) {
+  const urlSplit = context.request.url.split('/');
+  context.valencer.database = `fn_${urlSplit[2]}_${urlSplit[3]}`;
+  logger.debug(`context.valencer.database is valid and set to ${JSON.stringify(context.valencer.database)}`);
   return next();
 }
 
 module.exports = {
+  validatePathToDB,
   validateQueryNotEmpty,
   validateParamsNotEmpty,
   validateQueryVPnotEmpty,
