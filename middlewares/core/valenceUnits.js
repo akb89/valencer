@@ -8,6 +8,7 @@ const ValenceUnit = require('noframenet-core').ValenceUnit;
 const bluebird = require('bluebird');
 const ApiError = require('./../../exceptions/apiException');
 const config = require('./../../config');
+const utils = require('./../../utils/utils');
 
 const Promise = bluebird.Promise;
 const logger = config.logger;
@@ -47,7 +48,7 @@ async function getValenceUnitsIDs(valenceUnitAsArrayWithFEids) {
       }
     }
     if (!found) {
-      throw ApiError.NotFoundError(`Could not find token in FrameNet database: ${token}`);
+      throw new ApiError.NotFoundError(`Could not find token in FrameNet database: ${token}`);
     }
   }
   const expVU = {};
@@ -72,8 +73,11 @@ async function getArrayOfArrayOfValenceUnitsIDs(formattedValencePatternArrayWith
  * Returns an array of array of valenceUnit objects.
  */
 async function retrieveValenceUnitsIDs(context, next) {
-  context.valencer.results = {};
-  context.valencer.results.valenceUnits = await getArrayOfArrayOfValenceUnitsIDs(context.valencer.query.vp.withFEids);
+  const startTime = utils.getStartTime();
+  const valenceUnitsIDs = await getArrayOfArrayOfValenceUnitsIDs(context.valencer.query.vp.withFEids);
+  context.valencer.results.valenceUnitsIDs = valenceUnitsIDs || [];
+  logger.debug(`context.valencer.results.valenceUnitsIDs.length = ${context.valencer.results.valenceUnitsIDs.length}`);
+  logger.debug(`context.valencer.results.valenceUnitsIDs retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }
 

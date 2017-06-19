@@ -16,9 +16,7 @@ const Promise = bluebird.Promise;
 const logger = config.logger;
 
 function getFormattedValencePattern(vp) {
-  logger.debug(`Formatting valence pattern: ${vp}`);
   const formattedValencePattern = utils.toTokenArray(utils.toValenceArray(vp));
-  logger.debug(`Formatted valence pattern: ${JSON.stringify(formattedValencePattern)}`);
   return formattedValencePattern;
 }
 
@@ -29,11 +27,9 @@ function getFormattedValencePattern(vp) {
  * [['FE_1', 'PT_1', 'GF_1'], ['FE_2', 'PT_2', 'GF_2'], ..., ['FE_n', 'PT_n', 'GF_n']]
  */
 function formatValencePatternToArrayOfArrayOfTokens(context, next) {
-  context.valencer = {};
-  context.valencer.query = {};
-  context.valencer.query.vp = {};
   context.valencer.query.vp.raw = context.query.vp;
   context.valencer.query.vp.formatted = getFormattedValencePattern(context.query.vp);
+  logger.debug(`context.valencer.query.vp.formatted = ${JSON.stringify(context.valencer.query.vp.formatted)}`);
   return next();
 }
 
@@ -63,6 +59,7 @@ async function getValencePatternAsArrayWithFEids(formattedVP) {
 
 async function replaceFrameElementNamesByFrameElementIds(context, next) {
   context.valencer.query.vp.withFEids = await getValencePatternAsArrayWithFEids(context.valencer.query.vp.formatted);
+  logger.debug(`context.valencer.query.vp.withFEids = ${JSON.stringify(context.valencer.query.vp.withFEids)}`);
   return next();
 }
 

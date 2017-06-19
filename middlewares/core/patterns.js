@@ -5,8 +5,8 @@
  * and process the output
  */
 const Pattern = require('noframenet-core').Pattern;
-const utils = require('./../../utils/utils');
 const config = require('./../../config');
+const utils = require('./../../utils/utils');
 
 const logger = config.logger;
 
@@ -75,8 +75,16 @@ async function getPatternsIDs(arrayOfArrayOfValenceUnitIDs) {
 }
 
 async function retrievePatternsIDs(context, next) {
-  context.valencer.results.patternsIDs =
-    await getPatternsIDs(context.valencer.results.valenceUnitsIDs);
+  const startTime = utils.getStartTime();
+  const valenceUnitsIDs = context.valencer.results.valenceUnitsIDs;
+  if (!valenceUnitsIDs) {
+    context.valencer.results.patternsIDs = [];
+  } else {
+    const patternsIDs = await getPatternsIDs(context.valencer.results.valenceUnitsIDs);
+    context.valencer.results.patternsIDs = patternsIDs || [];
+  }
+  logger.debug(`context.valencer.results.patternsIDs.length = ${context.valencer.results.patternsIDs.length}`);
+  logger.debug(`context.valencer.results.patternsIDs retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }
 

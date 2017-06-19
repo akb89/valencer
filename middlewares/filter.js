@@ -2,9 +2,11 @@ const bluebird = require('bluebird');
 const FrameElement = require('noframenet-core').FrameElement;
 const Pattern = require('noframenet-core').Pattern;
 const ValenceUnit = require('noframenet-core').ValenceUnit;
+const utils = require('./../utils/utils');
 const config = require('./../config');
 
 const Promise = bluebird.Promise;
+const logger = config.logger;
 
 function filterByStrictVUMatching(allPatterns, arrayOfArrayOfValenceUnitIDs) {
   return allPatterns.reduce((filteredPatternsIDs, pattern) => {
@@ -68,13 +70,13 @@ async function filterByExtraCoreFEs(allPatterns, arrayOfArrayOfValenceUnitIDs) {
 async function getFilteredPatternsIDs(allPatternsIDs,
                                       arrayOfArrayOfValenceUnitIDs,
                                       strictVUMatching, withExtraCoreFEs) {
-  if (withExtraCoreFEs && !strictVUMatching) {
+  if (withExtraCoreFEs === 'true' && strictVUMatching === 'false') {
     // This is the default case: Return all possibilities, regardless of
     // whether or not FEs are core or non-core
     return allPatternsIDs;
   }
   const allPatterns = await Pattern.find().where('_id').in(allPatternsIDs);
-  if (!withExtraCoreFEs && !strictVUMatching) {
+  if (withExtraCoreFEs === 'false' && strictVUMatching === 'false') {
     // Allow returning patterns with more than the specified VUs, only if
     // those VUs contain non-core FEs. Ex: Donor.NP.Ext Recipient.NP.Obj ->
     // Donor.NP.Ext Recipient.NP.Obj Time.PP[at].Dep as Time is a non-core FE
@@ -86,11 +88,15 @@ async function getFilteredPatternsIDs(allPatternsIDs,
 }
 
 async function filterPatternsIDs(context, next) {
+  logger.debug(`Filtering patternsIDs with strictVUMatching = ${context.query.strictVUMatching} and withExtraCoreFEs = ${context.query.withExtraCoreFEs}`);
+  const startTime = utils.getStartTime();
   context.valencer.results.filteredPatternsIDs =
     await getFilteredPatternsIDs(context.valencer.results.patternsIDs,
                                  context.valencer.results.valenceUnitsIDs,
                                  context.query.strictVUMatching,
                                  context.query.withExtraCoreFEs);
+  logger.debug(`context.valencer.results.filteredPatternsIDs.length = ${context.valencer.results.filteredPatternsIDs.length}`);
+  logger.debug(`context.valencer.results.filteredPatternsIDs processed in ${utils.getElapsedTime(startTime)} ms`);
   return next();
 }
 
