@@ -76,15 +76,13 @@ async function getPatternsIDs(arrayOfArrayOfValenceUnitIDs) {
 
 async function retrievePatternsIDs(context, next) {
   const startTime = utils.getStartTime();
-  const valenceUnitsIDs = context.valencer.results.valenceUnitsIDs;
-  if (!valenceUnitsIDs) {
-    context.valencer.results.patternsIDs = [];
-  } else {
-    const patternsIDs = await getPatternsIDs(context.valencer.results.valenceUnitsIDs);
-    context.valencer.results.patternsIDs = patternsIDs || [];
+  const valenceUnitsIDs = context.valencer.results.tmp.valenceUnitsIDs;
+  if (valenceUnitsIDs) {
+    const patternsIDs = await getPatternsIDs(context.valencer.results.tmp.valenceUnitsIDs);
+    context.valencer.results.tmp.patternsIDs = patternsIDs || [];
   }
-  logger.debug(`context.valencer.results.patternsIDs.length = ${context.valencer.results.patternsIDs.length}`);
-  logger.debug(`context.valencer.results.patternsIDs retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
+  logger.debug(`context.valencer.results.tmp.patternsIDs.length = ${context.valencer.results.tmp.patternsIDs.length}`);
+  logger.debug(`context.valencer.results.tmp.patternsIDs retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }
 
