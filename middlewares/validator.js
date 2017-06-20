@@ -151,9 +151,9 @@ function validateQueryParametersCombination(context, next) {
 }
 
 function validatePathToDB(context, next) {
-  const urlSplit = context.request.url.split('/');
-  context.valencer.database = `fn_${urlSplit[2]}_${urlSplit[3]}`;
-  logger.debug(`context.valencer.database is valid and set to ${JSON.stringify(context.valencer.database)}`);
+  //const urlSplit = context.request.url.split('/');
+  //context.valencer.database = `fn_${urlSplit[2]}_${urlSplit[3]}`;
+  logger.debug(`context.valencer.database is valid and set to ${JSON.stringify('BLANK')}`);
   return next();
 }
 

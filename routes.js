@@ -3,6 +3,7 @@ const compose = require('koa-compose');
 const database = require('./middlewares/database');
 const formatter = require('./middlewares/formatter');
 const filter = require('./middlewares/filter');
+const renderer = require('./middlewares/renderer');
 const coreVU = require('./middlewares/core/valenceUnits');
 const coreP = require('./middlewares/core/patterns');
 const validator = require('./middlewares/validator');
@@ -24,7 +25,6 @@ const router = new Router();
 
 function initializeValencerContext(context, next) {
   context.valencer = {
-    database: '',
     query: {
       vp: {
         raw: '',
@@ -33,17 +33,20 @@ function initializeValencerContext(context, next) {
       },
     },
     results: {
-      valenceUnitsIDs: [],
-      patternsIDs: [],
-      filteredPatternsIDs: [],
+      tmp: {
+        valenceUnitsIDs: [],
+        patternsIDs: [],
+        filteredPatternsIDs: [],
+      },
+      annotationSets: [],
     },
     startTime: utils.getStartTime(),
   };
-  logger.info(`Processing query = ${JSON.stringify(context.query)}`);
+  logger.info(`Processing query ${JSON.stringify(context.query)}`);
   return next();
 }
 
-function wrap(context, next) {
+function displayQueryExecutionTime(context, next) {
   logger.info(`Query ${JSON.stringify(context.query)} processed in ${utils.getElapsedTime(context.valencer.startTime)}ms`);
   return next();
 }
@@ -78,25 +81,29 @@ const processVPquery = compose([
   filter.filterPatternsIDs,
 ]);
 
-const composeVPquery = compose([
-  initializeValencerContext,
-  validateVPquery,
-  database.connect,
-  formatVPquery,
-  validator.validateQueryParametersCombination,
-  processVPquery,
-]);
+function generateRoutes(databases) {
+  const validateAndProcessVPquery = compose([
+    initializeValencerContext,
+    validateVPquery,
+    database.connect(databases),
+    formatVPquery,
+    validator.validateQueryParametersCombination,
+    processVPquery,
+  ]);
 
-router.get('/annoSet/:id',
-           initializeValencerContext,
-           validateParamsQuery,
-           annotationSet.getByID);
+  router.get('/annoSet/:id',
+             initializeValencerContext,
+             validateParamsQuery,
+             annotationSet.getByID);
 
-router.get('/annoSets',
-           composeVPquery,
-           annotationSets.getByValencePattern,
-           wrap);
+  router.get('/annoSets',
+             validateAndProcessVPquery,
+             annotationSets.getByValencePattern,
+             renderer.renderAnnotationSets,
+             displayQueryExecutionTime);
 
-valencer.use('/:lang_iso_code/:dataset_version', router.routes());
+  valencer.use('/:lang_iso_code/:dataset_version', router.routes());
+  return valencer;
+}
 
-module.exports = valencer;
+module.exports = generateRoutes;
