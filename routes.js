@@ -23,24 +23,23 @@ const valencer = new Router({
 const router = new Router();
 
 function initializeValencerContext(context, next) {
-  context.valencer = {};
-  context.valencer.startTime = utils.getStartTime();
+  context.valencer = {
+    database: '',
+    query: {
+      vp: {
+        raw: '',
+        formatted: [],
+        withFEids: [],
+      },
+    },
+    results: {
+      valenceUnitsIDs: [],
+      patternsIDs: [],
+      filteredPatternsIDs: [],
+    },
+    startTime: utils.getStartTime(),
+  };
   logger.info(`Processing query = ${JSON.stringify(context.query)}`);
-  return next();
-}
-
-function intializeResultsContext(context, next) {
-  context.valencer.results = {};
-  return next();
-}
-
-function initializeQueryContext(context, next) {
-  context.valencer.query = {};
-  return next();
-}
-
-function initializeQueryVPcontext(context, next) {
-  context.valencer.query.vp = {};
   return next();
 }
 
@@ -56,7 +55,6 @@ const validateVPquery = compose([
   validator.validateQueryVPcontainsNoInvalidCharacters,
   validator.validateQueryVPcontainsNoInvalidSequence,
   validator.validateQueryVPvalenceUnitLength,
-  validator.validateQueryPopulateParameter,
   validator.validateQueryStrictVUmatchingParameter,
   validator.validateQueryWithExtraCoreFEsParameter,
 ]);
@@ -65,7 +63,6 @@ const validateParamsQuery = compose([
   validator.validateParamsNotEmpty,
   validator.validateParamsIDnotEmpty,
   validator.validateParamsIDisNumberOrObjectID,
-  validator.validateQueryPopulateParameter,
   validator.validateQueryStrictVUmatchingParameter,
   validator.validateQueryWithExtraCoreFEsParameter,
 ]);
@@ -85,11 +82,8 @@ const composeVPquery = compose([
   initializeValencerContext,
   validateVPquery,
   database.connect,
-  initializeQueryContext,
-  initializeQueryVPcontext,
   formatVPquery,
   validator.validateQueryParametersCombination,
-  intializeResultsContext,
   processVPquery,
 ]);
 
