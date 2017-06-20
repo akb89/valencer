@@ -43,23 +43,25 @@ function connectToDatabase(uri) {
 }
 
 function printLogo() {
-  logger.info('            _                                 ');
-  logger.info('/\\   /\\__ _| | ___ _ __   ___ ___ _ __      ');
-  logger.info('\\ \\ / / _` | |/ _ \\ \'_ \\ / __/ _ \\ \'__|');
-  logger.info(' \\ V / (_| | |  __/ | | | (_|  __/ |         ');
-  logger.info('  \\_/ \\__,_|_|\\___|_| |_|\\___\\___|_|     ');
-  logger.info('                                              ');
+  console.log('            _                                 ');
+  console.log('/\\   /\\__ _| | ___ _ __   ___ ___ _ __      ');
+  console.log('\\ \\ / / _` | |/ _ \\ \'_ \\ / __/ _ \\ \'__|');
+  console.log(' \\ V / (_| | |  __/ | | | (_|  __/ |         ');
+  console.log('  \\_/ \\__,_|_|\\___|_| |_|\\___\\___|_|     ');
+  console.log('                                              ');
+  console.log('                                              ');
 }
 
 (async () => {
   try {
-    logger.info('Starting Valencer...');
     printLogo();
+    logger.info('Welcome to the Valencer!');
+    logger.info('------------------------');
     logger.info('Connecting to MongoDB...');
-    const db = await connectToDatabase(config.dbUri);
-    logger.info(`Connected to MongoDB on ${db.host}:${db.port}/${db.name}`);
-    await app.listen(config.port);
-    logger.info(`Valencer started on port ${config.port}`);
+    const db = await connectToDatabase('mongodb://localhost:27017/fn_en_d150_dev');
+    logger.info(`Connected to MongoDB on server '${db.host}', port '${db.port}' and default database '${db.name}'`);
+    await app.listen(config.api.port);
+    logger.info(`Valencer started on port ${config.api.port}`);
   } catch (err) {
     logger.error(`Unable to connect to database at: ${config.dbUri}`);
     logger.debug(err);
