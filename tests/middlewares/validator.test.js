@@ -169,7 +169,7 @@ describe('validator', () => {
       err.message.should.equal('Invalid character in context.query.vp = \'A.B.$\' at index = 4: \'$\'');
     }
   });
-  it('#validateQueryVPcontainsNoInvalidCharacters should throw InvalidQueryParams when context.query.vp object (string) contains an invalid character (non-alphanumeric except for . and whitespace)', () => {
+  it('#validateQueryVPcontainsNoInvalidCharacters should throw InvalidQueryParams when context.query.vp object (string) contains a digit', () => {
     const next = () => {};
     const context = { query: { vp: 'A.7.C' } };
     try {
@@ -179,22 +179,17 @@ describe('validator', () => {
       err.message.should.equal('Invalid character in context.query.vp = \'A.7.C\' at index = 2: \'7\'');
     }
   });
-  it('#validateQueryVPcontainsNoInvalidCharacters should throw InvalidQueryParams when context.query.vp object (string) contains an invalid character (non-alphanumeric except for . and whitespace)', () => {
+  it('#validateQueryVPcontainsNoInvalidCharacters should not throw InvalidQueryParams when processing a regular valence pattern', () => {
     const next = () => {};
     const context = { query: { vp: 'A.B.C D.E' } };
     (() => validator.validateQueryVPcontainsNoInvalidCharacters(context, next)).should.not.throw();
   });
-  it('#validateQueryVPcontainsNoInvalidSequence should throw InvalidQueryParams when context.query.vp object (string) contains an invalid sequence (.\\s | \\s. | .. | starting/ending with .)', () => {
+  it('#validateQueryVPcontainsNoInvalidSequence should not throw InvalidQueryParams when processing multiple whitespaces', () => {
     const next = () => {};
     const context = { query: { vp: 'A.B.C  D.E.F' } };
-    try {
-      validator.validateQueryVPcontainsNoInvalidSequence(context, next);
-    } catch (err) {
-      err.name.should.equal('InvalidQueryParams');
-      err.message.should.equal('Invalid sequence in context.query.vp = \'A.B.C  D.E.F\' starting at index = 5');
-    }
+    (() => validator.validateQueryVPcontainsNoInvalidCharacters(context, next)).should.not.throw();
   });
-  it('#validateQueryVPcontainsNoInvalidSequence should throw InvalidQueryParams when context.query.vp object (string) contains an invalid sequence (.\\s | \\s. | .. | starting/ending with .)', () => {
+  it('#validateQueryVPcontainsNoInvalidSequence should throw InvalidQueryParams when processing a valence pattern starting with a .', () => {
     const next = () => {};
     const context = { query: { vp: '.A.B.C D.E.F' } };
     try {
@@ -204,7 +199,17 @@ describe('validator', () => {
       err.message.should.equal('Invalid sequence in context.query.vp = \'.A.B.C D.E.F\' starting at index = 0');
     }
   });
-  it('#validateQueryVPcontainsNoInvalidSequence should throw InvalidQueryParams when context.query.vp object (string) contains an invalid sequence (.\\s | \\s. | .. | starting/ending with .)', () => {
+  it('#validateQueryVPcontainsNoInvalidSequence should throw InvalidQueryParams when processing a valence pattern ending with a .', () => {
+    const next = () => {};
+    const context = { query: { vp: 'A.B.C D.E.F.' } };
+    try {
+      validator.validateQueryVPcontainsNoInvalidSequence(context, next);
+    } catch (err) {
+      err.name.should.equal('InvalidQueryParams');
+      err.message.should.equal('Invalid sequence in context.query.vp = \'A.B.C D.E.F.\' starting at index = 11');
+    }
+  });
+  it('#validateQueryVPcontainsNoInvalidSequence should throw InvalidQueryParams when context.query.vp object (string) contains a .\\s sequence', () => {
     const next = () => {};
     const context = { query: { vp: 'A.B.C. D.E.F' } };
     try {
@@ -214,7 +219,7 @@ describe('validator', () => {
       err.message.should.equal('Invalid sequence in context.query.vp = \'A.B.C. D.E.F\' starting at index = 5');
     }
   });
-  it('#validateQueryVPcontainsNoInvalidSequence should throw InvalidQueryParams when context.query.vp object (string) contains an invalid sequence (.\\s | \\s. | .. | starting/ending with .)', () => {
+  it('#validateQueryVPcontainsNoInvalidSequence should throw InvalidQueryParams when context.query.vp object (string) contains a \\s. sequence', () => {
     const next = () => {};
     const context = { query: { vp: 'A.B.C .D.E.F' } };
     try {
@@ -224,25 +229,10 @@ describe('validator', () => {
       err.message.should.equal('Invalid sequence in context.query.vp = \'A.B.C .D.E.F\' starting at index = 5');
     }
   });
-  it('#validateQueryVPcontainsNoInvalidSequence should throw InvalidQueryParams when context.query.vp object (string) contains an invalid sequence (.\\s | \\s. | .. | starting/ending with .)', () => {
-    const next = () => {};
-    const context = { query: { vp: 'A.B.C D.E.F ' } };
-    try {
-      validator.validateQueryVPcontainsNoInvalidSequence(context, next);
-    } catch (err) {
-      err.name.should.equal('InvalidQueryParams');
-      err.message.should.equal('Invalid sequence in context.query.vp = \'A.B.C D.E.F \' starting at index = 11');
-    }
-  });
-  it('#validateQueryVPcontainsNoInvalidSequence should throw InvalidQueryParams when context.query.vp object (string) contains an invalid sequence (.\\s | \\s. | .. | starting/ending with .)', () => {
+  it('#validateQueryVPcontainsNoInvalidSequence should not throw InvalidQueryParams when processing multiple dots', () => {
     const next = () => {};
     const context = { query: { vp: 'A.B.C..D.E.F' } };
-    try {
-      validator.validateQueryVPcontainsNoInvalidSequence(context, next);
-    } catch (err) {
-      err.name.should.equal('InvalidQueryParams');
-      err.message.should.equal('Invalid sequence in context.query.vp = \'A.B.C..D.E.F\' starting at index = 5');
-    }
+    (() => validator.validateQueryVPcontainsNoInvalidCharacters(context, next)).should.not.throw();
   });
   it('#validateQueryVPvalenceUnitLength should throw InvalidQueryParams when context.query.vp object (string) contains more than 3 tokens separated by a dot', () => {
     const next = () => {};

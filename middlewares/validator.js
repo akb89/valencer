@@ -43,9 +43,9 @@ function validateParamsIDisNumberOrObjectID(context, next) {
   return next();
 }
 
-// Check for invalid characters (regex, everything except . and +)
+// Check for invalid characters (regex, everything except letters, . and [])
 function validateQueryVPcontainsNoInvalidCharacters(context, next) {
-  const invalidCharacterIndex = context.query.vp.search(/[^a-zA-Z.\s]/);
+  const invalidCharacterIndex = context.query.vp.search(/[^a-zA-Z.\s[\]]/);
   if (invalidCharacterIndex !== -1) {
     throw new ApiError.InvalidQueryParams(`Invalid character in context.query.vp = '${context.query.vp}' at index = ${invalidCharacterIndex}: '${context.query.vp[invalidCharacterIndex]}'`);
   }
@@ -53,9 +53,9 @@ function validateQueryVPcontainsNoInvalidCharacters(context, next) {
   return next();
 }
 
-// Check for invalid combinations: ++ +. .+ start. end. start+ end+
+// Check for invalid combinations: +. .+ start. end.
 function validateQueryVPcontainsNoInvalidSequence(context, next) {
-  const invalidSequenceIndex = context.query.vp.search(/((\s|\.){2,}|\.\s|\s\.|^(\.|\s)|(\.|\s)$)/);
+  const invalidSequenceIndex = context.query.vp.search(/(\.\s|\s\.|^(\.)|(\.)$)/);
   if (invalidSequenceIndex !== -1) {
     throw new ApiError.InvalidQueryParams(`Invalid sequence in context.query.vp = '${context.query.vp}' starting at index = ${invalidSequenceIndex}`);
   }
