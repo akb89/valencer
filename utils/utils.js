@@ -2,7 +2,7 @@ const combinatorics = require('js-combinatorics');
 
 // A.B.C D.E.F G.H.I --> [A.B.C, D.E.F, G.H.I]
 function toValenceArray(valencePattern) {
-  return valencePattern.split(/\s+/); // TODO: change tests to accept .. and ++
+  return valencePattern.split(/\s+/);
 }
 
 // [A.B.C, D.E.F, G.H.I] --> [[A, B, C], [D, E, F], [G, H, I]]
