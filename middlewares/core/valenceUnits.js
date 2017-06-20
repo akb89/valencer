@@ -43,7 +43,7 @@ async function getValenceUnitsIDs(valenceUnitAsArrayWithFEids) {
             break;
           }
         } catch (err) {
-          logger.debug('Invalid combination of units');
+          logger.silly('Invalid combination of units');
         }
       }
     }
