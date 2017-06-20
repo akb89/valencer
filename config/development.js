@@ -1,19 +1,19 @@
 const logger = require('./../logger/logger');
 
 const development = {
-  dbUri: 'mongodb://localhost:27017/fn_en_150_dev',
-  port: 3030,
   logger: logger.debug,
   api: {
     port: 3030,
-    logger: logger.debug,
   },
-  mongodb: {
-    server: 'localhost',
-    port: 27017,
-  },
-  en: {
-    versions: new Set([150, 160, 170]),
+  databases: {
+    en: {
+      d150: 'mongodb://localhost:27017/fn_en_d150_dev',
+      d160: 'mongodb://localhost:27017/fn_en_d160_dev',
+      d170: 'mongodb://localhost:27017/fn_en_d170_dev',
+    },
+    ja: {
+      d100: 'mongodb://localhost:27017/fn_ja_100_dev',
+    },
   },
 };
 
