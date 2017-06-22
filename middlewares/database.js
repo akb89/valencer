@@ -11,6 +11,7 @@ function connect(databases) {
     if (!databases.connections[dbName]) {
       logger.info(`Creating connection to ${dbUri}`);
       await mongoose.connect(dbUri);
+      databases.connections[dbName] = mongoose.connection;
     } else {
       logger.debug(`Retrieving open connection to ${dbUri}`);
       mongoose.connection = databases.connections[dbName];
