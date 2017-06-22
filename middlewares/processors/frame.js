@@ -1,121 +1,21 @@
-const AnnotationSet = require('noframenet-core').AnnotationSet;
 const Frame = require('noframenet-core').Frame;
-const LexUnit = require('noframenet-core').LexUnit;
-const core = require('./core');
-const ApiError = require('./../../exceptions/apiException');
 const config = require('./../../config');
+const utils = require('./../../utils/utils');
 
 const logger = config.logger;
 
-async function getByNoPopulateID(context) {
-  const startTime = process.hrtime();
-  const frame = await Frame
-    .findOne()
-    .where('_id')
-    .equals(context.params.id);
-  if (!frame) {
-    throw ApiError.NotFoundError(`Could not find Frame with _id = ${context.params.id}`);
-  } else {
-    context.body = frame;
-    logger.verbose(`Frame retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
-  }
+async function getFrame(id) {
+  return Frame.findById(id);
 }
 
-async function getByPopulateID(context) {
-  const startTime = process.hrtime();
-  const frame = await Frame
-    .findOne()
-    .where('_id')
-    .equals(context.params.id)
-    .populate([{
-      path: 'lexUnits',
-      select: 'name',
-    }, {
-      path: 'frameElements',
-    }, {
-      path: 'semTypes',
-    }]);
-  if (!frame) {
-    throw ApiError.NotFoundError(`Could not find Frame with _id = ${context.params.id}`);
-  } else {
-    context.body = frame;
-    logger.verbose(`Frame retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
-  }
-}
-
-async function getByID(context) {
+async function getByID(context, next) {
+  const startTime = utils.getStartTime();
   logger.info(`Querying for Frame with _id = ${context.params.id}`);
-  const populate = context.query.populate === 'true';
-  logger.info(`Return populated documents: ${populate}`);
-  if (populate) {
-    await getByPopulateID(context);
-  } else {
-    await getByNoPopulateID(context);
-  }
-}
-
-async function getByNoPopulateVP(context) {
-  const strictMatching = context.query.strictMatching !== 'false';
-  const patterns = await core.getPatterns(context.processedQuery, strictMatching);
-  const startTime = process.hrtime();
-  const lexUnitIDs = await AnnotationSet
-    .find()
-    .where('pattern')
-    .in(patterns)
-    .distinct('lexUnit');
-  const frameIDs = await LexUnit
-    .find()
-    .where('_id')
-    .in(lexUnitIDs)
-    .distinct('frame');
-  logger.info(`${frameIDs.length} unique Frames found for specified valence pattern: ${context.query.vp}`);
-  context.body = frameIDs.sort();
-  logger.verbose(`Frames retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
-}
-
-async function getByPopulateVP(context) {
-  const strictMatching = context.query.strictMatching !== 'false';
-  const patterns = await core.getPatterns(context.processedQuery, strictMatching);
-  const startTime = process.hrtime();
-  const lexUnitIDs = await AnnotationSet
-    .find()
-    .where('pattern')
-    .in(patterns)
-    .distinct('lexUnit');
-  const frameIDs = await LexUnit
-    .find()
-    .where('_id')
-    .in(lexUnitIDs)
-    .distinct('frame');
-  const frames = await Frame
-    .find()
-    .where('_id')
-    .in(frameIDs)
-    .populate([{
-      path: 'lexUnits',
-      select: 'name',
-    }, {
-      path: 'frameElements',
-    }, {
-      path: 'semTypes',
-    }]);
-  logger.info(`${frames.length} unique Frames found for specified valence pattern: ${context.query.vp}`);
-  context.body = frames.sort();
-  logger.verbose(`Frames retrieved from db in ${process.hrtime(startTime)[1] / 1000000}ms`);
-}
-
-async function getByVP(context) {
-  logger.info(`Querying for all Frames with a valence pattern matching: ${context.query.vp}`);
-  const populate = context.query.populate === 'true';
-  logger.info(`Return populated documents: ${populate}`);
-  if (populate) {
-    await getByPopulateVP(context);
-  } else {
-    await getByNoPopulateVP(context);
-  }
+  context.body = await getFrame(context.params.id);
+  logger.verbose(`Frame with _id = ${context.params.id} retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
+  return next();
 }
 
 module.exports = {
   getByID,
-  getByVP,
 };

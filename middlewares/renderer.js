@@ -3,6 +3,12 @@ function renderAnnotationSets(context, next) {
   return next();
 }
 
+function renderLexUnits(context, next) {
+  context.body = context.valencer.results.lexUnits;
+  return next();
+}
+
 module.exports = {
   renderAnnotationSets,
+  renderLexUnits,
 };

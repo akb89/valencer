@@ -9,6 +9,8 @@ const coreP = require('./middlewares/core/patterns');
 const validator = require('./middlewares/validator');
 const annotationSet = require('./middlewares/processors/annotationSet');
 const annotationSets = require('./middlewares/processors/annotationSets');
+const frame = require('./middlewares/processors/frame');
+const lexUnits = require('./middlewares/processors/lexUnits');
 const utils = require('./utils/utils');
 const config = require('./config');
 
@@ -39,6 +41,7 @@ function initializeValencerContext(context, next) {
         filteredPatternsIDs: [],
       },
       annotationSets: [],
+      lexUnits: [],
     },
     startTime: utils.getStartTime(),
   };
@@ -61,13 +64,12 @@ const validateVPquery = compose([
   validator.validateQueryStrictVUmatchingParameter,
   validator.validateQueryWithExtraCoreFEsParameter,
 ]);
+
 const validateParamsQuery = compose([
   validator.validatePathToDB,
   validator.validateParamsNotEmpty,
   validator.validateParamsIDnotEmpty,
   validator.validateParamsIDisNumberOrObjectID,
-  validator.validateQueryStrictVUmatchingParameter,
-  validator.validateQueryWithExtraCoreFEsParameter,
 ]);
 
 const formatVPquery = compose([
@@ -89,18 +91,32 @@ function generateRoutes(databases) {
     formatVPquery,
     validator.validateQueryParametersCombination,
     processVPquery,
+    annotationSets.getByValencePattern,
+  ]);
+
+  const validateAndProcessIDquery = compose([
+    validateParamsQuery,
+    database.connect(databases),
   ]);
 
   router.get('/annoSet/:id',
-             initializeValencerContext,
-             validateParamsQuery,
+             validateAndProcessIDquery,
              annotationSet.getByID);
 
   router.get('/annoSets',
              validateAndProcessVPquery,
-             annotationSets.getByValencePattern,
              renderer.renderAnnotationSets,
              displayQueryExecutionTime);
+
+  router.get('/lexUnits',
+             validateAndProcessVPquery,
+             lexUnits.getByAnnotationSets,
+             renderer.renderLexUnits,
+             displayQueryExecutionTime);
+
+  router.get('/frame/:id',
+             validateAndProcessIDquery,
+             frame.getByID);
 
   valencer.use('/:lang_iso_code/:dataset_version', router.routes());
   return valencer;
