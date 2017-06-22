@@ -43,9 +43,9 @@ function validateParamsIDisNumberOrObjectID(context, next) {
   return next();
 }
 
-// Check for invalid characters (regex, everything except letters, . and [])
+// Check for invalid characters (regex, everything except letters, . _ [])
 function validateQueryVPcontainsNoInvalidCharacters(context, next) {
-  const invalidCharacterIndex = context.query.vp.search(/[^a-zA-Z.\s[\]]/);
+  const invalidCharacterIndex = context.query.vp.search(/[^a-zA-Z.\s[\]_]/);
   if (invalidCharacterIndex !== -1) {
     throw new ApiError.InvalidQueryParams(`Invalid character in context.query.vp = '${context.query.vp}' at index = ${invalidCharacterIndex}: '${context.query.vp[invalidCharacterIndex]}'`);
   }

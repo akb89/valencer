@@ -184,6 +184,11 @@ describe('validator', () => {
     const context = { query: { vp: 'A.B.C D.E' } };
     (() => validator.validateQueryVPcontainsNoInvalidCharacters(context, next)).should.not.throw();
   });
+  it('#validateQueryVPcontainsNoInvalidCharacters should not throw InvalidQueryParams when processing underscores', () => {
+    const next = () => {};
+    const context = { query: { vp: 'A_Z.B.C D.E' } };
+    (() => validator.validateQueryVPcontainsNoInvalidCharacters(context, next)).should.not.throw();
+  });
   it('#validateQueryVPcontainsNoInvalidSequence should not throw InvalidQueryParams when processing multiple whitespaces', () => {
     const next = () => {};
     const context = { query: { vp: 'A.B.C  D.E.F' } };
