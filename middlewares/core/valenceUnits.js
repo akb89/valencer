@@ -77,7 +77,7 @@ async function retrieveValenceUnitsIDs(context, next) {
   const valenceUnitsIDs = await getArrayOfArrayOfValenceUnitsIDs(context.valencer.query.vp.withFEids);
   context.valencer.results.tmp.valenceUnitsIDs = valenceUnitsIDs || [];
   logger.debug(`context.valencer.results.tmp.valenceUnitsIDs.length = ${context.valencer.results.tmp.valenceUnitsIDs.length}`);
-  logger.debug(`context.valencer.results.tmp.valenceUnitsIDs retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
+  logger.verbose(`context.valencer.results.tmp.valenceUnitsIDs retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }
 

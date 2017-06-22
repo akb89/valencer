@@ -96,7 +96,7 @@ async function filterPatternsIDs(context, next) {
                                  context.query.strictVUMatching,
                                  context.query.withExtraCoreFEs);
   logger.debug(`context.valencer.results.tmp.filteredPatternsIDs.length = ${context.valencer.results.tmp.filteredPatternsIDs.length}`);
-  logger.debug(`context.valencer.results.tmp.filteredPatternsIDs processed in ${utils.getElapsedTime(startTime)}ms`);
+  logger.verbose(`context.valencer.results.tmp.filteredPatternsIDs processed in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }
 

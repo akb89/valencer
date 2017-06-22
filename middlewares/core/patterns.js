@@ -82,7 +82,7 @@ async function retrievePatternsIDs(context, next) {
     context.valencer.results.tmp.patternsIDs = patternsIDs || [];
   }
   logger.debug(`context.valencer.results.tmp.patternsIDs.length = ${context.valencer.results.tmp.patternsIDs.length}`);
-  logger.debug(`context.valencer.results.tmp.patternsIDs retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
+  logger.verbose(`context.valencer.results.tmp.patternsIDs retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }
 
