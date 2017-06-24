@@ -106,14 +106,23 @@ async function getExcludedVUids(excludedFEids) {
 
 async function retrieveExcludedVUIDs(context, next) {
   // Do this only if withExtraCoreFEs is set to false
+  const startTime = utils.getStartTime();
   if (!context.query.withExtraCoreFEs) {
     context.valencer.query.feNamesSet = await getFrameElementNamesSet(
       context.valencer.query.vp.withFEids);
+      logger.verbose(`context.valencer.results.tmp.feNamesSet retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
+      const startTime2 = utils.getStartTime();
     context.valencer.results.tmp.excludedFEids = await getExcludedFEids(
       context.valencer.query.feNamesSet);
+      logger.debug(`context.valencer.results.tmp.excludedFEids.length = ${context.valencer.results.tmp.excludedFEids.length}`);
+      logger.verbose(`context.valencer.results.tmp.excludedFEids retrieved from database in ${utils.getElapsedTime(startTime2)}ms`);
+      const startTime3 = utils.getStartTime();
     context.valencer.results.tmp.excludedVUids = await getExcludedVUids(
       context.valencer.results.tmp.excludedFEids);
+      logger.verbose(`context.valencer.results.tmp.excludedVUids retrieved from database in ${utils.getElapsedTime(startTime3)}ms`);
   }
+  logger.debug(`context.valencer.results.tmp.excludedVUids.length = ${context.valencer.results.tmp.excludedVUids.length}`);
+  logger.verbose(`context.valencer.results.tmp.excludedVUids retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }
 

@@ -71,9 +71,8 @@ async function retrievePatternsIDs(context, next) {
   logger.debug(`Retrieving patternsIDs with withExtraCoreFEs = ${context.query.withExtraCoreFEs}`);
   const valenceUnitsIDs = context.valencer.results.tmp.valenceUnitsIDs;
   if (valenceUnitsIDs) {
-    const patternsIDs = await getPatternsIDs(
-      context.valencer.results.tmp.valenceUnitsIDs,
-      context.valencer.results.tmp.excludedVUids);
+    const excludedVUids = context.valencer.results.tmp.excludedVUids;
+    const patternsIDs = await getPatternsIDs(valenceUnitsIDs, excludedVUids);
     context.valencer.results.tmp.patternsIDs = patternsIDs || [];
   }
   logger.debug(`context.valencer.results.tmp.patternsIDs.length = ${context.valencer.results.tmp.patternsIDs.length}`);
