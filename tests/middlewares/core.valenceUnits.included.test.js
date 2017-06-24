@@ -9,54 +9,26 @@ const should = chai.should();
 const getValenceUnitsIDs = rewire('./../../middlewares/core/valenceUnits').__get__('getValenceUnitsIDs');
 mongoose.Promise = require('bluebird');
 
-describe('core.valenceUnits', () => {
+describe('core.valenceUnits.included', () => {
   before(async () => {
     if (mongoose.connection.readyState === 0) {
       await mongoose.connect(config.dbUri);
     }
-    const aFE = new FrameElement({
-      _id: 1,
-      name: 'A',
-    });
+    const aFE = new FrameElement({ _id: 1, name: 'A' });
     await aFE.save();
-    const bFE = new FrameElement({
-      _id: 2,
-      name: 'B',
-    });
+    const bFE = new FrameElement({ _id: 2, name: 'B' });
     await bFE.save();
-    const cFE = new FrameElement({
-      _id: 3,
-      name: 'C',
-    });
+    const cFE = new FrameElement({ _id: 3, name: 'C' });
     await cFE.save();
-    const dFE = new FrameElement({
-      _id: 4,
-      name: 'D',
-    });
+    const dFE = new FrameElement({ _id: 4, name: 'D' });
     await dFE.save();
-    const aNPObj = new ValenceUnit({
-      FE: 1,
-      PT: 'NP',
-      GF: 'Obj',
-    });
+    const aNPObj = new ValenceUnit({ FE: 1, PT: 'NP', GF: 'Obj' });
     await aNPObj.save();
-    const bNPObj = new ValenceUnit({
-      FE: 2,
-      PT: 'NP',
-      GF: 'Obj',
-    });
+    const bNPObj = new ValenceUnit({ FE: 2, PT: 'NP', GF: 'Obj' });
     await bNPObj.save();
-    const cNPExt = new ValenceUnit({
-      FE: 3,
-      PT: 'NP',
-      GF: 'Ext',
-    });
+    const cNPExt = new ValenceUnit({ FE: 3, PT: 'NP', GF: 'Ext' });
     await cNPExt.save();
-    const dPPaExt = new ValenceUnit({
-      FE: 4,
-      PT: 'PP[about]',
-      GF: 'Ext',
-    });
+    const dPPaExt = new ValenceUnit({ FE: 4, PT: 'PP[about]', GF: 'Ext' });
     await dPPaExt.save();
   });
   after(async () => {
@@ -70,7 +42,6 @@ describe('core.valenceUnits', () => {
     vus.toArray()[0].PT.should.equal('NP');
     vus.toArray()[0].GF.should.equal('Obj');
   });
-
   it('#getValenceUnitsIDs should be able to process PT.FE.GF', async () => {
     const vusIDs = await getValenceUnitsIDs(['NP', [1], 'Obj']);
     const vus = await ValenceUnit.find().where('_id').in(vusIDs);

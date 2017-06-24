@@ -33,10 +33,13 @@ function initializeValencerContext(context, next) {
         formatted: [],
         withFEids: [],
       },
+      feNamesSet: new Set(),
     },
     results: {
       tmp: {
         valenceUnitsIDs: [],
+        excludedFEids: [],
+        excludedVUids: [],
         patternsIDs: [],
         filteredPatternsIDs: [],
       },
@@ -79,6 +82,7 @@ const formatVPquery = compose([
 
 const processVPquery = compose([
   coreVU.retrieveValenceUnitsIDs,
+  coreVU.retrieveExcludedVUIDs,
   coreP.retrievePatternsIDs,
   filter.filterPatternsIDs,
 ]);
