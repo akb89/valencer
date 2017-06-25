@@ -53,7 +53,8 @@ async function getValenceUnitsIDs(valenceUnitAsArrayWithFEids) {
   if (valenceUnit.GF !== undefined) {
     expVU.GF = valenceUnit.GF;
   }
-  return (await ValenceUnit.find(expVU)).map(vu => vu._id);
+  return ValenceUnit.distinct('_id', expVU);
+  //return (await ValenceUnit.find(expVU)).map(vu => vu._id);
 }
 
 async function getArrayOfArrayOfValenceUnitsIDs(formattedValencePatternArrayWithFEids) {
@@ -78,15 +79,25 @@ async function retrieveValenceUnitsIDs(context, next) {
 
 // Query has passed validation so all FrameElements should be specified
 // See validator.validateQueryParametersCombination
-async function getFrameElementNamesSet(queryVPwithFEids) {
+function getFrameElementNamesSet(formattedVPquery, vpQueryWithFEids) {
   const mySet = new Set();
-  for (const valence of queryVPwithFEids) {
-    for (const token of valence) {
-      if (Array.isArray(token)) {
-        mySet.add((await FrameElement.findById(token[0])).name);
+  for (const vindex in vpQueryWithFEids) { // FIXME
+    const valence = vpQueryWithFEids[vindex];
+    for (const tindex in valence) {
+      if (Array.isArray(valence[tindex])) {
+        mySet.add(formattedVPquery[vindex][tindex]);
       }
     }
   }
+  /*
+  for (const valence of vpQueryWithFEids) {
+    for (const token of valence) {
+      if (Array.isArray(token)) {
+        //mySet.add((await FrameElement.findById(token[0])).name);
+        mySet.add((await FrameElement.collection.findOne({ _id: token[0] })).name);
+      }
+    }
+  }*/
   return mySet;
 }
 
@@ -116,6 +127,7 @@ async function retrieveExcludedVUIDs(context, next) {
   const startTime = utils.getStartTime();
   if (!context.query.withExtraCoreFEs) {
     context.valencer.query.feNamesSet = await getFrameElementNamesSet(
+      context.valencer.query.vp.formatted,
       context.valencer.query.vp.withFEids);
     logger.verbose(`context.valencer.results.tmp.feNamesSet retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
     const startTime2 = utils.getStartTime();

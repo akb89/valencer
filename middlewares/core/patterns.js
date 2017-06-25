@@ -12,6 +12,59 @@ const logger = config.logger;
 
 async function getPatternsIDs(arrayOfArrayOfValenceUnitIDs, excludedVUids) {
   if (arrayOfArrayOfValenceUnitIDs.length === 1) {
+    return Pattern.collection.distinct('_id', {
+      $and: [{
+        valenceUnits: { $in: arrayOfArrayOfValenceUnitIDs[0] },
+      }, {
+        valenceUnits: { $nin: excludedVUids },
+      }],
+    });
+  }
+  let patternsIDs;
+  for (let i = arrayOfArrayOfValenceUnitIDs.length; i > 1; i -= 1) {
+    const combinations = utils.getKNCombinations(i, arrayOfArrayOfValenceUnitIDs.length);
+    for (const combination of combinations) {
+      const merge = new Set();
+      for (let k = 0; k < combination.length; k += 1) {
+        merge.addEach(arrayOfArrayOfValenceUnitIDs[combination[k]]);
+        if (!patternsIDs) {
+          patternsIDs = await Pattern.collection.distinct('_id', {
+            $and: [{
+              valenceUnits: { $in: arrayOfArrayOfValenceUnitIDs[combination[k]] },
+            }, {
+              valenceUnits: { $nin: excludedVUids },
+            }],
+          });
+        } else {
+          patternsIDs = await Pattern.collection.distinct('_id', {
+            _id: { $in: patternsIDs },
+            valenceUnits: { $in: arrayOfArrayOfValenceUnitIDs[combination[k]] },
+          });
+        }
+        if (patternsIDs.length === 0) {
+          return patternsIDs;
+        }
+      }
+      patternsIDs = await Pattern.collection.aggregate([{
+        $match: { _id: { $in: patternsIDs } },
+      }, {
+        $unwind: '$valenceUnits',
+      }, {
+        $match: { valenceUnits: { $in: [...merge] } },
+      }, {
+        $group: { _id: '$_id', count: { $sum: 1 } },
+      }, {
+        $match: { count: { $gte: i } },
+      }, {
+        $project: { _id: true },
+      }]).map(pattern => pattern._id).toArray();
+      if (patternsIDs.length === 0) {
+        return patternsIDs;
+      }
+    }
+  }
+  return patternsIDs;
+  /*if (arrayOfArrayOfValenceUnitIDs.length === 1) {
     return Pattern.collection.find({
       $and: [{
         valenceUnits: { $in: arrayOfArrayOfValenceUnitIDs[0] },
@@ -63,7 +116,7 @@ async function getPatternsIDs(arrayOfArrayOfValenceUnitIDs, excludedVUids) {
       }
     }
   }
-  return patternsIDs;
+  return patternsIDs;*/
 }
 
 async function retrievePatternsIDs(context, next) {

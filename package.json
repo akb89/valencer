@@ -21,7 +21,7 @@
     "cleantestenv": "[ ! -f mongo.pid ] || (kill $(cat mongo.pid) && rm mongo.pid && rm mongod.valencer.log)",
     "pretest": "npm run startmongo",
     "test": "NODE_ENV=testing nyc --reporter=text mocha ./tests/**/*.test.js && npm run cleantestenv || npm run cleantestenv",
-    "singletest": "NODE_ENV=testing nyc --reporter=text mocha ./tests/middlewares/core.patterns.test.js",
+    "singletest": "NODE_ENV=testing nyc --reporter=text mocha ./tests/middlewares/core.valenceUnits.excluded.test.js",
     "posttest": "npm run lint",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
