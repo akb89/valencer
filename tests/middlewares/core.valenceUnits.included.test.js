@@ -51,9 +51,9 @@ describe('core.valenceUnits.included', () => {
     const vusIDs = await getValenceUnitsIDs([[1], 'NP', 'Obj']);
     const vus = await ValenceUnit.find().where('_id').in(vusIDs);
     vusIDs.length.should.equal(1);
-    vus.toArray()[0].FE.should.equal(1);
-    vus.toArray()[0].PT.should.equal('NP');
-    vus.toArray()[0].GF.should.equal('Obj');
+    vus[0].FE.should.equal(1);
+    vus[0].PT.should.equal('NP');
+    vus[0].GF.should.equal('Obj');
   });
   it('#getValenceUnitsIDs should be able to process FE.PT.GF with multiple FE ids', async () => {
     const vusIDs = await getValenceUnitsIDs([[4, 5, 6], 'PP[about]', 'Ext']);
@@ -69,17 +69,17 @@ describe('core.valenceUnits.included', () => {
     const vusIDs = await getValenceUnitsIDs(['NP', [1], 'Obj']);
     const vus = await ValenceUnit.find().where('_id').in(vusIDs);
     vusIDs.length.should.equal(1);
-    vus.toArray()[0].FE.should.equal(1);
-    vus.toArray()[0].PT.should.equal('NP');
-    vus.toArray()[0].GF.should.equal('Obj');
+    vus[0].FE.should.equal(1);
+    vus[0].PT.should.equal('NP');
+    vus[0].GF.should.equal('Obj');
   });
   it('#getValenceUnitsIDs should be able to process GF.PT.FE', async () => {
     const vusIDs = await getValenceUnitsIDs(['Obj', 'NP', [1]]);
     const vus = await ValenceUnit.find().where('_id').in(vusIDs);
     vusIDs.length.should.equal(1);
-    vus.toArray()[0].FE.should.equal(1);
-    vus.toArray()[0].PT.should.equal('NP');
-    vus.toArray()[0].GF.should.equal('Obj');
+    vus[0].FE.should.equal(1);
+    vus[0].PT.should.equal('NP');
+    vus[0].GF.should.equal('Obj');
   });
   it('#getValenceUnitsIDs should be able to process FE', async () => {
     const vusIDs = await getValenceUnitsIDs([[1]]);

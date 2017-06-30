@@ -26,7 +26,7 @@ async function getPatternsIDs(arrayOfArrayOfValenceUnitIDs, excludedVUids) {
     for (const combination of combinations) {
       const merge = new Set();
       for (let k = 0; k < combination.length; k += 1) {
-        merge.addEach(arrayOfArrayOfValenceUnitIDs[combination[k]]);
+        arrayOfArrayOfValenceUnitIDs[combination[k]].forEach(item => merge.add(item));
         if (!patternsIDs) {
           patternsIDs = await Pattern.collection.distinct('_id', {
             $and: [{
