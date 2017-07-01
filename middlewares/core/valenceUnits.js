@@ -54,7 +54,6 @@ async function getValenceUnitsIDs(valenceUnitAsArrayWithFEids) {
     expVU.GF = valenceUnit.GF;
   }
   return ValenceUnit.distinct('_id', expVU);
-  //return (await ValenceUnit.find(expVU)).map(vu => vu._id);
 }
 
 async function getArrayOfArrayOfValenceUnitsIDs(formattedValencePatternArrayWithFEids) {
@@ -89,15 +88,6 @@ function getFrameElementNamesSet(formattedVPquery, vpQueryWithFEids) {
       }
     }
   }
-  /*
-  for (const valence of vpQueryWithFEids) {
-    for (const token of valence) {
-      if (Array.isArray(token)) {
-        //mySet.add((await FrameElement.findById(token[0])).name);
-        mySet.add((await FrameElement.collection.findOne({ _id: token[0] })).name);
-      }
-    }
-  }*/
   return mySet;
 }
 
@@ -106,19 +96,12 @@ async function getExcludedFEids(feNamesSet) {
     coreType: 'Core',
     name: { $nin: [...feNamesSet] },
   });
-  /*return FrameElement.collection.find({
-    coreType: 'Core',
-    name: { $nin: [...feNamesSet] },
-  }).project({ _id: 1 }).map(fe => fe._id).toArray();*/
 }
 
 async function getExcludedVUids(excludedFEids) {
   return ValenceUnit.collection.distinct('_id', {
     FE: { $in: excludedFEids },
   });
-  /*return ValenceUnit.collection.find({
-    FE: { $in: excludedFEids },
-  }).project({ _id: 1 }).map(vu => vu._id).toArray();*/
 }
 
 
