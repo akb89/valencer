@@ -12,13 +12,13 @@ const logger = config.logger;
 
 async function getPatternsIDs(arrayOfArrayOfValenceUnitIDs, excludedVUids) {
   if (arrayOfArrayOfValenceUnitIDs.length === 1) {
-    return Pattern.collection.find({
+    return Pattern.collection.distinct('_id', {
       $and: [{
         valenceUnits: { $in: arrayOfArrayOfValenceUnitIDs[0] },
       }, {
         valenceUnits: { $nin: excludedVUids },
       }],
-    }).map(pattern => pattern._id).toArray();
+    });
   }
   let patternsIDs;
   for (let i = arrayOfArrayOfValenceUnitIDs.length; i > 1; i -= 1) {
@@ -26,20 +26,20 @@ async function getPatternsIDs(arrayOfArrayOfValenceUnitIDs, excludedVUids) {
     for (const combination of combinations) {
       const merge = new Set();
       for (let k = 0; k < combination.length; k += 1) {
-        merge.addEach(arrayOfArrayOfValenceUnitIDs[combination[k]]);
+        arrayOfArrayOfValenceUnitIDs[combination[k]].forEach(item => merge.add(item));
         if (!patternsIDs) {
-          patternsIDs = await Pattern.collection.find({
+          patternsIDs = await Pattern.collection.distinct('_id', {
             $and: [{
               valenceUnits: { $in: arrayOfArrayOfValenceUnitIDs[combination[k]] },
             }, {
               valenceUnits: { $nin: excludedVUids },
             }],
-          }).map(pattern => pattern._id).toArray();
+          });
         } else {
-          patternsIDs = await Pattern.collection.find({
+          patternsIDs = await Pattern.collection.distinct('_id', {
             _id: { $in: patternsIDs },
             valenceUnits: { $in: arrayOfArrayOfValenceUnitIDs[combination[k]] },
-          }).map(pattern => pattern._id).toArray();
+          });
         }
         if (patternsIDs.length === 0) {
           return patternsIDs;

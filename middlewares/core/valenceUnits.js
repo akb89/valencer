@@ -53,7 +53,7 @@ async function getValenceUnitsIDs(valenceUnitAsArrayWithFEids) {
   if (valenceUnit.GF !== undefined) {
     expVU.GF = valenceUnit.GF;
   }
-  return (await ValenceUnit.find(expVU)).map(vu => vu._id);
+  return ValenceUnit.distinct('_id', expVU);
 }
 
 async function getArrayOfArrayOfValenceUnitsIDs(formattedValencePatternArrayWithFEids) {
@@ -78,12 +78,13 @@ async function retrieveValenceUnitsIDs(context, next) {
 
 // Query has passed validation so all FrameElements should be specified
 // See validator.validateQueryParametersCombination
-async function getFrameElementNamesSet(queryVPwithFEids) {
+function getFrameElementNamesSet(formattedVPquery, vpQueryWithFEids) {
   const mySet = new Set();
-  for (const valence of queryVPwithFEids) {
-    for (const token of valence) {
-      if (Array.isArray(token)) {
-        mySet.add((await FrameElement.findById(token[0])).name);
+  for (const vindex in vpQueryWithFEids) { // FIXME
+    const valence = vpQueryWithFEids[vindex];
+    for (const tindex in valence) {
+      if (Array.isArray(valence[tindex])) {
+        mySet.add(formattedVPquery[vindex][tindex]);
       }
     }
   }
@@ -91,14 +92,14 @@ async function getFrameElementNamesSet(queryVPwithFEids) {
 }
 
 async function getExcludedFEids(feNamesSet) {
-  return FrameElement.collection.find({
+  return FrameElement.collection.distinct('_id', {
     coreType: 'Core',
     name: { $nin: [...feNamesSet] },
-  }).map(fe => fe._id).toArray();
+  });
 }
 
 async function getExcludedVUids(excludedFEids) {
-  return ValenceUnit.find({
+  return ValenceUnit.collection.distinct('_id', {
     FE: { $in: excludedFEids },
   });
 }
@@ -109,17 +110,18 @@ async function retrieveExcludedVUIDs(context, next) {
   const startTime = utils.getStartTime();
   if (!context.query.withExtraCoreFEs) {
     context.valencer.query.feNamesSet = await getFrameElementNamesSet(
+      context.valencer.query.vp.formatted,
       context.valencer.query.vp.withFEids);
-      logger.verbose(`context.valencer.results.tmp.feNamesSet retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
-      const startTime2 = utils.getStartTime();
+    logger.verbose(`context.valencer.results.tmp.feNamesSet retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
+    const startTime2 = utils.getStartTime();
     context.valencer.results.tmp.excludedFEids = await getExcludedFEids(
       context.valencer.query.feNamesSet);
-      logger.debug(`context.valencer.results.tmp.excludedFEids.length = ${context.valencer.results.tmp.excludedFEids.length}`);
-      logger.verbose(`context.valencer.results.tmp.excludedFEids retrieved from database in ${utils.getElapsedTime(startTime2)}ms`);
-      const startTime3 = utils.getStartTime();
+    logger.debug(`context.valencer.results.tmp.excludedFEids.length = ${context.valencer.results.tmp.excludedFEids.length}`);
+    logger.verbose(`context.valencer.results.tmp.excludedFEids retrieved from database in ${utils.getElapsedTime(startTime2)}ms`);
+    const startTime3 = utils.getStartTime();
     context.valencer.results.tmp.excludedVUids = await getExcludedVUids(
       context.valencer.results.tmp.excludedFEids);
-      logger.verbose(`context.valencer.results.tmp.excludedVUids retrieved from database in ${utils.getElapsedTime(startTime3)}ms`);
+    logger.verbose(`context.valencer.results.tmp.excludedVUids retrieved from database in ${utils.getElapsedTime(startTime3)}ms`);
   }
   logger.debug(`context.valencer.results.tmp.excludedVUids.length = ${context.valencer.results.tmp.excludedVUids.length}`);
   logger.verbose(`context.valencer.results.tmp.excludedVUids retrieved from database in ${utils.getElapsedTime(startTime)}ms`);

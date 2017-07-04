@@ -58,7 +58,8 @@ async function getValencePatternAsArrayWithFEids(formattedVP) {
 }
 
 async function replaceFrameElementNamesByFrameElementIds(context, next) {
-  context.valencer.query.vp.withFEids = await getValencePatternAsArrayWithFEids(context.valencer.query.vp.formatted);
+  context.valencer.query.vp.withFEids = await getValencePatternAsArrayWithFEids(
+    context.valencer.query.vp.formatted);
   logger.debug(`context.valencer.query.vp.withFEids = ${JSON.stringify(context.valencer.query.vp.withFEids)}`);
   return next();
 }
