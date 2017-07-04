@@ -7,12 +7,12 @@ const production = {
   },
   databases: {
     en: {
-      d150: 'mongodb://localhost:27017/fn_en_d150_dev',
-      d160: 'mongodb://localhost:27017/fn_en_d160_dev',
-      d170: 'mongodb://localhost:27017/fn_en_d170_dev',
+      150: 'mongodb://localhost:27017/fn_en_150',
+      160: 'mongodb://localhost:27017/fn_en_160',
+      170: 'mongodb://localhost:27017/fn_en_170',
     },
     ja: {
-      d100: 'mongodb://localhost:27017/fn_ja_100_dev',
+      100: 'mongodb://localhost:27017/fn_ja_100_dev',
     },
   },
 };

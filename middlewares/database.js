@@ -10,7 +10,13 @@ function connect(databases) {
     const dbUri = config.databases[urlSplit[2]][urlSplit[3]];
     if (!databases.connections[dbName]) {
       logger.info(`Creating connection to ${dbUri}`);
-      await mongoose.connect(dbUri);
+      if (mongoose.connection.readyState === 0) {
+        console.log('NO CONNECTION')
+        await mongoose.connect(dbUri);
+      } else {
+        mongoose.connection = await mongoose.connection.useDb('fn_en_170');
+        console.log(mongoose.connection);
+      }
       databases.connections[dbName] = mongoose.connection;
     } else {
       logger.debug(`Retrieving open connection to ${dbUri}`);
