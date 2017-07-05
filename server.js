@@ -8,12 +8,12 @@
  */
 const Koa = require('koa');
 const cors = require('kcors');
+const mongoose = require('mongoose');
 const router = require('./routes');
 const config = require('./config');
 
 const logger = config.logger;
 const app = new Koa();
-const databases = { connections: {} };
 
 app.use(cors());
 // app.keys = ['my-secret-key'];
@@ -29,7 +29,7 @@ app.use(async (context, next) => {
     context.body = err.message;
   }
 });
-app.use(router(databases).routes());
+app.use(router.routes());
 
 function printLogo() {
   console.log('            _                                 ');
@@ -44,10 +44,15 @@ function printLogo() {
 (async () => {
   try {
     printLogo();
+    const dbServer = config.databases.server;
+    const dbPort = config.databases.port;
+    const dbUri = `mongodb://${dbServer}:${dbPort}`;
+    await mongoose.connect(dbUri);
+    logger.info(`Connected to MongoDB on server: '${dbServer}' and port '${dbPort}'`);
     await app.listen(config.api.port);
     logger.info(`Valencer started on port ${config.api.port}`);
   } catch (err) {
-    logger.error(`Unable to connect to database at: ${config.dbUri}`);
+    logger.error(err.message);
     logger.debug(err);
     process.exit(1);
   }
