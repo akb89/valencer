@@ -87,43 +87,40 @@ const processVPquery = compose([
   filter.filterPatternsIDs,
 ]);
 
-function generateRoutes(databases) {
-  const validateAndProcessVPquery = compose([
-    initializeValencerContext,
-    validateVPquery,
-    database.connect(databases),
-    formatVPquery,
-    validator.validateQueryParametersCombination,
-    processVPquery,
-    annotationSets.getByValencePattern,
-  ]);
+const validateAndProcessVPquery = compose([
+  initializeValencerContext,
+  validateVPquery,
+  database.connect,
+  formatVPquery,
+  validator.validateQueryParametersCombination,
+  processVPquery,
+  annotationSets.getByValencePattern,
+]);
 
-  const validateAndProcessIDquery = compose([
-    validateParamsQuery,
-    database.connect(databases),
-  ]);
+const validateAndProcessIDquery = compose([
+  validateParamsQuery,
+  database.connect,
+]);
 
-  router.get('/annoSet/:id',
-             validateAndProcessIDquery,
-             annotationSet.getByID);
+router.get('/annoSet/:id',
+           validateAndProcessIDquery,
+           annotationSet.getByID);
 
-  router.get('/annoSets',
-             validateAndProcessVPquery,
-             renderer.renderAnnotationSets,
-             displayQueryExecutionTime);
+router.get('/annoSets',
+           validateAndProcessVPquery,
+           renderer.renderAnnotationSets,
+           displayQueryExecutionTime);
 
-  router.get('/lexUnits',
-             validateAndProcessVPquery,
-             lexUnits.getByAnnotationSets,
-             renderer.renderLexUnits,
-             displayQueryExecutionTime);
+router.get('/lexUnits',
+           validateAndProcessVPquery,
+           lexUnits.getByAnnotationSets,
+           renderer.renderLexUnits,
+           displayQueryExecutionTime);
 
-  router.get('/frame/:id',
-             validateAndProcessIDquery,
-             frame.getByID);
+router.get('/frame/:id',
+           validateAndProcessIDquery,
+           frame.getByID);
 
-  valencer.use('/:lang_iso_code/:dataset_version', router.routes());
-  return valencer;
-}
+valencer.use('/:lang_iso_code/:dataset_version', router.routes());
 
-module.exports = generateRoutes;
+module.exports = valencer;

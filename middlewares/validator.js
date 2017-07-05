@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const ApiError = require('./../exceptions/apiException');
 const config = require('./../config');
 
@@ -150,11 +151,35 @@ function validateQueryParametersCombination(context, next) {
   return next();
 }
 
-function validatePathToDB(context, next) {
-  //const urlSplit = context.request.url.split('/');
-  //context.valencer.database = `fn_${urlSplit[2]}_${urlSplit[3]}`;
-  //TODO: add validator
-  logger.debug(`context.valencer.database is valid and set to ${JSON.stringify('BLANK')}`);
+async function validatePathToDB(context, next) {
+  const urlSplit = context.request.url.split('/');
+  const lang = urlSplit[2];
+  const dataset = urlSplit[3];
+  const dbName = config.databases.names[lang][dataset];
+  if (config.databases.names[lang] === undefined) {
+    throw new ApiError.InvalidQuery(`language ISO639-1 code '${lang}' is not supported`);
+  }
+  if (dbName === undefined) {
+    throw new ApiError.InvalidQuery(`dataset '${dataset}' is not supported`);
+  }
+  const dbs = await new Promise((resolve, reject) => {
+    mongoose.connection.db.admin().listDatabases((err, result) => {
+      if (err) {
+        return reject(err);
+      }
+      return resolve(result);
+    });
+  });
+  let isValidDBName = false;
+  dbs.databases.forEach((database) => {
+    if (database.name === dbName) {
+      isValidDBName = true;
+    }
+  });
+  if (!isValidDBName) {
+    throw new ApiError.InvalidQuery(`Specified database '${dbName}' for language '${lang}' and dataset '${dataset}' was not found on the current instance of MongoDB running on server '${config.databases.server}' and port '${config.databases.port}'`);
+  }
+  logger.debug(`database language '${lang}', dataset '${dataset}' and name '${dbName}' are valid`);
   return next();
 }
 
