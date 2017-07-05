@@ -99,6 +99,7 @@ const validateAndProcessVPquery = compose([
 ]);
 
 const validateAndProcessIDquery = compose([
+  initializeValencerContext,
   validateParamsQuery,
   database.connect,
 ]);
