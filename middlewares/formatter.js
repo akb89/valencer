@@ -7,7 +7,6 @@
   * The formatter manipulates the input query.
   * It transforms , and to an array of array with Frame Element ids then.
   */
-const FrameElement = require('noframenet-core').FrameElement;
 const bluebird = require('bluebird');
 const utils = require('./../utils/utils');
 const config = require('../config');
@@ -43,23 +42,30 @@ function formatValencePatternToArrayOfArrayOfTokens(context, next) {
  * [[[fe_1_id_1,...,fe_1_id_n], 'PT_1', 'GF_1'], ...,
  * [[fe_n_id_1,...,fn_n_id_n], 'PT_n', 'GF_n']]
  */
-async function getValenceUnitAsArrayWithFEids(valenceUnitAsArray) {
-  return valenceUnitAsArray.reduce(async (valenceUnitArrayWithFEidsPromise, token) => {
-    const valenceUnitArrayWithFEids = await valenceUnitArrayWithFEidsPromise;
-    const fes = await FrameElement.find().where('name').equals(token);
-    valenceUnitArrayWithFEids.push(fes.length ? fes.map(fe => fe._id) : token);
-    return valenceUnitArrayWithFEids;
-  }, []);
+function getValenceUnitAsArrayWithFEidsWithFEmodel(FrameElement) {
+  return async function getValenceUnitAsArrayWithFEids(valenceUnitAsArray) {
+    return valenceUnitAsArray.reduce(async (valenceUnitArrayWithFEidsPromise, token) => {
+      const valenceUnitArrayWithFEids = await valenceUnitArrayWithFEidsPromise;
+      const fes = await FrameElement.find().where('name').equals(token);
+      valenceUnitArrayWithFEids.push(fes.length ? fes.map(fe => fe._id) : token);
+      return valenceUnitArrayWithFEids;
+    }, []);
+  };
 }
 
-async function getValencePatternAsArrayWithFEids(formattedVP) {
-  return Promise.all(formattedVP
-    .map(async vUnitArray => getValenceUnitAsArrayWithFEids(vUnitArray)));
+function getValencePatternAsArrayWithFEidsWithFEmodel(FrameElement) {
+  return async function getValencePatternAsArrayWithFEids(formattedVP) {
+    return Promise.all(formattedVP
+      .map(async vUnitArray => getValenceUnitAsArrayWithFEidsWithFEmodel(
+        FrameElement)(vUnitArray)));
+  };
 }
 
 async function replaceFrameElementNamesByFrameElementIds(context, next) {
-  context.valencer.query.vp.withFEids = await getValencePatternAsArrayWithFEids(
-    context.valencer.query.vp.formatted);
+  context.valencer.query.vp.withFEids =
+    await getValencePatternAsArrayWithFEidsWithFEmodel(
+      context.valencer.models.FrameElement)(
+        context.valencer.query.vp.formatted);
   logger.debug(`context.valencer.query.vp.withFEids = ${JSON.stringify(context.valencer.query.vp.withFEids)}`);
   return next();
 }

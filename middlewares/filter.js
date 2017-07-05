@@ -1,4 +1,3 @@
-const Pattern = require('noframenet-core').Pattern;
 const utils = require('./../utils/utils');
 const config = require('./../config');
 
@@ -13,23 +12,27 @@ function filterByStrictVUMatching(allPatterns, arrayOfArrayOfValenceUnitIDs) {
   }, []);
 }
 
-async function getFilteredPatternsIDs(allPatternsIDs,
-                                      arrayOfArrayOfValenceUnitIDs,
-                                      strictVUMatching) {
-  if (!strictVUMatching) {
-    return allPatternsIDs;
-  }
-  const allPatterns = await Pattern.find().where('_id').in(allPatternsIDs);
-  return filterByStrictVUMatching(allPatterns, arrayOfArrayOfValenceUnitIDs);
+function getFilteredPatternsIDsWithPatternModel(Pattern) {
+  return async function getFilteredPatternsIDs(allPatternsIDs,
+                                               arrayOfArrayOfValenceUnitIDs,
+                                               strictVUMatching) {
+    if (!strictVUMatching) {
+      return allPatternsIDs;
+    }
+    const allPatterns = await Pattern.find().where('_id').in(allPatternsIDs);
+    return filterByStrictVUMatching(allPatterns, arrayOfArrayOfValenceUnitIDs);
+  };
 }
 
 async function filterPatternsIDs(context, next) {
   logger.debug(`Filtering patternsIDs with strictVUMatching = ${context.query.strictVUMatching}`);
   const startTime = utils.getStartTime();
   context.valencer.results.tmp.filteredPatternsIDs =
-    await getFilteredPatternsIDs(context.valencer.results.tmp.patternsIDs,
-                                 context.valencer.results.tmp.valenceUnitsIDs,
-                                 context.query.strictVUMatching);
+    await getFilteredPatternsIDsWithPatternModel(
+      context.valencer.models.Pattern)(
+        context.valencer.results.tmp.patternsIDs,
+        context.valencer.results.tmp.valenceUnitsIDs,
+        context.query.strictVUMatching);
   logger.debug(`context.valencer.results.tmp.filteredPatternsIDs.length = ${context.valencer.results.tmp.filteredPatternsIDs.length}`);
   logger.verbose(`context.valencer.results.tmp.filteredPatternsIDs processed in ${utils.getElapsedTime(startTime)}ms`);
   return next();

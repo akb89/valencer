@@ -49,6 +49,7 @@ function printLogo() {
     //const dbUri = `mongodb://${dbServer}:${dbPort}`;
     const dbUri = `mongodb://${dbServer}:${dbPort}/${config.databases.name}`;
     await mongoose.connect(dbUri);
+    logger.warn(dbUri);
     logger.info(`Connected to MongoDB on server: '${dbServer}' and port '${dbPort}'`);
     await app.listen(config.api.port);
     logger.info(`Valencer started on port ${config.api.port}`);

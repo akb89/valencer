@@ -7,7 +7,7 @@ const ValenceUnit = require('noframenet-core').ValenceUnit;
 const config = require('./../../config');
 
 const should = chai.should();
-const getPatternsIDs = rewire('./../../middlewares/core/patterns').__get__('getPatternsIDs');
+const getPatternsIDs = rewire('./../../middlewares/core/patterns').__get__('getPatternIDsWithPatternModel')(Pattern);
 mongoose.Promise = require('bluebird');
 
 describe('core.patterns', () => {

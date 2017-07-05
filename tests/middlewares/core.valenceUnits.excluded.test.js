@@ -8,8 +8,8 @@ mongoose.Promise = require('bluebird');
 
 const should = chai.should();
 const getFrameElementNamesSet = rewire('./../../middlewares/core/valenceUnits').__get__('getFrameElementNamesSet');
-const getExcludedFEids = rewire('./../../middlewares/core/valenceUnits').__get__('getExcludedFEids');
-const getExcludedVUids = rewire('./../../middlewares/core/valenceUnits').__get__('getExcludedVUids');
+const getExcludedFEids = rewire('./../../middlewares/core/valenceUnits').__get__('getExcludedFEidsWithFEmodel')(FrameElement);
+const getExcludedVUids = rewire('./../../middlewares/core/valenceUnits').__get__('getExcludedVUidsWithVUmodel')(ValenceUnit);
 
 describe('core.valenceUnits.excluded', () => {
   let aFE;

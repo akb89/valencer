@@ -27,6 +27,7 @@ const router = new Router();
 
 function initializeValencerContext(context, next) {
   context.valencer = {
+    models: {},
     query: {
       vp: {
         raw: '',
