@@ -8,6 +8,7 @@ const development = {
   databases: {
     server: 'localhost',
     port: 27017,
+    name: 'fn_en_170', // To be removed once multi-database support is fixed
     names: {
       en: {
         150: 'fn_en_150',
