@@ -10,8 +10,8 @@ async function connect(context, next) {
   const dataset = urlSplit[3];
   const dbName = config.databases.names[lang][dataset];
   const db = mongoose.connection.useDb(dbName);
-  context.valencer.models.AnnotationSet = db.model('AnnotationSet', nfc.AnnotationSet.schema);
   context.valencer.models = {
+    AnnotationSet: db.model('AnnotationSet', nfc.AnnotationSet.schema),
     Corpus: db.model('Corpus', nfc.Corpus.schema),
     Document: db.model('Document', nfc.Document.schema),
     Frame: db.model('Frame', nfc.Frame.schema),
