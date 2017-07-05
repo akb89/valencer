@@ -17,6 +17,8 @@ const config = require('./config');
 const pkgVersion = process.env.npm_package_version;
 const apiVersion = `/v${pkgVersion.split('.')[0]}`;
 
+const models = { activeDb: '' };
+
 const logger = config.logger;
 
 const valencer = new Router({
@@ -48,9 +50,6 @@ function initializeValencerContext(context, next) {
       lexUnits: [],
     },
     startTime: utils.getStartTime(),
-    tmpmodels: {
-      activeDb: '',
-    },
   };
   logger.info(`Processing query ${JSON.stringify(context.query)}`);
   return next();
@@ -94,7 +93,7 @@ const processVPquery = compose([
 const validateAndProcessVPquery = compose([
   initializeValencerContext,
   validateVPquery,
-  database.connect,
+  database.connect(models),
   formatVPquery,
   validator.validateQueryParametersCombination,
   processVPquery,
@@ -104,7 +103,7 @@ const validateAndProcessVPquery = compose([
 const validateAndProcessIDquery = compose([
   initializeValencerContext,
   validateParamsQuery,
-  database.connect,
+  database.connect(models),
 ]);
 
 router.get('/annoSet/:id',

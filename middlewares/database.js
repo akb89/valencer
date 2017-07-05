@@ -4,15 +4,16 @@ const nfc = require('noframenet-core');
 
 const logger = config.logger;
 
-async function connect(context, next) {
-  const urlSplit = context.request.url.split('/');
-  const lang = urlSplit[2];
-  const dataset = urlSplit[3];
-  const dbName = config.databases.names[lang][dataset];
-  logger.info(`Using database ${dbName}`);
-  if (!(dbName in context.valencer.tmpmodels)) {
-    const db = mongoose.connection.useDb(dbName);
-    context.valencer.tmpmodels[dbName] = {
+function connect(models) {
+  return async function aconnect(context, next) {
+    const urlSplit = context.request.url.split('/');
+    const lang = urlSplit[2];
+    const dataset = urlSplit[3];
+    const dbName = config.databases.names[lang][dataset];
+    logger.info(`Using database ${dbName}`);
+    if (!(dbName in models)) {
+      const db = mongoose.connection.useDb(dbName);
+      models[dbName] = {
         AnnotationSet: db.model('AnnotationSet', nfc.AnnotationSet.schema),
         Corpus: db.model('Corpus', nfc.Corpus.schema),
         Document: db.model('Document', nfc.Document.schema),
@@ -28,16 +29,16 @@ async function connect(context, next) {
         SemType: db.model('SemType', nfc.SemType.schema),
         Sentence: db.model('Sentence', nfc.Sentence.schema),
         ValenceUnit: db.model('ValenceUnit', nfc.ValenceUnit.schema),
-    };
-  }
+      };
+    }
 
-  if (context.valencer.tmpmodels.activeDb !== dbName) {
-    context.valencer.models = context.valencer.tmpmodels[dbName];
-  }
-  context.valencer.tmpmodels.activeDb = dbName;
-  return next();
+    if (models.activeDb !== dbName) {
+      context.valencer.models = models[dbName];
+    }
+    models.activeDb = dbName;
+    return next();
+  };
 }
-
 module.exports = {
   connect,
 };
