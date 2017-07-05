@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const config = require('./../config');
 
+const noFramenetCore = require('noframenet-core');
+
 const logger = config.logger;
 
 async function connect(context, next) {
@@ -12,6 +14,8 @@ async function connect(context, next) {
   //mongoose.connection = await mongoose.connection.useDb(dbName);
   //const db = mongoose.connection.useDb(dbName);
   //require('noframenet-core').AnnotationSet =
+  //const AnnotationSet = db.model('AnnotationSet', noFramenetCore.AnnotationSet.schema);
+  //db.models = mongoose.connection.models;
   return next();
 }
 
