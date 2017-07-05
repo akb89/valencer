@@ -9,6 +9,7 @@ async function connect(context, next) {
   const lang = urlSplit[2];
   const dataset = urlSplit[3];
   const dbName = config.databases.names[lang][dataset];
+  logger.info(`Using database ${dbName}`);
   const db = mongoose.connection.useDb(dbName);
   context.valencer.models = {
     AnnotationSet: db.model('AnnotationSet', nfc.AnnotationSet.schema),
