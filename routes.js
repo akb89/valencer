@@ -48,7 +48,9 @@ function initializeValencerContext(context, next) {
       lexUnits: [],
     },
     startTime: utils.getStartTime(),
-    tmpmodels: {},
+    tmpmodels: {
+      activeDb: '',
+    },
   };
   logger.info(`Processing query ${JSON.stringify(context.query)}`);
   return next();

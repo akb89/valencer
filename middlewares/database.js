@@ -30,7 +30,11 @@ async function connect(context, next) {
         ValenceUnit: db.model('ValenceUnit', nfc.ValenceUnit.schema),
     };
   }
-  context.valencer.models = context.valencer.tmpmodels[dbName];
+
+  if (context.valencer.tmpmodels.activeDb !== dbName) {
+    context.valencer.models = context.valencer.tmpmodels[dbName];
+  }
+  context.valencer.tmpmodels.activeDb = dbName;
   return next();
 }
 
