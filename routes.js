@@ -17,7 +17,7 @@ const config = require('./config');
 const pkgVersion = process.env.npm_package_version;
 const apiVersion = `/v${pkgVersion.split('.')[0]}`;
 
-const models = { activeDb: '' };
+const models = {};
 
 const logger = config.logger;
 

@@ -31,11 +31,7 @@ function connect(models) {
         ValenceUnit: db.model('ValenceUnit', nfc.ValenceUnit.schema),
       };
     }
-
-    if (models.activeDb !== dbName) {
-      context.valencer.models = models[dbName];
-    }
-    models.activeDb = dbName;
+    context.valencer.models = models[dbName];
     return next();
   };
 }
