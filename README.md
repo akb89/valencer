@@ -34,8 +34,10 @@ Alternatively, we provide two MongoDB dumps for [FrameNet 1.5](data/fn_en_150.ta
 ```
 mongorestore fn_en_170/
 ```
-If you are using our dumps, please do not forget to file in a [FrameNet Data Request](https://framenet.icsi.berkeley.edu/fndrupal/framenet_request_data).
 More information is available via the MongoDB [documentation](https://docs.mongodb.com/manual/tutorial/backup-and-restore-tools/)
+
+If you are using our dumps, please do not forget to file in a [FrameNet Data Request](https://framenet.icsi.berkeley.edu/fndrupal/framenet_request_data).
+
 
 ## HowTo &ndash; Start the Valencer server
 
