@@ -1,6 +1,6 @@
 const logger = require('./../logger/logger');
 
-const production = {
+const config = {
   logger: logger.info,
   api: {
     port: 3030,
@@ -21,4 +21,4 @@ const production = {
   },
 };
 
-module.exports = production;
+module.exports = config;
