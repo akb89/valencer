@@ -34,10 +34,10 @@
   },
   "apidoc": {
     "name": "valencer-doc",
-    "version": "3.0.0",
+    "version": "4.0.0",
     "description": "Documentation for the Valencer API",
     "title": "Valencer API Doc",
-    "url": "https://akb89.github.io/valencer/",
+    "url": "http://api.valencer.io/v4/:langIsoCode/:datasetVersion",
     "header": {
       "title": "General",
       "filename": "header.md"
