@@ -9,7 +9,7 @@ const should = chai.should();
 describe('formatter', () => {
   before(async () => {
     if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(config.dbUri);
+      await mongoose.connect(config.dbUri, { useMongoClient: true });
     }
     const aFE = new FrameElement({
       _id: 1,

@@ -27,7 +27,7 @@ describe('core.patterns', () => {
   let pattern8;
   before(async () => {
     if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(config.dbUri);
+      await mongoose.connect(config.dbUri, { useMongoClient: true });
     }
     const aFE = new FrameElement({ _id: 1, name: 'A' });
     await aFE.save();
