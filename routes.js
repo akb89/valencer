@@ -51,7 +51,9 @@ function initializeValencerContext(context, next) {
     },
     startTime: utils.getStartTime(),
   };
-  logger.info(`Processing query ${JSON.stringify(context.query)}`);
+  if (Object.keys(context.query).length) {
+    logger.info(`Processing query ${JSON.stringify(context.query)}`);
+  }
   return next();
 }
 
