@@ -11,9 +11,10 @@ function getValenceUnitsWithValenceUnitModel(ValenceUnit) {
 
 async function getFromIDs(context, next) {
   const startTime = utils.getStartTime();
-  logger.info(`Querying for all valence units matching: '${context.query.vp}'`);
+  logger.info(`Querying for all valence units matching: '${context.query.vu}'`);
+  const valenceUnitIDs = [].concat(...context.valencer.results.tmp.valenceUnitsIDs);
   context.valencer.results.valenceUnits = await getValenceUnitsWithValenceUnitModel(
-    context.valencer.models.ValenceUnit)(context.valencer.results.tmp.valenceUnitsIDs);
+    context.valencer.models.ValenceUnit)(valenceUnitIDs);
   logger.verbose(`${context.valencer.results.valenceUnits.length} unique ValenceUnits retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }

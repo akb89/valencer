@@ -1,9 +1,18 @@
 const chai = require('chai');
+const rewire = require('rewire');
 const validator = require('./../../middlewares/validator');
 
 const should = chai.should();
 
+const getMaxValenceTokens = rewire('./../../middlewares/validator').__get__('getMaxValenceTokens');
+
 describe('validator', () => {
+  it('#getMaxValenceTokens should return the correct number of tokens', () => {
+    let vp = 'A.B.C D.E.F G.H.I';
+    getMaxValenceTokens(vp).should.equal(3);
+    vp = 'A.B C.D.E.F.G H';
+    getMaxValenceTokens(vp).should.equal(5);
+  });
   it('#validateQueryNotNullOrUndefined should throw InvalidQuery when context.query object is null', () => {
     const next = () => {};
     const context = { query: null };

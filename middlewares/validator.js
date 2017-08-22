@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const ApiError = require('./../exceptions/apiException');
 const config = require('./../config');
+const utils = require('./../utils/utils');
 
 const logger = config.logger;
 
@@ -61,6 +62,15 @@ function validateQueryVPnotEmpty(context, next) {
   return next();
 }
 
+function validateQueryVUnotEmpty(context, next) {
+  if (!context.query.vu) {
+    throw new ApiError.InvalidQueryParams('context.query.vu parameter is empty, null or undefined');
+  }
+  logger.debug('context.query.vu parameter is not empty');
+  context.query.vu = context.query.vu.trim();
+  return next();
+}
+
 function validateParamsIDnotEmpty(context, next) {
   if (!context.params.id) {
     throw new ApiError.InvalidParams('context.params.id parameter is empty, null or undefined');
@@ -76,6 +86,14 @@ function validateParamsIDisNumberOrObjectID(context, next) {
   return next();
 }
 
+function validateQueryVUlength(context, next) {
+  if (utils.toValenceArray(context.query.vu).length !== 1) {
+    throw new ApiError.InvalidQueryParams(`Invalid length of context.query.vu = '${context.query.vp}'. The input string should contain a single triplet FE.PT.GF`);
+  }
+  logger.debug('context.query.vu is a valence array of length 1');
+  return next();
+}
+
 // Check for invalid characters (regex, everything except letters, . _ [])
 function validateQueryVPcontainsNoInvalidCharacters(context, next) {
   const invalidCharacterIndex = context.query.vp.search(/[^a-zA-Z0-9.\s[\]_-]/);
@@ -83,6 +101,16 @@ function validateQueryVPcontainsNoInvalidCharacters(context, next) {
     throw new ApiError.InvalidQueryParams(`Invalid character in context.query.vp = '${context.query.vp}' at index = ${invalidCharacterIndex}: '${context.query.vp[invalidCharacterIndex]}'`);
   }
   logger.debug('context.query.vp parameter contains no invalid characters');
+  return next();
+}
+
+// Check for invalid characters (regex, everything except letters, . _ [])
+function validateQueryVUcontainsNoInvalidCharacters(context, next) {
+  const invalidCharacterIndex = context.query.vu.search(/[^a-zA-Z0-9.\s[\]_-]/);
+  if (invalidCharacterIndex !== -1) {
+    throw new ApiError.InvalidQueryParams(`Invalid character in context.query.vu = '${context.query.vu}' at index = ${invalidCharacterIndex}: '${context.query.vu[invalidCharacterIndex]}'`);
+  }
+  logger.debug('context.query.vu parameter contains no invalid characters');
   return next();
 }
 
@@ -96,22 +124,14 @@ function validateQueryVPcontainsNoInvalidSequence(context, next) {
   return next();
 }
 
-function countValenceTokens(vp) {
-  let counterMax = 1;
-  for (let i = 0; i < vp.length; i += 1) {
-    if (/\./.test(vp[i])) {
-      counterMax += 1;
-    }
-    if (/\s/.test(vp[i])) {
-      counterMax = 1;
-    }
-  }
-  return counterMax;
+function getMaxValenceTokens(vp) {
+  return utils.toTokenArray(utils.toValenceArray(vp))
+  .map(vu => vu.length).reduce((a, b) => Math.max(a, b));
 }
 
 // Check if a valenceUnit contains more than 3 tokens (Should always be at most FE.PT.GF)
 function validateQueryVPvalenceUnitLength(context, next) {
-  if (countValenceTokens(context.query.vp) > 3) {
+  if (getMaxValenceTokens(context.query.vp) > 3) {
     throw new ApiError.InvalidQueryParams(`MaxValenceLengthExceeded in context.query.vp = '${context.query.vp}'. A valence can only contain up to 3 tokens FE.PT.GF separated by a dot`);
   }
   logger.debug('context.query.vp parameter contains valid valence units token counts');
@@ -188,9 +208,12 @@ module.exports = {
   validateQueryNotEmpty,
   validateParamsNotEmpty,
   validateQueryVPnotEmpty,
+  validateQueryVUnotEmpty,
   validateParamsIDnotEmpty,
   validateParamsIDisNumberOrObjectID,
+  validateQueryVUlength,
   validateQueryVPcontainsNoInvalidCharacters,
+  validateQueryVUcontainsNoInvalidCharacters,
   validateQueryVPcontainsNoInvalidSequence,
   validateQueryVPvalenceUnitLength,
   validateQueryStrictVUmatchingParameter,
