@@ -2,11 +2,10 @@
  * The formatter manipulates the input query.
  * It transforms a raw valence pattern (defined as a (potentially partial)
  * combination of FE.PT.GF tags) to an array of array (first).
- */
- /**
-  * The formatter manipulates the input query.
-  * It transforms , and to an array of array with Frame Element ids then.
-  */
+ * The formatter manipulates the input query.
+ * It transforms , and to an array of array with Frame Element ids then.
+**/
+const FrameElement = require('noframenet-core').FrameElement;
 const bluebird = require('bluebird');
 const utils = require('./../utils/utils');
 const config = require('../config');

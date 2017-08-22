@@ -22,7 +22,7 @@ describe('core.valenceUnits.excluded', () => {
   let eSfinADJ;
   before(async () => {
     if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(config.dbUri);
+      await mongoose.connect(config.dbUri, { useMongoClient: true });
     }
     aFE = new FrameElement({ _id: 1, name: 'A', coreType: 'Core' });
     await aFE.save();

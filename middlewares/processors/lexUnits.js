@@ -3,7 +3,6 @@ const utils = require('./../../utils/utils');
 
 const logger = config.logger;
 
-
 function getLexUnitsWithLexUnitModel(LexUnit) {
   return async function getLexUnits(annotationSets) {
     return LexUnit.find().where('_id')

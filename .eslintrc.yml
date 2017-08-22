@@ -19,11 +19,23 @@ rules:
   #Allow for of/in loops as forEach does not work with async await
   no-restricted-syntax: [warn, ForOfStatement, ForInStatement]
 
+  #Allow await in loops if in for of/in
+  no-await-in-loop: warn
+
   #Ignore unused-var error message on chai.should()
   no-unused-vars: [error, {varsIgnorePattern: should}]
+
+  #Ignore until upgraded to eslint 4.0 where overrides is supported
+  no-unused-expressions: warn
 
   #Allow devDependencies for tests
   import/no-extraneous-dependencies: [error, {devDependencies: ['**/*.test.js']}]
 
   #Allow (pep) Python-style parameters indentation and alignment
   indent: [error, 2, {FunctionDeclaration: {parameters: first}, FunctionExpression: {parameters: first}, CallExpression: {arguments: first}, ArrayExpression: first, ObjectExpression: first}]
+
+overrides:
+  -
+    files: ['**/*.test.js']
+    rules:
+      no-unused-expressions: off

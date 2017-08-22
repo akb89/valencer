@@ -9,7 +9,7 @@ async function verifyApiSignature(context, next) {
   const host = req.header.host;
 
   if (host.indexOf('localhost') !== -1 || host.indexOf('127.0.0.1') !== -1) {
-    return await next();
+    return next();
   }
 
   const authorization = req.header.authorization;
@@ -60,7 +60,7 @@ async function verifyApiSignature(context, next) {
 
   apiInfo.timestamp = now;
   await apiInfo.save();
-  return await next(); // TODO: added return here. Check
+  return next(); // TODO: added return here. Check
 }
 
 module.exports = {
