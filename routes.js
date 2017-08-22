@@ -17,6 +17,8 @@ const config = require('./config');
 const pkgVersion = process.env.npm_package_version;
 const apiVersion = `/v${pkgVersion.split('.')[0]}`;
 
+const models = {};
+
 const logger = config.logger;
 
 const valencer = new Router({
@@ -27,6 +29,7 @@ const router = new Router();
 
 function initializeValencerContext(context, next) {
   context.valencer = {
+    models: {},
     query: {
       vp: {
         raw: '',
@@ -90,7 +93,7 @@ const processVPquery = compose([
 const validateAndProcessVPquery = compose([
   initializeValencerContext,
   validateVPquery,
-  database.connect,
+  database.connect(models),
   formatVPquery,
   validator.validateQueryParametersCombination,
   processVPquery,
@@ -98,8 +101,9 @@ const validateAndProcessVPquery = compose([
 ]);
 
 const validateAndProcessIDquery = compose([
+  initializeValencerContext,
   validateParamsQuery,
-  database.connect,
+  database.connect(models),
 ]);
 
 router.get('/annoSet/:id',

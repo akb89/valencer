@@ -65,7 +65,7 @@ describe('formatter', () => {
   });
   it('#replaceFrameElementNamesByFrameElementIds should return an array of valenceunits (i.e. an array of array of tokens) with an array of FrameElement ids in place of the FE name', async () => {
     const next = () => {};
-    const context = { valencer: { query: { vp: { formatted: [['A', 'B', 'C'], ['D', 'E', 'F'], ['G', 'H', 'I']] } } } };
+    const context = { valencer: { models: { FrameElement }, query: { vp: { formatted: [['A', 'B', 'C'], ['D', 'E', 'F'], ['G', 'H', 'I']] } } } };
     await formatter.replaceFrameElementNamesByFrameElementIds(context, next);
     context.valencer.query.vp.withFEids.should.deep.equal([[[1], 'B', 'C'], ['D', [4, 5], 'F'], ['G', 'H', [9, 10, 11]]]);
   });

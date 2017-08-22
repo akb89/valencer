@@ -7,8 +7,8 @@ const config = require('./../../config');
 mongoose.Promise = require('bluebird');
 
 const should = chai.should();
-const getValenceUnitsIDs = rewire('./../../middlewares/core/valenceUnits').__get__('getValenceUnitsIDs');
-const getArrayOfArrayOfValenceUnitsIDs = rewire('./../../middlewares/core/valenceUnits').__get__('getArrayOfArrayOfValenceUnitsIDs');
+const getValenceUnitsIDs = rewire('./../../middlewares/core/valenceUnits').__get__('getValenceUnitsIDsWithValenceUnitModel')(ValenceUnit);
+const getArrayOfArrayOfValenceUnitsIDs = rewire('./../../middlewares/core/valenceUnits').__get__('getArrayOfArrayOfValenceUnitsIDsWithValenceUnitModel')(ValenceUnit);
 
 describe('core.valenceUnits.included', () => {
   before(async () => {
