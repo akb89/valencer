@@ -5,8 +5,7 @@ const utils = require('./../../utils/utils');
 const logger = config.logger;
 
 async function getLexUnits(annotationSets) {
-  return LexUnit.find().where('_id')
-                .in(annotationSets.map(annoset => annoset.lexUnit));
+  return LexUnit.find().where('_id').in(annotationSets.map(annoset => annoset.lexUnit));
 }
 
 async function getByAnnotationSets(context, next) {

@@ -102,7 +102,9 @@ describe('filter', () => {
     await mongoose.connection.dropDatabase();
   });
   it('#filterByStrictVUMatching should return a correct array of patterns ids filtered by strict #valenceUnit matching', async () => {
-    (await filterByStrictVUMatching([pattern2, pattern8, pattern12], [[aNPObj._id], [bNPObj._id], [cNPExt._id]])).length.should.equal(1);
-    (await filterByStrictVUMatching([pattern8, pattern12], [[aNPObj._id], [bNPObj._id], [cNPExt._id]])).length.should.equal(0);
+    (await filterByStrictVUMatching([pattern2, pattern8, pattern12],
+       [[aNPObj._id], [bNPObj._id], [cNPExt._id]])).length.should.equal(1);
+    (await filterByStrictVUMatching([pattern8, pattern12], [[aNPObj._id],
+       [bNPObj._id], [cNPExt._id]])).length.should.equal(0);
   });
 });

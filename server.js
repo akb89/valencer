@@ -32,13 +32,13 @@ app.use(async (context, next) => {
 app.use(router.routes());
 
 function printLogo() {
-  console.log('            _                                 ');
-  console.log('/\\   /\\__ _| | ___ _ __   ___ ___ _ __      ');
-  console.log('\\ \\ / / _` | |/ _ \\ \'_ \\ / __/ _ \\ \'__|');
-  console.log(' \\ V / (_| | |  __/ | | | (_|  __/ |         ');
-  console.log('  \\_/ \\__,_|_|\\___|_| |_|\\___\\___|_|     ');
-  console.log('                                              ');
-  console.log('                                              ');
+  console.log('            _                                 '); // eslint-disable-line
+  console.log('/\\   /\\__ _| | ___ _ __   ___ ___ _ __      '); // eslint-disable-line
+  console.log('\\ \\ / / _` | |/ _ \\ \'_ \\ / __/ _ \\ \'__|'); // eslint-disable-line
+  console.log(' \\ V / (_| | |  __/ | | | (_|  __/ |         '); // eslint-disable-line
+  console.log('  \\_/ \\__,_|_|\\___|_| |_|\\___\\___|_|     '); // eslint-disable-line
+  console.log('                                              '); // eslint-disable-line
+  console.log('                                              '); // eslint-disable-line
 }
 
 (async () => {

@@ -80,11 +80,13 @@ async function retrieveValenceUnitsIDs(context, next) {
 // See validator.validateQueryParametersCombination
 function getFrameElementNamesSet(formattedVPquery, vpQueryWithFEids) {
   const mySet = new Set();
-  for (const vindex in vpQueryWithFEids) { // FIXME
-    const valence = vpQueryWithFEids[vindex];
-    for (const tindex in valence) {
-      if (Array.isArray(valence[tindex])) {
-        mySet.add(formattedVPquery[vindex][tindex]);
+  for (const vindex in vpQueryWithFEids) {
+    if ({}.hasOwnProperty.call(vpQueryWithFEids, vindex)) {
+      const valence = vpQueryWithFEids[vindex];
+      for (const tindex in valence) {
+        if (Array.isArray(valence[tindex])) {
+          mySet.add(formattedVPquery[vindex][tindex]);
+        }
       }
     }
   }
