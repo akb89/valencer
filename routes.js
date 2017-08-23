@@ -10,6 +10,7 @@ const validator = require('./middlewares/validator');
 const annotationSet = require('./middlewares/processors/annotationSet');
 const annotationSets = require('./middlewares/processors/annotationSets');
 const frame = require('./middlewares/processors/frame');
+const frameElement = require('./middlewares/processors/frameElement');
 const frames = require('./middlewares/processors/frames');
 const lexUnit = require('./middlewares/processors/lexUnit');
 const lexUnits = require('./middlewares/processors/lexUnits');
@@ -212,8 +213,8 @@ const validateAndProcessIDquery = compose([
  * @apiSuccess  {Number}   _id        The AnnotationSet id
  * @apiSuccess  {Number}   lexUnit    The LexUnit id
  * @apiSuccess  {Number}   sentence   The Sentence id
- * @apiSuccess  {Object}   pattern   The Pattern ObjectID
- * @apiSuccess  {Object[]} labels     The list of labels ObjectID
+ * @apiSuccess  {Object}   pattern    The Pattern ObjectID
+ * @apiSuccess  {Object[]} labels     The list of Label ObjectIDs
  */
 
 /**
@@ -224,12 +225,29 @@ const validateAndProcessIDquery = compose([
  * @apiSuccess   {String}    definition     The Frame definition
  * @apiSuccess   {String}    cDate          The Frame creation date
  * @apiSuccess   {String}    cBy            The Frame annotator
- * @apiSuccess   {Number[]}  semTypes       The Frame SemTypes ids
- * @apiSuccess   {Number[]}  lexUnits       The Frame LexUnits ids
+ * @apiSuccess   {Number[]}  semTypes       The Frame SemType ids
+ * @apiSuccess   {Number[]}  lexUnits       The Frame LexUnit ids
  * @apiSuccess   {Number[]}  feCoreSets     The Frame
- * minimal set of core FrameElements ids
- * @apiSuccess   {Number[]}  frameElements  The Frame FrameElements ids
+ * minimal set of core FrameElement ids
+ * @apiSuccess   {Number[]}  frameElements  The Frame FrameElement ids
  */
+
+ /**
+  * @apiDefine FrameElementSuccess
+  * @apiVersion 4.0.0
+  * @apiSuccess   {Number}    _id            The FrameElement id
+  * @apiSuccess   {String}    name           The FrameElement name
+  * @apiSuccess   {String}    definition     The FrameElement definition
+  * @apiSuccess   {String}    coreType       The FrameElement core type (Core, Peripheral, etc.)
+  * @apiSuccess   {String}    cDate          The FrameElement creation date
+  * @apiSuccess   {String}    cBy            The FrameElement annotator
+  * @apiSuccess   {String}    fgColor        The FrameElement annotation frontground color
+  * @apiSuccess   {String}    bgColor        The FrameElement annotation background color
+  * @apiSuccess   {String}    abbrev         The FrameElement name abbreviation
+  * @apiSuccess   {Number[]}  semTypes       The FrameElement SemType ids
+  * @apiSuccess   {Number[]}  excludes       The FrameElement ids excluded by this FrameElement
+  * @apiSuccess   {Number[]}  requires       The FrameElement ids required by this FrameElement
+  */
 
 /**
  * @apiDefine LexUnitSuccess
@@ -243,8 +261,8 @@ const validateAndProcessIDquery = compose([
  * @apiSuccess   {String}    status         The LexUnit status
  * @apiSuccess   {String}    cBy            The LexUnit annotator
  * @apiSuccess   {String}    cDate          The LexUnit creation date
- * @apiSuccess   {Number[]}  semTypes       The LexUnit SemTypes ids
- * @apiSuccess   {Number[]}  lexemes        The LexUnit Lexemes ids
+ * @apiSuccess   {Number[]}  semTypes       The LexUnit SemType ids
+ * @apiSuccess   {Number[]}  lexemes        The LexUnit Lexeme ids
  */
 
 /**
@@ -344,6 +362,26 @@ router.get('/frames',
            frames.getByAnnotationSets,
            renderer.renderFrames,
            displayQueryExecutionTime);
+
+/**
+  * @api {get} /frameElement/:id GetFrameElement
+  * @apiVersion 4.0.0
+  * @apiName GetFrameElement
+  * @apiGroup FrameElement
+  * @apiDescription Get FrameElement with id. Returns at most one
+  * document and throws an error if not found
+  * @apiUse apiConfig
+  * @apiParam {Number}  id  The FrameElement id
+  * @apiExample Example usage:
+  * curl -i "http://localhost:3030/v4/en/170/frameElement/42"
+  * @apiUse FrameElementSuccess
+  * @apiUse NotFoundIDError
+  * @apiUse InvalidQuery
+  * @apiUse InvalidParams
+  */
+router.get('/frameElement/:id',
+           validateAndProcessIDquery,
+           frameElement.getByID);
 
 /**
   * @api {get} /lexUnit/:id GetLexUnit
