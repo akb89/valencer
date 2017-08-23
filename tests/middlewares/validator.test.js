@@ -5,6 +5,8 @@ const validator = require('./../../middlewares/validator');
 const should = chai.should();
 
 const getMaxValenceTokens = rewire('./../../middlewares/validator').__get__('getMaxValenceTokens');
+const validateQueryParamNotEmpty = rewire('./../../middlewares/validator').__get__('validateQueryParamNotEmpty');
+const validateQueryParamContainsNoInvalidCharacters = rewire('./../../middlewares/validator').__get__('validateQueryParamContainsNoInvalidCharacters');
 
 describe('validator', () => {
   it('#getMaxValenceTokens should return the correct number of tokens', () => {
@@ -73,34 +75,28 @@ describe('validator', () => {
       err.message.should.equal('context.params object is empty, null or undefined');
     }
   });
-  it('#validateQueryVPnotEmpty should throw InvalidQueryParams when context.query.vp object is null', () => {
-    const next = () => {};
-    const context = { query: { vp: null } };
+  it('#validateQueryParamNotEmpty should throw InvalidQueryParams when query parameter object is null', () => {
     try {
-      validator.validateQueryVPnotEmpty(context, next);
+      validateQueryParamNotEmpty(null);
     } catch (err) {
       err.name.should.equal('InvalidQueryParams');
-      err.message.should.equal('context.query.vp parameter is empty, null or undefined');
+      err.message.should.equal('query parameter is empty, null or undefined');
     }
   });
-  it('#validateQueryVPnotEmpty should throw InvalidQueryParams when context.query.vp object is undefined', () => {
-    const next = () => {};
-    const context = { query: { vp: undefined } };
+  it('#validateQueryParamNotEmpty should throw InvalidQueryParams when query parameter object is undefined', () => {
     try {
-      validator.validateQueryVPnotEmpty(context, next);
+      validateQueryParamNotEmpty(undefined);
     } catch (err) {
       err.name.should.equal('InvalidQueryParams');
-      err.message.should.equal('context.query.vp parameter is empty, null or undefined');
+      err.message.should.equal('query parameter is empty, null or undefined');
     }
   });
-  it('#validateQueryVPnotEmpty should throw InvalidQueryParams when context.query.vp object is empty', () => {
-    const next = () => {};
-    const context = { query: { vp: '' } };
+  it('#validateQueryParamNotEmpty should throw InvalidQueryParams when query parameter object is empty', () => {
     try {
-      validator.validateQueryVPnotEmpty(context, next);
+      validateQueryParamNotEmpty('');
     } catch (err) {
       err.name.should.equal('InvalidQueryParams');
-      err.message.should.equal('context.query.vp parameter is empty, null or undefined');
+      err.message.should.equal('query parameter is empty, null or undefined');
     }
   });
   it('#validateParamsIDnotEmpty should throw InvalidParams when context.params.id object is null', () => {
@@ -168,50 +164,28 @@ describe('validator', () => {
       err.message.should.equal('context.params.id should be a Number or an ObjectID');
     }
   });
-  it('#validateQueryVPcontainsNoInvalidCharacters should throw InvalidQueryParams when context.query.vp object (string) contains an invalid character (non-alphanumeric except for . and whitespace)', () => {
-    const next = () => {};
-    const context = { query: { vp: 'A.B.$' } };
+  it('#validateQueryParamContainsNoInvalidCharacters should throw InvalidQueryParams when query parameter object (string) contains an invalid character (non-alphanumeric except for . and whitespace)', () => {
     try {
-      validator.validateQueryVPcontainsNoInvalidCharacters(context, next);
+      validateQueryParamContainsNoInvalidCharacters('A.B.$');
     } catch (err) {
       err.name.should.equal('InvalidQueryParams');
-      err.message.should.equal('Invalid character in context.query.vp = \'A.B.$\' at index = 4: \'$\'');
+      err.message.should.equal('Invalid character in query parameter \'A.B.$\' at index = 4: \'$\'');
     }
   });
-  it('#validateQueryVPcontainsNoInvalidCharacters should throw InvalidQueryParams when context.query.vp object (string) contains a digit', () => {
-    const next = () => {};
-    const context = { query: { vp: 'A.7.C' } };
-    try {
-      validator.validateQueryVPcontainsNoInvalidCharacters(context, next);
-    } catch (err) {
-      err.name.should.equal('InvalidQueryParams');
-      err.message.should.equal('Invalid character in context.query.vp = \'A.7.C\' at index = 2: \'7\'');
-    }
+  it('#validateQueryParamContainsNoInvalidCharacters should not throw InvalidQueryParams when processing a regular valence pattern', () => {
+    (() => validateQueryParamContainsNoInvalidCharacters('A.B.C D.E')).should.not.throw();
   });
-  it('#validateQueryVPcontainsNoInvalidCharacters should not throw InvalidQueryParams when processing a regular valence pattern', () => {
-    const next = () => {};
-    const context = { query: { vp: 'A.B.C D.E' } };
-    (() => validator.validateQueryVPcontainsNoInvalidCharacters(context, next)).should.not.throw();
+  it('#validateQueryParamContainsNoInvalidCharacters should not throw InvalidQueryParams when processing underscores', () => {
+    (() => validateQueryParamContainsNoInvalidCharacters('A_Z.B.C D.E')).should.not.throw();
   });
-  it('#validateQueryVPcontainsNoInvalidCharacters should not throw InvalidQueryParams when processing underscores', () => {
-    const next = () => {};
-    const context = { query: { vp: 'A_Z.B.C D.E' } };
-    (() => validator.validateQueryVPcontainsNoInvalidCharacters(context, next)).should.not.throw();
+  it('#validateQueryParamContainsNoInvalidCharacters should not throw InvalidQueryParams when processing digits', () => {
+    (() => validateQueryParamContainsNoInvalidCharacters('A_1.B.C D.E')).should.not.throw();
   });
-  it('#validateQueryVPcontainsNoInvalidCharacters should not throw InvalidQueryParams when processing digits', () => {
-    const next = () => {};
-    const context = { query: { vp: 'A_1.B.C D.E' } };
-    (() => validator.validateQueryVPcontainsNoInvalidCharacters(context, next)).should.not.throw();
+  it('#validateQueryParamContainsNoInvalidCharacters should not throw InvalidQueryParams when processing hyphens', () => {
+    (() => validateQueryParamContainsNoInvalidCharacters('A-Z.B.C D.E')).should.not.throw();
   });
-  it('#validateQueryVPcontainsNoInvalidCharacters should not throw InvalidQueryParams when processing hyphens', () => {
-    const next = () => {};
-    const context = { query: { vp: 'A-Z.B.C D.E' } };
-    (() => validator.validateQueryVPcontainsNoInvalidCharacters(context, next)).should.not.throw();
-  });
-  it('#validateQueryVPcontainsNoInvalidSequence should not throw InvalidQueryParams when processing multiple whitespaces', () => {
-    const next = () => {};
-    const context = { query: { vp: 'A.B.C  D.E.F' } };
-    (() => validator.validateQueryVPcontainsNoInvalidCharacters(context, next)).should.not.throw();
+  it('#validateQueryParamContainsNoInvalidCharacters should not throw InvalidQueryParams when processing multiple whitespaces', () => {
+    (() => validateQueryParamContainsNoInvalidCharacters('A.B.C  D.E.F')).should.not.throw();
   });
   it('#validateQueryVPcontainsNoInvalidSequence should throw InvalidQueryParams when processing a valence pattern starting with a .', () => {
     const next = () => {};
@@ -256,7 +230,7 @@ describe('validator', () => {
   it('#validateQueryVPcontainsNoInvalidSequence should not throw InvalidQueryParams when processing multiple dots', () => {
     const next = () => {};
     const context = { query: { vp: 'A.B.C..D.E.F' } };
-    (() => validator.validateQueryVPcontainsNoInvalidCharacters(context, next)).should.not.throw();
+    (() => validator.validateQueryVPcontainsNoInvalidSequence(context, next)).should.not.throw();
   });
   it('#validateQueryVPvalenceUnitLength should throw InvalidQueryParams when context.query.vp object (string) contains more than 3 tokens separated by a dot', () => {
     const next = () => {};

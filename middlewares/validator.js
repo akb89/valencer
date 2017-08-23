@@ -53,20 +53,21 @@ function validateParamsNotEmpty(context, next) {
   return next();
 }
 
-function validateQueryVPnotEmpty(context, next) {
-  if (!context.query.vp) {
-    throw new ApiError.InvalidQueryParams('context.query.vp parameter is empty, null or undefined');
+function validateQueryParamNotEmpty(queryParam) {
+  if (!queryParam) {
+    throw new ApiError.InvalidQueryParams('query parameter is empty, null or undefined');
   }
-  logger.debug('context.query.vp parameter is not empty');
+  logger.debug('query parameter is not empty');
+}
+
+function validateQueryVPnotEmpty(context, next) {
+  validateQueryParamNotEmpty(context.query.vp);
   context.query.vp = context.query.vp.trim();
   return next();
 }
 
 function validateQueryVUnotEmpty(context, next) {
-  if (!context.query.vu) {
-    throw new ApiError.InvalidQueryParams('context.query.vu parameter is empty, null or undefined');
-  }
-  logger.debug('context.query.vu parameter is not empty');
+  validateQueryParamNotEmpty(context.query.vu);
   context.query.vu = context.query.vu.trim();
   return next();
 }
@@ -95,22 +96,21 @@ function validateQueryVUlength(context, next) {
 }
 
 // Check for invalid characters (regex, everything except letters, . _ [])
-function validateQueryVPcontainsNoInvalidCharacters(context, next) {
-  const invalidCharacterIndex = context.query.vp.search(/[^a-zA-Z0-9.\s[\]_-]/);
+function validateQueryParamContainsNoInvalidCharacters(queryParam) {
+  const invalidCharacterIndex = queryParam.search(/[^a-zA-Z0-9.\s[\]_-]/);
   if (invalidCharacterIndex !== -1) {
-    throw new ApiError.InvalidQueryParams(`Invalid character in context.query.vp = '${context.query.vp}' at index = ${invalidCharacterIndex}: '${context.query.vp[invalidCharacterIndex]}'`);
+    throw new ApiError.InvalidQueryParams(`Invalid character in query parameter '${queryParam}' at index = ${invalidCharacterIndex}: '${queryParam[invalidCharacterIndex]}'`);
   }
-  logger.debug('context.query.vp parameter contains no invalid characters');
+  logger.debug('Query parameter contains no invalid characters');
+}
+
+function validateQueryVPcontainsNoInvalidCharacters(context, next) {
+  validateQueryParamContainsNoInvalidCharacters(context.query.vp);
   return next();
 }
 
-// Check for invalid characters (regex, everything except letters, . _ [])
 function validateQueryVUcontainsNoInvalidCharacters(context, next) {
-  const invalidCharacterIndex = context.query.vu.search(/[^a-zA-Z0-9.\s[\]_-]/);
-  if (invalidCharacterIndex !== -1) {
-    throw new ApiError.InvalidQueryParams(`Invalid character in context.query.vu = '${context.query.vu}' at index = ${invalidCharacterIndex}: '${context.query.vu[invalidCharacterIndex]}'`);
-  }
-  logger.debug('context.query.vu parameter contains no invalid characters');
+  validateQueryParamContainsNoInvalidCharacters(context.query.vu);
   return next();
 }
 
