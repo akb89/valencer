@@ -1,45 +1,91 @@
-const GenericException = require('./genericException');
-
-function NoAuthorizationHeaderError() {
-  return new GenericException('NoAuthorizationHeaderError', 1,
-    new Error('No authorization header found. You should provide an Authorization header with Authorization: api_key:signature.'),
-    417);
+class NoAuthorizationHeaderError extends Error {
+  constructor(message, extra) {
+    super(message);
+    this.message = 'No authorization header found. You should provide an Authorization header with Authorization: api_key:signature';
+    this.name = 'NoAuthorizationHeaderError';
+    this.extra = extra;
+    this.status = 417;
+  }
 }
 
-function NoTwoPartAuthorizationError() {
-  return new GenericException('NoTwoPartAuthorizationError', 2,
-    new Error('Authorization header should be of two parts: api_key:signature.'),
-    417);
+class NoTwoPartAuthorizationError extends Error {
+  constructor(message, extra) {
+    super(message);
+    this.message = 'Authorization header should be of two parts: api_key:signature';
+    this.name = 'NoTwoPartAuthorizationError';
+    this.extra = extra;
+    this.status = 417;
+  }
 }
 
-function InvalidAPIKey() {
-  return new GenericException('InvalidAPIKey', 3,
-    new Error('API Key does not exist.'),
-    403);
+class InvalidAPIKey extends Error {
+  constructor(message, extra) {
+    super(message);
+    this.message = 'API Key does not exist';
+    this.name = 'InvalidAPIKey';
+    this.extra = extra;
+    this.status = 403;
+  }
 }
 
-function InvalidSignature() {
-  return new GenericException('InvalidSignature', 4,
-    new Error('The signature does not match.'),
-    403);
+class InvalidSignature extends Error {
+  constructor(message, extra) {
+    super(message);
+    this.message = 'The signature does not match';
+    this.name = 'InvalidSignature';
+    this.extra = extra;
+    this.status = 403;
+  }
 }
 
-function InvalidTimestamp() {
-  return new GenericException('InvalidTimestamp', 5,
-    new Error('Invalid timestamp.'),
-    403);
+class InvalidTimestamp extends Error {
+  constructor(message, extra) {
+    super(message);
+    this.message = 'Invalid timestamp';
+    this.name = 'InvalidTimestamp';
+    this.extra = extra;
+    this.status = 403;
+  }
 }
 
-function InvalidQuery(message) {
-  return new GenericException('InvalidQuery', 6, new Error(message), 400);
+class InvalidQuery extends Error {
+  constructor(message, extra) {
+    super(message);
+    this.message = message;
+    this.name = 'InvalidQuery';
+    this.extra = extra;
+    this.status = 400;
+  }
 }
 
-function InvalidQueryParams(message) {
-  return new GenericException('InvalidQueryParams', 7, new Error(message), 400);
+class InvalidParams extends Error {
+  constructor(message, extra) {
+    super(message);
+    this.message = message;
+    this.name = 'InvalidParams';
+    this.extra = extra;
+    this.status = 400;
+  }
 }
 
-function NotFoundError(message) {
-  return new GenericException('NotFoundError', 8, new Error(message), 404);
+class InvalidQueryParams extends Error {
+  constructor(message, extra) {
+    super(message);
+    this.message = message;
+    this.name = 'InvalidQueryParams';
+    this.extra = extra;
+    this.status = 400;
+  }
+}
+
+class NotFoundError extends Error {
+  constructor(message, extra) {
+    super(message);
+    this.message = message;
+    this.name = 'NotFoundError';
+    this.extra = extra;
+    this.status = 404;
+  }
 }
 
 module.exports = {
@@ -49,6 +95,7 @@ module.exports = {
   InvalidSignature,
   InvalidTimestamp,
   InvalidQuery,
+  InvalidParams,
   InvalidQueryParams,
   NotFoundError,
 };

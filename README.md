@@ -30,6 +30,15 @@ Welcome to **Valencer**, a RESTful API to query combinations of syntactic realiz
 
 To import FrameNet data to a Mongo database, check out [NoFrameNet](https://github.com/akb89/noframenet)
 
+Alternatively, we provide two MongoDB dumps for [FrameNet 1.5](data/fn_en_150.tar.bz2) and [FrameNet 1.7](data/fn_en_170.tar.bz2) data. If you are running MongoDB on localhost and port 27017, you can easily import the dumps once unzipped via:
+```
+mongorestore fn_en_170/
+```
+More information is available via the MongoDB [documentation](https://docs.mongodb.com/manual/tutorial/backup-and-restore-tools/)
+
+If you are using our dumps, please do not forget to file in a [FrameNet Data Request](https://framenet.icsi.berkeley.edu/fndrupal/framenet_request_data).
+
+
 ## HowTo &ndash; Start the Valencer server
 
 ### 1. Install the required dependencies
@@ -39,15 +48,29 @@ npm install
 ```
 
 ### 2. Set-up the configuration
-Modify the `config/production.js` file
+Modify the `config/production.js` file according to your desired settings:
 ```
 const config = {
-  dbUri: 'mongodb://localhost:27017/noframenet16',
-  port: 3030,
   logger: logger.info,
+  api: {
+    port: 3030,
+  },
+  databases: {
+    server: 'localhost',
+    port: 27017,
+    names: {
+      en: {
+        150: 'fn_en_150',
+        160: 'fn_en_160',
+        170: 'fn_en_170',
+      },
+      ja: {
+        100: 'fn_ja_100',
+      },
+    },
+  },
 };
 ```
-The `dbUri` parameter should refer to your Mongo database instance containing FrameNet data.
 
 ### 3. Start the server
 Run the following command in your terminal, under the Valencer directory:
@@ -58,7 +81,7 @@ npm run start
 ## HowTo &ndash; Shoot your first query
 Here is a sample HTTP request querying all the AnnotationSets in the database referring to the valence pattern `Donor.NP.Ext Theme.NP.Obj Recipient.PP[to].Dep`:
 ```
-http://localhost:3030/annoSets?vp=Donor.NP.Ext+Theme.NP.Obj+Recipient.PP[to].Dep&populate=true
+http://localhost:3030/v4/en/170/annoSets?vp=Donor.NP.Ext+Theme.NP.Obj
 ```
 Copy-paste the above url to your web-browser.
 

@@ -30,38 +30,29 @@ app.use(async (context, next) => {
   }
 });
 app.use(router.routes());
-app.use(router.allowedMethods());
-
-function connectToDatabase(uri) {
-  return new Promise((resolve, reject) => {
-    mongoose.connection
-      .on('error', error => reject(error))
-      .on('close', () => logger.info('Database connection closed.'))
-      .once('open', () => resolve(mongoose.connections[0]));
-    mongoose.connect(uri);
-  });
-}
 
 function printLogo() {
-  logger.info('            _                                 ');
-  logger.info('/\\   /\\__ _| | ___ _ __   ___ ___ _ __      ');
-  logger.info('\\ \\ / / _` | |/ _ \\ \'_ \\ / __/ _ \\ \'__|');
-  logger.info(' \\ V / (_| | |  __/ | | | (_|  __/ |         ');
-  logger.info('  \\_/ \\__,_|_|\\___|_| |_|\\___\\___|_|     ');
-  logger.info('                                              ');
+  console.log('            _                                 '); // eslint-disable-line
+  console.log('/\\   /\\__ _| | ___ _ __   ___ ___ _ __      '); // eslint-disable-line
+  console.log('\\ \\ / / _` | |/ _ \\ \'_ \\ / __/ _ \\ \'__|'); // eslint-disable-line
+  console.log(' \\ V / (_| | |  __/ | | | (_|  __/ |         '); // eslint-disable-line
+  console.log('  \\_/ \\__,_|_|\\___|_| |_|\\___\\___|_|     '); // eslint-disable-line
+  console.log('                                              '); // eslint-disable-line
+  console.log('                                              '); // eslint-disable-line
 }
 
 (async () => {
   try {
-    logger.info('Starting Valencer...');
     printLogo();
-    logger.info('Connecting to MongoDB...');
-    const db = await connectToDatabase(config.dbUri);
-    logger.info(`Connected to MongoDB on ${db.host}:${db.port}/${db.name}`);
-    await app.listen(config.port);
-    logger.info(`Valencer started on port ${config.port}`);
+    const dbServer = config.databases.server;
+    const dbPort = config.databases.port;
+    const dbUri = `mongodb://${dbServer}:${dbPort}`;
+    await mongoose.connect(dbUri, { useMongoClient: true });
+    logger.info(`Connected to MongoDB on server: '${dbServer}' and port '${dbPort}'`);
+    await app.listen(config.api.port);
+    logger.info(`Valencer started on port ${config.api.port}`);
   } catch (err) {
-    logger.error(`Unable to connect to database at: ${config.dbUri}`);
+    logger.error(err.message);
     logger.debug(err);
     process.exit(1);
   }
