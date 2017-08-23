@@ -1,4 +1,9 @@
 const winston = require('winston');
+const logpath = require('logpath');
+const path = require('path');
+require('winston-logrotate');
+
+const valencerlogpath = path.join(logpath.createAndGetLogFilePath(), 'valencer.log');
 
 const warn = new (winston.Logger)({
   transports: [
@@ -15,10 +20,15 @@ const info = new (winston.Logger)({
       level: 'info',
       colorize: true,
     }),
-    new (winston.transports.File)({
-      filename: 'valencer.log',
-      level: 'verbose',
+    new (winston.transports.Rotate)({
+      file: valencerlogpath,
+      level: 'debug',
       colorize: true,
+      timestamp: true,
+      json: false,
+      size: '100m',
+      keep: 20,
+      compress: true,
     }),
   ],
 });
@@ -38,10 +48,15 @@ const debug = new (winston.Logger)({
       level: 'debug',
       colorize: true,
     }),
-    new (winston.transports.File)({
-      filename: 'valencer.log',
+    new (winston.transports.Rotate)({
+      file: valencerlogpath,
       level: 'debug',
       colorize: true,
+      timestamp: true,
+      json: false,
+      size: '100m',
+      keep: 20,
+      compress: true,
     }),
   ],
 });
