@@ -32,7 +32,7 @@ To import FrameNet data to a Mongo database, check out [NoFrameNet](https://gith
 
 Alternatively, we provide two MongoDB dumps for [FrameNet 1.5](data/fn_en_150.tar.bz2) and [FrameNet 1.7](data/fn_en_170.tar.bz2) data. If you are running MongoDB on localhost and port 27017, you can easily import the dumps once unzipped via:
 ```
-mongorestore fn_en_170/
+mongorestore -d fn_en_170 /path/to/fn_en_170/
 ```
 More information is available via the MongoDB [documentation](https://docs.mongodb.com/manual/tutorial/backup-and-restore-tools/)
 
