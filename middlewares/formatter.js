@@ -6,7 +6,8 @@
  * It transforms , and to an array of array with Frame Element ids then.
 */
 const bluebird = require('bluebird');
-const utils = require('./../utils/utils');
+const utils = require('../utils/utils');
+const constants = require('../utils/constants');
 const config = require('../config');
 
 const Promise = bluebird.Promise;
@@ -68,7 +69,69 @@ async function replaceFrameElementNamesByFrameElementIds(context, next) {
   return next();
 }
 
+function formatProjectionString(context, next) {
+  if (context.params.projection == null) {
+    return next();
+  }
+
+  const projection = context.params.projection;
+  const projections = projection.split(',')
+    .filter(p => p !== '').reduce((proj, p) => {
+      proj[p] = 1;
+      return proj;
+    }, {});
+
+  context.valencer.query.projections = projections;
+  return next();
+}
+
+function formatPopulationString(context, next) {
+  function makePopulation(paths, strSelect, select) {
+    const object = paths.reverse().reduce((obj, path, idx) => {
+      obj.path = path;
+      if (select.length > 0 && idx === 0) {
+        obj.select = strSelect;
+      }
+
+      return {
+                populate: obj,
+      };
+    }, {});
+    return object.populate;
+  }
+  if (context.params.population == null) {
+    return next();
+  }
+
+  const disallowedEscapedChars = constants.DISALLOW_CHARS_PROJ_POPUL
+        .map(c => utils.regExpEscape(c)).join('');
+
+  const populationRegExp = new RegExp(`([^${disallowedEscapedChars}]+)(?:\\[([^\\]]+)\\])?`);
+  const population = context.params.population;
+  const populations = population.split(',').filter(p => p !== '').map((p) => {
+    const matches = p.trim().match(populationRegExp);
+    if (matches != null) {
+      if (matches[matches.length - 1] === undefined) {
+        return matches.slice(1, -1);
+      }
+      matches[matches.length - 1] = matches[matches.length - 1].split('|');
+      return matches.slice(1); // Remove the whole matched expression
+    }
+    return matches;
+  }).filter(p => p != null);
+
+  const populationsObject = populations.map((pop) => {
+    const strPath = pop[0];
+    const select = pop.length > 1 ? pop[1] : [];
+    return makePopulation(strPath.split('.'), select.join(' '), select);
+  });
+  context.valencer.query.populations = populationsObject;
+  return next();
+}
+
 module.exports = {
   formatValencePatternToArrayOfArrayOfTokens,
   replaceFrameElementNamesByFrameElementIds,
+  formatProjectionString,
+  formatPopulationString,
 };

@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
-const ApiError = require('./../exceptions/apiException');
-const config = require('./../config');
-const utils = require('./../utils/utils');
+const ApiError = require('../exceptions/apiException');
+const config = require('../config');
+const utils = require('../utils/utils');
+const constants = require('../utils/constants');
 
 const logger = config.logger;
 
@@ -203,6 +204,57 @@ function validateQueryParametersCombination(context, next) {
   return next();
 }
 
+function validateProjectionString(context, next) {
+  if (context.params.projection == null) {
+    return next();
+  }
+
+  const projection = context.params.projection;
+  const projections = projection.split(',').filter(p => p !== '');
+
+  const disallowedCharsRegExp = new RegExp(constants.DISALLOW_CHARS_PROJ_POPUL
+    .map(c => utils.regExpEscape(c)).join('|'));
+  const disallowed = projections.some(p => disallowedCharsRegExp.test(p));
+
+  if (disallowed) {
+    throw new ApiError.InvalidQueryParams(`the Valencer API does not allow projection fields to have those characters: ${constants.DISALLOW_CHARS_PROJ_POPUL.join(', ')}`);
+  }
+  return next();
+}
+
+function validatePopulationString(context, next) {
+  if (context.params.population == null) {
+    return next();
+  }
+
+
+  const disallowedEscapedChars = constants.DISALLOW_CHARS_PROJ_POPUL
+      .map(c => utils.regExpEscape(c)).join('');
+
+  const disallowedCharsRegExp = new RegExp(constants.DISALLOW_CHARS_PROJ_POPUL
+        .map(c => utils.regExpEscape(c)).join('|'));
+
+  const populationRegExp = new RegExp(`([^${disallowedEscapedChars}]+)(?:\\[([^\\]]+)\\])?`);
+  const population = context.params.population;
+
+  const populations = population.split(',').filter(p => p !== '');
+
+  populations.forEach((p) => {
+    const matches = p.match(populationRegExp);
+    if (matches == null || matches[0] !== p) {
+      throw new ApiError.InvalidQueryParams(`This sub-expression is invalid: ${p}. It should be of the form 'populated_field' or 'populated_field[projection_field1|projection_field2]'. See the API documentation for more details.`);
+    } else if (matches.length > 2) {
+      matches[2].split('|').forEach((m) => {
+        if (disallowedCharsRegExp.test(m)) {
+          throw new ApiError.InvalidQueryParams(`This projection field is invalid: '${m}' in the sub-expression '${p}'. Characters ${constants.DISALLOW_CHARS_PROJ_POPUL.join(', ')} are not allowed.`);
+        }
+      });
+    }
+  });
+
+  return next();
+}
+
 module.exports = {
   validatePathToDB,
   validateQueryNotEmpty,
@@ -219,4 +271,6 @@ module.exports = {
   validateQueryStrictVUmatchingParameter,
   validateQueryWithExtraCoreFEsParameter,
   validateQueryParametersCombination,
+  validateProjectionString,
+  validatePopulationString,
 };

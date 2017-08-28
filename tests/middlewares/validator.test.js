@@ -1,6 +1,8 @@
 const chai = require('chai');
 const rewire = require('rewire');
 const validator = require('./../../middlewares/validator');
+const ApiError = require('../../exceptions/apiException');
+const constants = require('../../utils/constants');
 
 const should = chai.should();
 
@@ -300,5 +302,16 @@ describe('validator', () => {
     context.query.strictVUMatching = true;
     context.query.withExtraCoreFEs = true;
     (() => validator.validateQueryParametersCombination(context, next)).should.not.throw();
+  });
+
+  it('#validateProjectionString should throw InvalidQueryParams when disallowed characters are used', () => {
+    const next = () => {};
+    const disallowedChars = constants.DISALLOW_CHARS_PROJ_POPUL;
+
+    disallowedChars.forEach((char) => {
+      const context = { params: { projection: `name,${char}test,${char},${char}test2${char}` } };
+      const fn = validator.validateProjectionString.bind(null, context, next);
+      fn.should.throw(ApiError.InvalidQueryParams);
+    });
   });
 });

@@ -28,6 +28,9 @@ rules:
   #Ignore until upgraded to eslint 4.0 where overrides is supported
   no-unused-expressions: warn
 
+  #Allow control chars in regex (used in escaping special chars from regular expressions
+  no-control-regex: warn
+
   #Allow devDependencies for tests
   import/no-extraneous-dependencies: [error, {devDependencies: ['**/*.test.js']}]
 

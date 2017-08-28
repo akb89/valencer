@@ -33,10 +33,27 @@ function getElapsedTime(startTime) {
   return (process.hrtime(startTime)[0] * 1000) + Math.round(process.hrtime(startTime)[1] / 1000000);
 }
 
+/**
+ * Escapes characters in the string that are not safe to use in a RegExp.
+ * @param {*} s The string to escape. If not a string, it will be casted
+ *     to one.
+ * @return {string} A RegExp safe, escaped copy of {@code s}.
+ */
+function regExpEscape(s) {
+  return String(s).replace(/([-()[\]{}+?*.$^|,:#<!\\])/g, '\\$1')
+      .replace(/\x08/g, '\\x08');
+}
+
+/* function regExpEscape(s) {
+  return String(s).replace(/([-()\[\]{}+?*.$\^|,:#<!\\])/g, '\\$1')
+      .replace(/\x08/g, '\\x08');
+} */
+
 module.exports = {
   toValenceArray,
   toTokenArray,
   getKNCombinations,
   getStartTime,
   getElapsedTime,
+  regExpEscape,
 };
