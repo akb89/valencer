@@ -243,7 +243,7 @@ function validatePopulationString(context, next) {
     const matches = p.match(populationRegExp);
     if (matches == null || matches[0] !== p) {
       throw new ApiError.InvalidQueryParams(`This sub-expression is invalid: ${p}. It should be of the form 'populated_field' or 'populated_field[projection_field1|projection_field2]'. See the API documentation for more details.`);
-    } else if (matches.length > 2) {
+    } else if (matches.length === 5) {
       matches[2].split('|').forEach((m) => {
         if (disallowedCharsRegExp.test(m)) {
           throw new ApiError.InvalidQueryParams(`This projection field is invalid: '${m}' in the sub-expression '${p}'. Characters ${constants.DISALLOW_CHARS_PROJ_POPUL.join(', ')} are not allowed.`);

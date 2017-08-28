@@ -134,7 +134,6 @@ const processVUquery = compose([
 ]);
 
 const validateAndProcessVPquery = compose([
-  initializeValencerContext,
   validateVPquery,
   database.connect(models),
   formatVPquery,
@@ -312,6 +311,18 @@ const validateAndProcessIDquery = compose([
 router.get('/annoSet/:id',
            validateAndProcessIDquery,
            annotationSet.getByID);
+
+router.get('/annoSet/:id/:projection',
+           validateAndProcessIDquery,
+           validateProjectionAndPopulationParams,
+           formatProjectionAndPopulationParams,
+           annotationSet.getByID);
+
+router.get('/annoSet/:id/:projection/:population',
+           validateAndProcessIDquery,
+           validateProjectionAndPopulationParams,
+           formatProjectionAndPopulationParams,
+           annotationSet.getByID);
 /**
   * @api {get} /annoSets GetAnnoSets
   * @apiVersion 4.0.0
@@ -329,21 +340,24 @@ router.get('/annoSet/:id',
   * @apiUse InvalidQueryParams
 */
 router.get('/annoSets',
+           initializeValencerContext,
            validateAndProcessVPquery,
            renderer.renderAnnotationSets,
            displayQueryExecutionTime);
 
 router.get('/annoSets/:projection',
+           initializeValencerContext,
+           formatProjectionAndPopulationParams,
            validateAndProcessVPquery,
            validateProjectionAndPopulationParams,
-           formatProjectionAndPopulationParams,
            renderer.renderAnnotationSets,
            displayQueryExecutionTime);
 
 router.get('/annoSets/:projection/:population',
-           validateAndProcessVPquery,
+           initializeValencerContext,
            validateProjectionAndPopulationParams,
            formatProjectionAndPopulationParams,
+           validateAndProcessVPquery,
            renderer.renderAnnotationSets,
            displayQueryExecutionTime);
 
@@ -438,7 +452,7 @@ router.get('/frameElement/:id',
            validateAndProcessIDquery,
            frameElement.getByID);
 
-router.get('/frameElement/:id/:projection/:population',
+router.get('/frameElement/:id/:projection',
            validateAndProcessIDquery,
            validateProjectionAndPopulationParams,
            formatProjectionAndPopulationParams,
