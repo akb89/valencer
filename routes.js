@@ -44,6 +44,8 @@ function initializeValencerContext(context, next) {
         withFEids: [],
       },
       feNamesSet: new Set(),
+      projections: {},
+      populations: [],
     },
     results: {
       tmp: {
@@ -101,6 +103,16 @@ const validateParamsQuery = compose([
 const formatVPquery = compose([
   formatter.formatValencePatternToArrayOfArrayOfTokens,
   formatter.replaceFrameElementNamesByFrameElementIds,
+]);
+
+const formatProjectionAndPopulationParams = compose([
+    formatter.formatProjectionString,
+    formatter.formatPopulationString,
+]);
+
+const validateProjectionAndPopulationParams = compose([
+  validator.validateProjectionString,
+  validator.validatePopulationString,
 ]);
 
 const processVPquery = compose([
@@ -339,6 +351,18 @@ router.get('/annoSets',
  */
 router.get('/frame/:id',
            validateAndProcessIDquery,
+           frame.getByID);
+
+router.get('/frame/:id/:projection',
+           validateAndProcessIDquery,
+           validateProjectionAndPopulationParams,
+           formatProjectionAndPopulationParams,
+           frame.getByID);
+
+router.get('/frame/:id/:projection/:population',
+           validateAndProcessIDquery,
+           validateProjectionAndPopulationParams,
+           formatProjectionAndPopulationParams,
            frame.getByID);
 
 /**

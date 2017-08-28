@@ -69,4 +69,20 @@ describe('formatter', () => {
     await formatter.replaceFrameElementNamesByFrameElementIds(context, next);
     context.valencer.query.vp.withFEids.should.deep.equal([[[1], 'B', 'C'], ['D', [4, 5], 'F'], ['G', 'H', [9, 10, 11]]]);
   });
+
+  it('#formatProjectionString should return an object with projection_field as keys and 1 as values', async () => {
+    const next = () => {};
+    const context = { params: { projection: 'name,test,field_1' },
+                      valencer: { query: { projections: {} } } };
+    await formatter.formatProjectionString(context, next);
+    context.valencer.query.projections.should.deep.equal({ name: 1, test: 1, field_1: 1 });
+  });
+
+  it('#formatProjectionString should return an object with projection_field as keys and 1 as values', async () => {
+    const next = () => {};
+    const context = { params: { population: 'name[test|name],name.test, name.ok[no|dac],field_1[ok|no]' },
+                      valencer: { query: { populations: {} } } };
+    await formatter.formatPopulationString(context, next);
+    console.log(context.valencer.query.populations);
+  });
 });
