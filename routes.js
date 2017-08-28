@@ -333,6 +333,21 @@ router.get('/annoSets',
            renderer.renderAnnotationSets,
            displayQueryExecutionTime);
 
+router.get('/annoSets/:projection',
+           validateAndProcessVPquery,
+           validateProjectionAndPopulationParams,
+           formatProjectionAndPopulationParams,
+           renderer.renderAnnotationSets,
+           displayQueryExecutionTime);
+
+router.get('/annoSets/:projection/:population',
+           validateAndProcessVPquery,
+           validateProjectionAndPopulationParams,
+           formatProjectionAndPopulationParams,
+           renderer.renderAnnotationSets,
+           displayQueryExecutionTime);
+
+
 /**
  * @api {get} /frame/:id GetFrame
  * @apiVersion 4.0.0
@@ -387,6 +402,22 @@ router.get('/frames',
            renderer.renderFrames,
            displayQueryExecutionTime);
 
+router.get('/frames/:projection',
+           validateAndProcessVPquery,
+           validateProjectionAndPopulationParams,
+           formatProjectionAndPopulationParams,
+           frames.getByAnnotationSets,
+           renderer.renderFrames,
+           displayQueryExecutionTime);
+
+router.get('/frames/:projection/:population',
+           validateAndProcessVPquery,
+           validateProjectionAndPopulationParams,
+           formatProjectionAndPopulationParams,
+           frames.getByAnnotationSets,
+           renderer.renderFrames,
+           displayQueryExecutionTime);
+
 /**
   * @api {get} /frameElement/:id GetFrameElement
   * @apiVersion 4.0.0
@@ -407,6 +438,18 @@ router.get('/frameElement/:id',
            validateAndProcessIDquery,
            frameElement.getByID);
 
+router.get('/frameElement/:id/:projection/:population',
+           validateAndProcessIDquery,
+           validateProjectionAndPopulationParams,
+           formatProjectionAndPopulationParams,
+           frameElement.getByID);
+
+router.get('/frameElement/:id/:projection/:population',
+           validateAndProcessIDquery,
+           validateProjectionAndPopulationParams,
+           formatProjectionAndPopulationParams,
+           frameElement.getByID);
+
 /**
   * @api {get} /lexUnit/:id GetLexUnit
   * @apiVersion 4.0.0
@@ -425,6 +468,18 @@ router.get('/frameElement/:id',
   */
 router.get('/lexUnit/:id',
            validateAndProcessIDquery,
+           lexUnit.getByID);
+
+router.get('/lexUnit/:id/:projection',
+           validateAndProcessIDquery,
+           validateProjectionAndPopulationParams,
+           formatProjectionAndPopulationParams,
+           lexUnit.getByID);
+
+router.get('/lexUnit/:id/:projection/:population',
+           validateAndProcessIDquery,
+           validateProjectionAndPopulationParams,
+           formatProjectionAndPopulationParams,
            lexUnit.getByID);
 
 /**
@@ -449,6 +504,22 @@ router.get('/lexUnits',
            renderer.renderLexUnits,
            displayQueryExecutionTime);
 
+router.get('/lexUnits/:projection/:population',
+           validateAndProcessVPquery,
+           validateProjectionAndPopulationParams,
+           formatProjectionAndPopulationParams,
+           lexUnits.getByAnnotationSets,
+           renderer.renderLexUnits,
+           displayQueryExecutionTime);
+
+router.get('/lexUnits/:projection/:population',
+           validateAndProcessVPquery,
+           validateProjectionAndPopulationParams,
+           formatProjectionAndPopulationParams,
+           lexUnits.getByAnnotationSets,
+           renderer.renderLexUnits,
+           displayQueryExecutionTime);
+
 /**
   * @api {get} /pattern/:id GetPattern
   * @apiVersion 4.0.0
@@ -467,6 +538,18 @@ router.get('/lexUnits',
   */
 router.get('/pattern/:id',
            validateAndProcessIDquery,
+           pattern.getByID);
+
+router.get('/pattern/:id/:projection',
+           validateAndProcessIDquery,
+           validateProjectionAndPopulationParams,
+           formatProjectionAndPopulationParams,
+           pattern.getByID);
+
+router.get('/pattern/:id/:projection/:population',
+           validateAndProcessIDquery,
+           validateProjectionAndPopulationParams,
+           formatProjectionAndPopulationParams,
            pattern.getByID);
 
 /**
@@ -491,6 +574,22 @@ router.get('/patterns',
            renderer.renderPatterns,
            displayQueryExecutionTime);
 
+router.get('/patterns/:projection',
+           validateAndProcessVPquery,
+           validateProjectionAndPopulationParams,
+           formatProjectionAndPopulationParams,
+           patterns.getFromIDs,
+           renderer.renderPatterns,
+           displayQueryExecutionTime);
+
+router.get('/patterns/:projection/:population',
+           validateAndProcessVPquery,
+           validateProjectionAndPopulationParams,
+           formatProjectionAndPopulationParams,
+           patterns.getFromIDs,
+           renderer.renderPatterns,
+           displayQueryExecutionTime);
+
 /**
   * @api {get} /valenceUnit/:id GetValenceUnit
   * @apiVersion 4.0.0
@@ -511,6 +610,17 @@ router.get('/valenceUnit/:id',
            validateAndProcessIDquery,
            valenceUnit.getByID);
 
+router.get('/valenceUnit/:id/:projection',
+           validateAndProcessIDquery,
+           validateProjectionAndPopulationParams,
+           formatProjectionAndPopulationParams,
+           valenceUnit.getByID);
+
+router.get('/valenceUnit/:id/:projection/:population',
+           validateAndProcessIDquery,
+           validateProjectionAndPopulationParams,
+           formatProjectionAndPopulationParams,
+           valenceUnit.getByID);
 /**
   * @api {get} /valenceUnits GetValenceUnits
   * @apiVersion 4.0.0
@@ -530,6 +640,22 @@ router.get('/valenceUnit/:id',
   */
 router.get('/valenceUnits',
            validateAndProcessVUquery,
+           valenceUnits.getFromIDs,
+           renderer.renderValenceUnits,
+           displayQueryExecutionTime);
+
+router.get('/valenceUnits/:projection',
+           validateAndProcessVUquery,
+           validateProjectionAndPopulationParams,
+           formatProjectionAndPopulationParams,
+           valenceUnits.getFromIDs,
+           renderer.renderValenceUnits,
+           displayQueryExecutionTime);
+
+router.get('/valenceUnits/:projection/:population',
+           validateAndProcessVUquery,
+           validateProjectionAndPopulationParams,
+           formatProjectionAndPopulationParams,
            valenceUnits.getFromIDs,
            renderer.renderValenceUnits,
            displayQueryExecutionTime);
