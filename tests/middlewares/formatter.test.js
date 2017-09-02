@@ -83,6 +83,5 @@ describe('formatter', () => {
     const context = { params: { population: 'name[test|name],name.test, name.ok[no|dac],field_1[ok|no]' },
                       valencer: { query: { populations: {} } } };
     await formatter.formatPopulationString(context, next);
-    console.log(context.valencer.query.populations);
   });
 });

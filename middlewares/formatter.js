@@ -80,8 +80,6 @@ function formatProjectionString(context, next) {
       proj[p] = 1;
       return proj;
     }, {});
-
-  console.log(projections);
   context.valencer.query.projections = projections;
   return next();
 }
@@ -126,8 +124,6 @@ function formatPopulationString(context, next) {
     const select = pop.length > 1 ? pop[1] : [];
     return makePopulation(strPath.split('.'), select.join(' '), select);
   });
-
-  console.log(populationsObject);
   context.valencer.query.populations = populationsObject;
   return next();
 }

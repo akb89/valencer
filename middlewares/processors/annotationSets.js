@@ -5,7 +5,6 @@ const logger = config.logger;
 
 function getAnnotationSetsWithAnnotationSetModel(AnnotationSet) {
   return async function getAnnotationSets(filteredPatternsIDs, projections = {}, populations = []) {
-    console.log(projections, populations);
     const q = AnnotationSet.find().select(projections).where('pattern').in(filteredPatternsIDs);
     return populations.reduce((query, p) => query.populate(p), q);
   };
