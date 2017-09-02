@@ -134,6 +134,7 @@ const processVUquery = compose([
 ]);
 
 const validateAndProcessVPquery = compose([
+  initializeValencerContext,
   validateVPquery,
   database.connect(models),
   formatVPquery,
