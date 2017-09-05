@@ -10,9 +10,7 @@ const config = {
     port: 27017,
     names: {
       en: {
-        150: 'fn_en_150',
-        160: 'fn_en_160',
-        170: 'fn_en_170',
+        170: 'fn_en_170_train_ft_ex',
       },
       ja: {
         100: 'fn_ja_100',
