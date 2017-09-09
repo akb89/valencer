@@ -294,7 +294,8 @@ router.get('/annoSet/:id/:projection/:population',
            validateAndFormatIDquery,
            annotationSet.getByID);
 /**
- * @api {get} /annoSets/:projection/:population?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs GetAnnoSets
+ * @api {get} /annoSets/:projection/:population?vp=:vp&strictVUMatching=:strictVUMatching
+ * &withExtraCoreFEs=:withExtraCoreFEs GetAnnoSets
  * @apiVersion 4.0.0
  * @apiName GetAnnoSets
  * @apiGroup AnnotationSet
