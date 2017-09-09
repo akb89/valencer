@@ -5,6 +5,7 @@ const logger = config.logger;
 
 function getFramesWithFrameModel(Frame, LexUnit) {
   return async function getFrames(annotationSets, projections = {}, populations = []) {
+    console.log(JSON.stringify(annotationSets));
     const lexUnits = await LexUnit.find().where('_id')
                                   .in(annotationSets.map(annoset => annoset.lexUnit));
     const q = Frame.find({}, projections).where('_id')
@@ -16,6 +17,7 @@ function getFramesWithFrameModel(Frame, LexUnit) {
 async function getByAnnotationSets(context, next) {
   const startTime = utils.getStartTime();
   logger.info(`Querying for all Frames containing lexical units with a valence pattern matching: '${context.query.vp}'`);
+  console.log(context.valencer.results.annotationSets);
   context.valencer.results.frames = await getFramesWithFrameModel(
     context.valencer.models.Frame,
     context.valencer.models.LexUnit)(context.valencer.results.annotationSets,
