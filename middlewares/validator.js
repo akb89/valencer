@@ -227,7 +227,6 @@ function validatePopulationString(context, next) {
     return next();
   }
 
-
   const disallowedEscapedChars = constants.DISALLOW_CHARS_PROJ_POPUL
       .map(c => utils.regExpEscape(c)).join('');
 

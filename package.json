@@ -1,6 +1,6 @@
 {
   "name": "Valencer",
-  "version": "4.0.0",
+  "version": "4.2.1",
   "description": "A REST API to query valence patterns in FrameNet",
   "keywords": [
     "FrameNet",
@@ -13,8 +13,11 @@
   "main": "server.js",
   "scripts": {
     "doc": "rm -rf docs/ && ./node_modules/apidoc/bin/apidoc -i ./ -o ./docs/ -e node_modules",
-    "dev": "NODE_ENV=development node server.js",
-    "start": "NODE_ENV=production node server.js",
+    "dev": "./node_modules/.bin/pm2 start server.js --name valencer_dev --watch",
+    "try": "NODE_ENV=production node server.js",
+    "prepare": "./node_modules/.bin/pm2 install pm2-logrotate && ./node_modules/.bin/pm2 set pm2-logrotate:compress true && ./node_modules/.bin/pm2 set pm2-logrotate:retain 100 && ./node_modules/.bin/pm2 set pm2-logrotate:size 100M",
+    "start": "NODE_ENV=production ./node_modules/.bin/pm2 start server.js --name valencer",
+    "stop": "./node_modules/.bin/pm2 kill",
     "lint": "./node_modules/.bin/eslint . --ext .js",
     "startmongo": "ps -ax | grep -v grep | grep mongo > /dev/null 2>&1 || mongod --fork --logpath ./mongod.valencer.log --pidfilepath $PWD/mongo.pid",
     "cleantestenv": "[ ! -f mongo.pid ] || (kill $(cat mongo.pid) && rm mongo.pid && rm mongod.valencer.log)",
@@ -54,12 +57,11 @@
     "koa": "^2.2.0",
     "koa-compose": "^4.0.0",
     "koa-router": "^7.2.0",
-    "logpath": "^0.3.1",
     "moment": "^2.18.1",
     "mongoose": "^4.10.8",
     "noframenet-core": "^4.0.0",
-    "winston": "^2.3.1",
-    "winston-logrotate": "^1.3.0"
+    "pm2": "^2.6.1",
+    "winston": "^2.3.1"
   },
   "devDependencies": {
     "apidoc": "^0.17.6",

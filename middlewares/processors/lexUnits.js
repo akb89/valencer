@@ -18,7 +18,8 @@ async function getByAnnotationSets(context, next) {
           context.valencer.models.LexUnit)(context.valencer.results.annotationSets,
                                            context.valencer.query.projections,
                                            context.valencer.query.populations);
-  logger.verbose(`${context.valencer.results.lexUnits.length} unique LexUnits retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
+  logger.verbose(`${context.valencer.results.lexUnits.length} unique LexUnits
+    retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }
 

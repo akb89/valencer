@@ -3,7 +3,7 @@ const logger = require('./../logger/logger');
 const config = {
   logger: logger.debug,
   api: {
-    port: 3030,
+    port: 3031,
   },
   databases: {
     server: 'localhost',

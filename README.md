@@ -41,13 +41,13 @@ If you are using our dumps, please do not forget to file in a [FrameNet Data Req
 
 ## HowTo &ndash; Start the Valencer server
 
-### 1. Install the required dependencies
+### Install the required dependencies
 Run the following command in your terminal, under the Valencer directory:
 ```
 npm install
 ```
 
-### 2. Set-up the configuration
+### Set-up the configuration
 Modify the `config/production.js` file according to your desired settings:
 ```
 const config = {
@@ -72,10 +72,42 @@ const config = {
 };
 ```
 
-### 3. Start the server
-Run the following command in your terminal, under the Valencer directory:
+### Start the server
+To start a single instance of the Valencer, run the following command in your
+terminal, under the Valencer directory:
 ```
 npm run start
+```
+For better performances, you can also start multiple instances of the Valencer.
+To do so, pass on the `-i` argument to npm:
+```
+npm run start -- -i num_instances
+```
+To create the maximum number of instances depending on available threads, do:
+```
+npm run start -- -i 0
+```
+
+### Stop the server
+To stop the server, run:
+```
+npm run stop
+```
+Note that it will stop ALL instances of the Valencer
+
+### Monitoring
+To monitor the Valencer API once started, run:
+```
+pm2 monit valencer
+```
+If pm2 is not installed globally in your environment, you can also do:
+```
+./node_modules/.bin/pm2 monit valencer
+```
+
+To access the Valencer logs, run:
+```
+pm2 logs valencer
 ```
 
 ## HowTo &ndash; Shoot your first query
