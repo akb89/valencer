@@ -13,15 +13,6 @@ function getFramesWithFrameModel(Frame, LexUnit) {
   };
 }
 
-function appendme(lexunits) {
-  const final = [];
-  for (let i = 1; i < lexunits.length; i += 1) {
-    if (lexunits[0].frame === lexunits[i].frame) {
-      final.push({ data: { source: lexunits[0]._id, target: lexunits[i]._id } });
-    }
-  }
-}
-
 function getCytoFramesWithFrameModel(Frame, LexUnit, FrameRelation) {
   return async function getCytoFrames(annotationSets) {
     const lexunits = await LexUnit.find({}, 'frame').where('_id')
