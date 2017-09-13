@@ -19,7 +19,9 @@ function getLexUnitCytoEdges(lexunits) {
     let counter = 0;
     for (let i = iterator + 1; i < lexunits.length; i += 1) {
       if (lexunits[iterator].frame === lexunits[i].frame) {
-        edges.push({ data: { source: lexunits[iterator]._id, target: lexunits[i]._id, frame: lexunits[iterator].frame } });
+        edges.push({ data: { source: lexunits[iterator]._id,
+                             target: lexunits[i]._id,
+                             frame: lexunits[iterator].frame } });
         notfound = false;
         counter += 1;
         if (counter === maxCounter) {
@@ -31,7 +33,9 @@ function getLexUnitCytoEdges(lexunits) {
       counter = 0;
       for (let j = 0; j < iterator; j += 1) {
         if (lexunits[iterator].frame === lexunits[j].frame) {
-          edges.push({ data: { source: lexunits[iterator]._id, target: lexunits[j]._id, frame: lexunits[iterator].frame } });
+          edges.push({ data: { source: lexunits[iterator]._id,
+                               target: lexunits[j]._id,
+                               frame: lexunits[iterator].frame } });
           counter += 1;
           if (counter === maxCounter) {
             break;
@@ -59,13 +63,17 @@ function getCytoLexUnitsWithLexUnitModel(LexUnit, FrameRelation) {
     const cytolexunits = lexunits.map(lexunit => ({
       data: { id: lexunit._id, name: lexunit.name, frame: lexunit.frame } }));
     const lexunitEdges = getLexUnitCytoEdges(lexunits);
-    const headLexunits = getHeadLexUnits(lexunits); // Get one lexunit per frame cluster to map frame relations
+    const headLexunits = getHeadLexUnits(lexunits); // Get one lexunit per
+    // frame cluster to map frame relations
     const frameIDs = Array.from(headLexunits.keys());
     const relations = await FrameRelation.find(
       { $and: [{ subFrame: { $in: frameIDs } }, { supFrame: { $in: frameIDs } }] })
       .populate('type');
     const frameEdges = relations.map(relation => ({
-      data: { id: relation._id, source: headLexunits.get(relation.supFrame), target: headLexunits.get(relation.subFrame), type: relation.type.name } }));
+      data: { id: relation._id,
+              source: headLexunits.get(relation.supFrame),
+              target: headLexunits.get(relation.subFrame),
+              type: relation.type.name } }));
     return cytolexunits.concat(lexunitEdges).concat(frameEdges);
   };
 }
