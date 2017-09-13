@@ -46,6 +46,7 @@ function initializeValencerContext(context, next) {
       feNamesSet: new Set(),
       projections: {},
       populations: [],
+      format: '',
     },
     results: {
       tmp: {
