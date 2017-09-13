@@ -29,7 +29,7 @@ function getCytoFramesWithFrameModel(Frame, LexUnit, FrameRelation) {
     // console.log(relations);
     const cytoframes = frames.map(frame => ({ data: { id: frame._id, name: frame.name } }));
     const cytorelations = relations.map(relation => ({
-      data: { id: relation._id, source: relation.supFrame, target: relation.subFrame } }));
+      data: { id: relation._id, source: relation.supFrame, target: relation.subFrame, type: relation.type.name } }));
     return cytoframes.concat(cytorelations);
   };
 }

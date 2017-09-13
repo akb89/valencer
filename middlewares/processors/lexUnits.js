@@ -11,28 +11,62 @@ function getLexUnitsWithLexUnitModel(LexUnit) {
   };
 }
 
-function getCytoEdges(lexunits) {
+function getLexUnitCytoEdges(lexunits) {
   const edges = [];
-  for (let i = 1; i < lexunits.length; i += 1) {
-    if (lexunits[0].frame === lexunits[i].frame) {
-      edges.push({ data: { source: lexunits[0]._id, target: lexunits[i]._id } });
+  const maxCounter = 5; // max number of LU relations to display
+  for (let iterator = 0; iterator < lexunits.length; iterator += 1) {
+    let notfound = true;
+    let counter = 0;
+    for (let i = iterator + 1; i < lexunits.length; i += 1) {
+      if (lexunits[iterator].frame === lexunits[i].frame) {
+        edges.push({ data: { source: lexunits[iterator]._id, target: lexunits[i]._id, frame: lexunits[iterator].frame } });
+        notfound = false;
+        counter += 1;
+        if (counter === maxCounter) {
+          break;
+        }
+      }
     }
-  }
-  if (lexunits.length > 1) {
-    const slice = lexunits.slice(1);
-    edges.push(...getCytoEdges(slice));
+    if (notfound === true) {
+      counter = 0;
+      for (let j = 0; j < iterator; j += 1) {
+        if (lexunits[iterator].frame === lexunits[j].frame) {
+          edges.push({ data: { source: lexunits[iterator]._id, target: lexunits[j]._id, frame: lexunits[iterator].frame } });
+          counter += 1;
+          if (counter === maxCounter) {
+            break;
+          }
+        }
+      }
+    }
   }
   return edges;
 }
 
-function getCytoLexUnitsWithLexUnitModel(LexUnit) {
+function getHeadLexUnits(lexunits) {
+  return lexunits.reduce((headLexunits, lexunit) => {
+    if (!headLexunits.has(lexunit.frame)) {
+      headLexunits.set(lexunit.frame, lexunit._id);
+    }
+    return headLexunits;
+  }, new Map());
+}
+
+function getCytoLexUnitsWithLexUnitModel(LexUnit, FrameRelation) {
   return async function getCytoLexUnits(annotationSets) {
     const lexunits = await LexUnit.find({}, 'name frame').where('_id')
         .in(annotationSets.map(annoset => annoset.lexUnit));
     const cytolexunits = lexunits.map(lexunit => ({
       data: { id: lexunit._id, name: lexunit.name, frame: lexunit.frame } }));
-    const edges = getCytoEdges(lexunits);
-    return cytolexunits.concat(edges);
+    const lexunitEdges = getLexUnitCytoEdges(lexunits);
+    const headLexunits = getHeadLexUnits(lexunits); // Get one lexunit per frame cluster to map frame relations
+    const frameIDs = Array.from(headLexunits.keys());
+    const relations = await FrameRelation.find(
+      { $and: [{ subFrame: { $in: frameIDs } }, { supFrame: { $in: frameIDs } }] })
+      .populate('type');
+    const frameEdges = relations.map(relation => ({
+      data: { id: relation._id, source: headLexunits.get(relation.supFrame), target: headLexunits.get(relation.subFrame), type: relation.type.name } }));
+    return cytolexunits.concat(lexunitEdges).concat(frameEdges);
   };
 }
 
@@ -41,7 +75,8 @@ async function getByAnnotationSets(context, next) {
   logger.info(`Querying for all LexUnits with a valence pattern matching: '${context.query.vp}'`);
   if (context.query.format === 'cytoscape') {
     context.valencer.results.lexUnits = await getCytoLexUnitsWithLexUnitModel(
-      context.valencer.models.LexUnit)(context.valencer.results.annotationSets);
+      context.valencer.models.LexUnit,
+      context.valencer.models.FrameRelation)(context.valencer.results.annotationSets);
   } else {
     context.valencer.results.lexUnits = await getLexUnitsWithLexUnitModel(
             context.valencer.models.LexUnit)(context.valencer.results.annotationSets,
