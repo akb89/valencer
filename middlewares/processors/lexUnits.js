@@ -81,7 +81,7 @@ function getCytoLexUnitsWithLexUnitModel(LexUnit, FrameRelation) {
 async function getByAnnotationSets(context, next) {
   const startTime = utils.getStartTime();
   logger.info(`Querying for all LexUnits with a valence pattern matching: '${context.query.vp}'`);
-  if (context.query.format === 'cytoscape') {
+  if (context.valencer.query.format === 'cytoscape') {
     context.valencer.results.lexUnits = await getCytoLexUnitsWithLexUnitModel(
       context.valencer.models.LexUnit,
       context.valencer.models.FrameRelation)(context.valencer.results.annotationSets);

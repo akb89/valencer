@@ -40,7 +40,7 @@ function getCytoFramesWithFrameModel(Frame, LexUnit, FrameRelation) {
 async function getByAnnotationSets(context, next) {
   const startTime = utils.getStartTime();
   logger.info(`Querying for all Frames containing lexical units with a valence pattern matching: '${context.query.vp}'`);
-  if (context.query.format === 'cytoscape') {
+  if (context.valencer.query.format === 'cytoscape') {
     context.valencer.results.frames = await getCytoFramesWithFrameModel(
       context.valencer.models.Frame, context.valencer.models.LexUnit,
       context.valencer.models.FrameRelation)(
