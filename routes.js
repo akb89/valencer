@@ -47,6 +47,8 @@ function initializeValencerContext(context, next) {
       projections: {},
       populations: [],
       format: '',
+      skip: 0,
+      limit: 10,
     },
     results: {
       tmp: {
@@ -100,6 +102,9 @@ const validateFormatAndProcessVPquery = compose([
   validator.validateQueryWithExtraCoreFEsParameter,
   validator.validateProjectionString,
   validator.validatePopulationString,
+  validator.validateQueryFormatParameter,
+  validator.validateQuerySkipParameter,
+  validator.validateQueryLimitParameter,
   formatter.formatProjectionString,
   formatter.formatPopulationString,
   database.connect(models),

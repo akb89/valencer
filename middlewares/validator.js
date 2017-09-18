@@ -198,7 +198,7 @@ function validateQueryParametersCombination(context, next) {
   if (!context.query.strictVUMatching
       && !context.query.withExtraCoreFEs
       && containsUnspecifiedFrameElement(context.valencer.query.vp.withFEids)) {
-    throw new ApiError.InvalidQueryParams('the Valencer API cannot process queries with strictVUMatching parameter set to false and withExtraCoreFEs parameter set to false if at least one Frame Element is unspecified in the input Valence Pattern');
+    throw new ApiError.InvalidQueryParams('The Valencer API cannot process queries with strictVUMatching parameter set to false and withExtraCoreFEs parameter set to false if at least one Frame Element is unspecified in the input Valence Pattern');
   }
   logger.debug('context.query contains valid combinations of strictVUMatching, withExtraCoreFEs and FrameElement combinations');
   return next();
@@ -208,16 +208,15 @@ function validateProjectionString(context, next) {
   if (context.params.projection == null) {
     return next();
   }
-
   const projection = context.params.projection;
   const projections = projection.split(',').filter(p => p !== '');
-
   const disallowedCharsRegExp = new RegExp(constants.DISALLOW_CHARS_PROJ_POPUL
     .map(c => utils.regExpEscape(c)).join('|'));
   const disallowed = projections.some(p => disallowedCharsRegExp.test(p));
-
   if (disallowed) {
-    throw new ApiError.InvalidQueryParams(`the Valencer API does not allow projection fields to have those characters: ${constants.DISALLOW_CHARS_PROJ_POPUL.join(', ')}`);
+    throw new ApiError.InvalidQueryParams(`The Valencer API does not allow
+      projection fields to have those characters:
+      ${constants.DISALLOW_CHARS_PROJ_POPUL.join(', ')}`);
   }
   return next();
 }
@@ -226,31 +225,69 @@ function validatePopulationString(context, next) {
   if (context.params.population == null) {
     return next();
   }
-
   const disallowedEscapedChars = constants.DISALLOW_CHARS_PROJ_POPUL
       .map(c => utils.regExpEscape(c)).join('');
-
   const disallowedCharsRegExp = new RegExp(constants.DISALLOW_CHARS_PROJ_POPUL
         .map(c => utils.regExpEscape(c)).join('|'));
-
   const populationRegExp = new RegExp(`([^${disallowedEscapedChars}]+)(?:\\[([^\\]]+)\\])?`);
   const population = context.params.population;
-
   const populations = population.split(',').filter(p => p !== '');
-
   populations.forEach((p) => {
     const matches = p.match(populationRegExp);
     if (matches == null || matches[0] !== p) {
-      throw new ApiError.InvalidQueryParams(`This sub-expression is invalid: ${p}. It should be of the form 'populated_field' or 'populated_field[projection_field1|projection_field2]'. See the API documentation for more details.`);
+      throw new ApiError.InvalidQueryParams(`This sub-expression is invalid:
+        ${p}. It should be of the form 'populated_field' or
+        'populated_field[projection_field1|projection_field2]'. See the API
+        documentation for more details.`);
     } else if (matches.length === 5) {
       matches[2].split('|').forEach((m) => {
         if (disallowedCharsRegExp.test(m)) {
-          throw new ApiError.InvalidQueryParams(`This projection field is invalid: '${m}' in the sub-expression '${p}'. Characters ${constants.DISALLOW_CHARS_PROJ_POPUL.join(', ')} are not allowed.`);
+          throw new ApiError.InvalidQueryParams(`This projection field is
+            invalid: '${m}' in the sub-expression '${p}'. Characters
+            ${constants.DISALLOW_CHARS_PROJ_POPUL.join(', ')} are not allowed.`);
         }
       });
     }
   });
 
+  return next();
+}
+
+function validateQueryFormatParameter(context, next) {
+  if (context.query.format == null) {
+    return next();
+  } else if (context.query.format !== 'cytoscape'
+             && context.query.format !== 'valencer') {
+    throw new ApiError.InvalidQueryParams(`Unsupported format:
+      '${context.query.format}'. Should be 'cytoscape' or 'valencer'`);
+  }
+  context.valencer.query.format = context.query.format;
+  return next();
+}
+
+function validateQuerySkipParameter(context, next) {
+  if (context.query.skip == null) {
+    return next();
+  }
+  const skip = Number(context.query.skip);
+  if (isNaN(skip) || !Number.isInteger(skip) || skip < 0) {
+    throw new ApiError.InvalidQueryParams(`Invalid skip parameter:
+     '${context.query.skip}'. Should be a valid positive integer`);
+  }
+  context.valencer.query.skip = skip;
+  return next();
+}
+
+function validateQueryLimitParameter(context, next) {
+  if (context.query.limit == null) {
+    return next();
+  }
+  const limit = Number(context.query.limit);
+  if (isNaN(limit) || !Number.isInteger(limit) || limit < 0) {
+    throw new ApiError.InvalidQueryParams(`Invalid limit parameter:
+     '${context.query.limit}'. Should be a valid positive integer`);
+  }
+  context.valencer.query.limit = limit;
   return next();
 }
 
@@ -272,4 +309,7 @@ module.exports = {
   validateQueryParametersCombination,
   validateProjectionString,
   validatePopulationString,
+  validateQueryFormatParameter,
+  validateQuerySkipParameter,
+  validateQueryLimitParameter,
 };
