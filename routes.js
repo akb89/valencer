@@ -381,22 +381,19 @@ router.get('/frame/:id/:projection/:population',
  */
 router.get('/frames',
            validateFormatAndProcessVPquery,
-           annotationSets.getByVPwithLexUnit,
-           frames.getByAnnotationSets,
+           frames.getByVP,
            renderer.renderFrames,
            displayQueryExecutionTime);
 
 router.get('/frames/:projection',
            validateFormatAndProcessVPquery,
-           annotationSets.getByVPwithLexUnit,
-           frames.getByAnnotationSets,
+           frames.getByVP,
            renderer.renderFrames,
            displayQueryExecutionTime);
 
 router.get('/frames/:projection/:population',
            validateFormatAndProcessVPquery,
-           annotationSets.getByVPwithLexUnit,
-           frames.getByAnnotationSets,
+           frames.getByVP,
            renderer.renderFrames,
            displayQueryExecutionTime);
 
@@ -474,22 +471,19 @@ router.get('/lexUnit/:id/:projection/:population',
  */
 router.get('/lexUnits',
            validateFormatAndProcessVPquery,
-           annotationSets.getByVPwithLexUnit,
-           lexUnits.getByAnnotationSets,
+           lexUnits.getByVP,
            renderer.renderLexUnits,
            displayQueryExecutionTime);
 
 router.get('/lexUnits/:projection',
            validateFormatAndProcessVPquery,
-           annotationSets.getByVPwithLexUnit,
-           lexUnits.getByAnnotationSets,
+           lexUnits.getByVP,
            renderer.renderLexUnits,
            displayQueryExecutionTime);
 
 router.get('/lexUnits/:projection/:population',
            validateFormatAndProcessVPquery,
-           annotationSets.getByVPwithLexUnit,
-           lexUnits.getByAnnotationSets,
+           lexUnits.getByVP,
            renderer.renderLexUnits,
            displayQueryExecutionTime);
 
