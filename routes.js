@@ -48,6 +48,8 @@ function initializeValencerContext(context, next) {
       projections: {},
       populations: [],
       format: '',
+      skip: 0,
+      limit: 10,
     },
     results: {
       tmp: {
@@ -102,6 +104,9 @@ const validateFormatAndProcessVPquery = compose([
   validator.validateQueryWithExtraCoreFEsParameter,
   validator.validateProjectionString,
   validator.validatePopulationString,
+  validator.validateQueryFormatParameter,
+  validator.validateQuerySkipParameter,
+  validator.validateQueryLimitParameter,
   formatter.formatProjectionString,
   formatter.formatPopulationString,
   database.connect(models),
@@ -409,22 +414,19 @@ router.get('/frame/:id/:projection/:population',
  */
 router.get('/frames',
            validateFormatAndProcessVPquery,
-           annotationSets.getByVPwithLexUnit,
-           frames.getByAnnotationSets,
+           frames.getByVP,
            renderer.renderFrames,
            displayQueryExecutionTime);
 
 router.get('/frames/:projection',
            validateFormatAndProcessVPquery,
-           annotationSets.getByVPwithLexUnit,
-           frames.getByAnnotationSets,
+           frames.getByVP,
            renderer.renderFrames,
            displayQueryExecutionTime);
 
 router.get('/frames/:projection/:population',
            validateFormatAndProcessVPquery,
-           annotationSets.getByVPwithLexUnit,
-           frames.getByAnnotationSets,
+           frames.getByVP,
            renderer.renderFrames,
            displayQueryExecutionTime);
 
@@ -502,22 +504,19 @@ router.get('/lexUnit/:id/:projection/:population',
  */
 router.get('/lexUnits',
            validateFormatAndProcessVPquery,
-           annotationSets.getByVPwithLexUnit,
-           lexUnits.getByAnnotationSets,
+           lexUnits.getByVP,
            renderer.renderLexUnits,
            displayQueryExecutionTime);
 
 router.get('/lexUnits/:projection',
            validateFormatAndProcessVPquery,
-           annotationSets.getByVPwithLexUnit,
-           lexUnits.getByAnnotationSets,
+           lexUnits.getByVP,
            renderer.renderLexUnits,
            displayQueryExecutionTime);
 
 router.get('/lexUnits/:projection/:population',
            validateFormatAndProcessVPquery,
-           annotationSets.getByVPwithLexUnit,
-           lexUnits.getByAnnotationSets,
+           lexUnits.getByVP,
            renderer.renderLexUnits,
            displayQueryExecutionTime);
 
