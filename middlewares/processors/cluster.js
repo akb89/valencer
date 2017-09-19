@@ -3,11 +3,10 @@ const utils = require('../../utils/utils');
 
 const logger = config.logger;
 
-function getLexUnitsWithFNmodels(LexUnit) {
-  return async function getClusterLexUnits(annotationSets, frameID) {
-    const lexunits = await LexUnit.find({}, 'name frame').where({ frame: frameID }).where('_id')
-                                  .in(annotationSets.map(annoset => annoset.lexUnit));
-    return lexunits.reduce((clusterLexUnits, lexunit) => {
+function getClusterLexUnitsWithModel(LexUnit) {
+  return async function getClusterLexUnits(lexunits, frameID) {
+    const tmpLUs = await LexUnit.find().where({ frame: frameID }).where('_id').in(lexunits);
+    return tmpLUs.reduce((clusterLexUnits, lexunit) => {
       const item = { data: { id: lexunit._id,
                              name: lexunit.name,
                              frame: frameID } };
@@ -21,26 +20,12 @@ function getLexUnitsWithFNmodels(LexUnit) {
   };
 }
 
-// TODO: refactor with mongo $unwind
-function getFramesWithFNmodels(Frame, LexUnit, FrameRelation) {
-  return async function getClusterFrames(annotationSets) {
-    const lexunits = await LexUnit.find({}, 'frame').where('_id')
-                                  .in(annotationSets.map(annoset => annoset.lexUnit))
-                                  .populate('frame', 'name');
-    // console.log(lexunits);
-    const clusterFrames = Array.from(lexunits.reduce((frameMap, lexunit) => {
-      if (!frameMap.has(lexunit.frame._id)) {
-        frameMap.set(lexunit.frame._id,
-          { data: { _id: lexunit.frame._id, name: lexunit.frame.name } });
-      }
-      return frameMap;
-    }, new Map()).values());
-    // console.log(clusterFrames);
-    const frameIDs = clusterFrames.map(frame => frame.data._id);
-    // console.log(frameIDs);
+function getClusterFramesWithModel(FrameRelation) {
+  return async function getClusterFrames(frames) {
+    const clusterFrames = frames.map(frame => ({ data: { _id: frame._id, name: frame.name } }));
     const relations = await FrameRelation.find(
-      { $and: [{ subFrame: { $in: frameIDs } }, { supFrame: { $in: frameIDs } }] })
-      .populate('type');
+      { $and: [{ subFrame: { $in: frames } }, { supFrame: { $in: frames } }] })
+      .populate('type', 'name');
     const clusterRelations = relations.map(relation => ({
       data: { id: relation._id,
               source: relation.supFrame,
@@ -53,21 +38,25 @@ function getFramesWithFNmodels(Frame, LexUnit, FrameRelation) {
 async function getFrames(context, next) {
   const startTime = utils.getStartTime();
   logger.info(`Querying for all cluster frames with a valence pattern matching: '${context.query.vp}'`);
-  context.valencer.results.cluster = await getFramesWithFNmodels(
-    context.valencer.models.Frame, context.valencer.models.LexUnit,
+  context.valencer.results.cluster = await getClusterFramesWithModel(
     context.valencer.models.FrameRelation)(
-      context.valencer.results.annotationSets);
-  // logger.verbose(`${context.valencer.results.frames.length} unique Frames retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
+      context.valencer.results.frames);
+  logger.verbose(`${context.valencer.results.cluster.length} cluster frames
+    retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }
 
 async function getLexUnits(context, next) {
   const startTime = utils.getStartTime();
-  logger.info(`Querying for all cluster lexUnits in frame._id = ${context.valencer.query.frameID} with a valence pattern matching: '${context.query.vp}'`);
-  context.valencer.results.cluster = await getLexUnitsWithFNmodels(
+  logger.info(`Querying for all cluster lexUnits in frame._id =
+    ${context.valencer.query.frameID} with a valence pattern matching:
+    '${context.query.vp}'`);
+  context.valencer.results.cluster = await getClusterLexUnitsWithModel(
     context.valencer.models.LexUnit)(
-      context.valencer.results.annotationSets,
+      context.valencer.results.lexUnits,
       context.valencer.query.frameID);
+  logger.verbose(`${context.valencer.results.cluster.length} cluster lexUnits
+        retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }
 

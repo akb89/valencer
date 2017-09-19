@@ -339,7 +339,7 @@ router.get('/annoSets/:projection/:population',
 
 router.get('/cluster/frames',
            validateFormatAndProcessVPquery,
-           annotationSets.getByVPwithLexUnit,
+           frames.getByVP,
            cluster.getFrames,
            renderer.renderCluster,
            displayQueryExecutionTime);
@@ -363,7 +363,7 @@ router.get('/cluster/lexUnits',
            coreVU.retrieveExcludedVUIDs,
            coreP.retrievePatternsIDs,
            filter.filterPatternsIDs,
-           annotationSets.getByVPwithLexUnit,
+           lexUnits.getByVP,
            cluster.getLexUnits,
            renderer.renderCluster,
            displayQueryExecutionTime);
