@@ -9,6 +9,8 @@
 const Koa = require('koa');
 const cors = require('kcors');
 const mongoose = require('mongoose');
+const compress = require('koa-compress');
+const zlib = require('zlib');
 const router = require('./routes');
 const config = require('./config');
 
@@ -16,6 +18,11 @@ const logger = config.logger;
 const app = new Koa();
 
 app.use(cors());
+app.use(compress({
+  threshold: 1024,
+  flush: zlib.constants.Z_SYNC_FLUSH,
+}));
+
 // app.keys = ['my-secret-key'];
 // app.use(authenticate());
 

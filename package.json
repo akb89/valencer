@@ -1,6 +1,6 @@
 {
   "name": "Valencer",
-  "version": "4.3.1",
+  "version": "4.4.1",
   "description": "A REST API to query valence patterns in FrameNet",
   "keywords": [
     "FrameNet",
@@ -56,6 +56,7 @@
     "kcors": "^2.2.1",
     "koa": "^2.2.0",
     "koa-compose": "^4.0.0",
+    "koa-compress": "^2.0.0",
     "koa-router": "^7.2.0",
     "moment": "^2.18.1",
     "mongoose": "^4.10.8",
