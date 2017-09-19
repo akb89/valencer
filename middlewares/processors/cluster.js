@@ -5,17 +5,17 @@ const logger = config.logger;
 
 function getLexUnitsWithFNmodels(LexUnit) {
   return async function getClusterLexUnits(annotationSets, frameID) {
-    const lexunits = await LexUnit.find({}, 'frame').where({ frame: frameID }).where('_id')
+    const lexunits = await LexUnit.find({}, 'name frame').where({ frame: frameID }).where('_id')
                                   .in(annotationSets.map(annoset => annoset.lexUnit));
     return lexunits.reduce((clusterLexUnits, lexunit) => {
       const item = { data: { id: lexunit._id,
-                             name: lexunit.name } };
-      clusterLexUnits.append(item);
-      const relation = { data: { id: lexunit._id,
-                                 source: lexunit._id,
-                                 target: frameID,
+                             name: lexunit.name,
+                             frame: frameID } };
+      clusterLexUnits.push(item);
+      const relation = { data: { source: frameID,
+                                 target: lexunit._id,
                                  type: 'frame' } };
-      clusterLexUnits.append(relation);
+      clusterLexUnits.push(relation);
       return clusterLexUnits;
     }, []);
   };
