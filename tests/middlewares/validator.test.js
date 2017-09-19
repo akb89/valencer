@@ -289,7 +289,7 @@ describe('validator', () => {
       validator.validateQueryParametersCombination(context, next);
     } catch (err) {
       err.name.should.equal('InvalidQueryParams');
-      err.message.should.equal('the Valencer API cannot process queries with strictVUMatching parameter set to false and withExtraCoreFEs parameter set to false if at least one Frame Element is unspecified in the input Valence Pattern');
+      err.message.should.equal('The Valencer API cannot process queries with strictVUMatching parameter set to false and withExtraCoreFEs parameter set to false if at least one Frame Element is unspecified in the input Valence Pattern');
     }
     context.valencer.query.vp.withFEids = [[1, 2, 3], 'PT', 'GF'];
     (() => validator.validateQueryParametersCombination(context, next)).should.throw();
