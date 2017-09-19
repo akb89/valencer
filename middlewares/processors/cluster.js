@@ -22,7 +22,7 @@ function getClusterLexUnitsWithModel(LexUnit) {
 
 function getClusterFramesWithModel(FrameRelation) {
   return async function getClusterFrames(frames) {
-    const clusterFrames = frames.map(frame => ({ data: { _id: frame._id, name: frame.name } }));
+    const clusterFrames = frames.map(frame => ({ data: { id: frame._id, name: frame.name } }));
     const relations = await FrameRelation.find(
       { $and: [{ subFrame: { $in: frames } }, { supFrame: { $in: frames } }] })
       .populate('type', 'name');
