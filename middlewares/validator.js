@@ -204,6 +204,19 @@ function validateQueryParametersCombination(context, next) {
   return next();
 }
 
+function validateQueryFrameIDparameter(context, next) {
+  if (context.query.frameID == null) {
+    throw new ApiError.InvalidQueryParams('frameID parameter is mandatory');
+  }
+  const frameID = Number(context.query.frameID);
+  if (isNaN(frameID) || !Number.isInteger(frameID) || frameID < 0) {
+    throw new ApiError.InvalidQueryParams(`Invalid frameID parameter:
+     '${context.query.frameID}'. Should be a valid positive integer`);
+  }
+  context.valencer.query.frameID = frameID;
+  return next();
+}
+
 function validateProjectionString(context, next) {
   if (context.params.projection == null) {
     return next();
@@ -270,6 +283,7 @@ module.exports = {
   validateQueryStrictVUmatchingParameter,
   validateQueryWithExtraCoreFEsParameter,
   validateQueryParametersCombination,
+  validateQueryFrameIDparameter,
   validateProjectionString,
   validatePopulationString,
 };

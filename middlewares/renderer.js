@@ -3,6 +3,11 @@ function renderAnnotationSets(context, next) {
   return next();
 }
 
+function renderCluster(context, next) {
+  context.body = context.valencer.results.cluster;
+  return next();
+}
+
 function renderFrames(context, next) {
   context.body = context.valencer.results.frames;
   return next();
@@ -25,6 +30,7 @@ function renderValenceUnits(context, next) {
 
 module.exports = {
   renderAnnotationSets,
+  renderCluster,
   renderFrames,
   renderLexUnits,
   renderPatterns,

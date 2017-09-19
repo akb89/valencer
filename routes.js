@@ -9,6 +9,7 @@ const coreP = require('./middlewares/core/patterns');
 const validator = require('./middlewares/validator');
 const annotationSet = require('./middlewares/processors/annotationSet');
 const annotationSets = require('./middlewares/processors/annotationSets');
+const cluster = require('./middlewares/processors/cluster');
 const frame = require('./middlewares/processors/frame');
 const frameElement = require('./middlewares/processors/frameElement');
 const frames = require('./middlewares/processors/frames');
@@ -57,6 +58,7 @@ function initializeValencerContext(context, next) {
         filteredPatternsIDs: [],
       },
       annotationSets: [],
+      cluster: [],
       frames: [],
       lexUnits: [],
       patterns: [],
@@ -329,6 +331,37 @@ router.get('/annoSets/:projection/:population',
            renderer.renderAnnotationSets,
            displayQueryExecutionTime);
 
+
+router.get('/cluster/frames',
+           validateFormatAndProcessVPquery,
+           annotationSets.getByVPwithLexUnit,
+           cluster.getFrames,
+           renderer.renderCluster,
+           displayQueryExecutionTime);
+
+router.get('/cluster/lexUnits',
+           initializeValencerContext,
+           validator.validatePathToDB,
+           validator.validateQueryNotEmpty,
+           validator.validateQueryVPnotEmpty,
+           validator.validateQueryVPcontainsNoInvalidCharacters,
+           validator.validateQueryVPcontainsNoInvalidSequence,
+           validator.validateQueryVPvalenceUnitLength,
+           validator.validateQueryStrictVUmatchingParameter,
+           validator.validateQueryWithExtraCoreFEsParameter,
+           validator.validateQueryFrameIDparameter,
+           database.connect(models),
+           formatter.formatValencePatternToArrayOfArrayOfTokens,
+           formatter.replaceFrameElementNamesByFrameElementIds,
+           validator.validateQueryParametersCombination, // Needs to be done after formatting
+           coreVU.retrieveValenceUnitsIDs,
+           coreVU.retrieveExcludedVUIDs,
+           coreP.retrievePatternsIDs,
+           filter.filterPatternsIDs,
+           annotationSets.getByVPwithLexUnit,
+           cluster.getLexUnits,
+           renderer.renderCluster,
+           displayQueryExecutionTime);
 
 /**
  * @api {get} /frame/:id GetFrame
