@@ -17,7 +17,9 @@ const config = require('./config');
 const logger = config.logger;
 const app = new Koa();
 
-app.use(cors());
+app.use(cors({
+    exposeHeaders: ['Total-Count', 'Skip', 'Limit'],
+}));
 app.use(compress({
   threshold: 1024,
   flush: zlib.constants.Z_SYNC_FLUSH,
