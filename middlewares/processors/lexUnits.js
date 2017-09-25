@@ -25,9 +25,7 @@ function getLexUnitIDsWithModel(AnnotationSet) {
 
 async function getByVP(context, next) {
   const startTime = utils.getStartTime();
-  logger.info(`Querying for LexUnits with skip =
-    '${context.valencer.query.skip}', limit = '${context.valencer.query.limit}'
-    and vp = '${context.query.vp}'`);
+  logger.info(`Querying for LexUnits with skip = '${context.valencer.query.skip}', limit = '${context.valencer.query.limit}' and vp = '${context.query.vp}'`);
   const lexUnitIDs = await getLexUnitIDsWithModel(
     context.valencer.models.AnnotationSet)(
       context.valencer.results.tmp.filteredPatternsIDs);
