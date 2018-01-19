@@ -1,6 +1,6 @@
 {
   "name": "Valencer",
-  "version": "4.5.2",
+  "version": "5.0.0",
   "description": "A REST API to query valence patterns in FrameNet",
   "keywords": [
     "FrameNet",
@@ -19,7 +19,7 @@
     "start": "NODE_ENV=production ./node_modules/.bin/pm2 start server.js --name valencer",
     "stop": "./node_modules/.bin/pm2 kill",
     "lint": "./node_modules/.bin/eslint . --ext .js",
-    "startmongo": "ps -ax | grep -v grep | grep mongo > /dev/null 2>&1 || mongod --fork --logpath ./mongod.valencer.log --pidfilepath $PWD/mongo.pid",
+    "startmongo": "ps -ax | grep -v grep | grep mongo > /dev/null 2>&1 || mongod --fork --logpath ./mongod.valencer.log --pidfilepath $PWD/mongo.pid --bind_ip 127.0.0.1",
     "cleantestenv": "[ ! -f mongo.pid ] || (kill $(cat mongo.pid) && rm mongo.pid && rm mongod.valencer.log)",
     "pretest": "npm run startmongo",
     "test": "NODE_ENV=testing nyc --reporter=text mocha --timeout 5000 ./tests/**/*.test.js && npm run cleantestenv || npm run cleantestenv",
@@ -37,7 +37,7 @@
   },
   "apidoc": {
     "name": "valencer-doc",
-    "version": "4.0.0",
+    "version": "5.0.0",
     "description": "Documentation for the Valencer API",
     "title": "Valencer API Doc",
     "url": "http://api.valencer.io/v4/:langIsoCode/:datasetVersion",
@@ -59,8 +59,8 @@
     "koa-compress": "^2.0.0",
     "koa-router": "^7.2.0",
     "moment": "^2.18.1",
-    "mongoose": "^4.10.8",
-    "noframenet-core": "^4.0.0",
+    "mongoose": "^5.0.0",
+    "noframenet-core": "5.0.5",
     "pm2": "^2.6.1",
     "winston": "^2.3.1"
   },
@@ -73,7 +73,7 @@
     "eslint-plugin-import": "^2.3.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.1.0",
-    "mocha": "^3.4.2",
+    "mocha": "3.4.2",
     "nyc": "^11.0.2",
     "rewire": "^2.5.2"
   }
