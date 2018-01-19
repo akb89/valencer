@@ -2,6 +2,7 @@
 [![GitHub release][release-image]][release-url]
 [![Build][travis-image]][travis-url]
 [![Dependencies][david-image]][david-url]
+[![DevDependencies][david-dev-dep-image]][david-dev-url]
 [![Code Coverage][coverage-image]][coverage-url]
 [![Code Quality][quality-image]][quality-url]
 [![FrameNet][framenet-image]][framenet-url]
@@ -139,3 +140,5 @@ For additional details regarding the background of the API, its architecture and
 [license-url]:LICENSE.txt
 [david-url]: https://david-dm.org/akb89/valencer
 [david-image]: https://david-dm.org/akb89/valencer.svg?style=flat-square
+[david-dev-dep-image]: https://img.shields.io/david/dev/akb89/valencer.svg?style=flat-square
+[david-dev-url]: https://david-dm.org/akb89/valencer?type=dev
