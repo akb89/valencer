@@ -37,6 +37,12 @@ rules:
   #Allow (pep) Python-style parameters indentation and alignment
   indent: [error, 2, {FunctionDeclaration: {parameters: first}, FunctionExpression: {parameters: first}, CallExpression: {arguments: first}, ArrayExpression: first, ObjectExpression: first}]
 
+  #Allow calls to object properties instead of using destructuring
+  prefer-destructuring: [error, {VariableDeclarator: {object: false}}]
+
+  #Avoid function-paren-newline to simulate python-style function params style
+  function-paren-newline: [error, never]
+
 overrides:
   -
     files: ['**/*.test.js']
