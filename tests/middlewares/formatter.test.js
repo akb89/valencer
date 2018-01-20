@@ -72,16 +72,20 @@ describe('formatter', () => {
 
   it('#formatProjectionString should return an object with projection_field as keys and 1 as values', async () => {
     const next = () => {};
-    const context = { params: { projection: 'name,test,field_1' },
-                      valencer: { query: { projections: {} } } };
+    const context = {
+      params: { projection: 'name,test,field_1' },
+      valencer: { query: { projections: {} } },
+    };
     await formatter.formatProjectionString(context, next);
     context.valencer.query.projections.should.deep.equal({ name: 1, test: 1, field_1: 1 });
   });
 
   it('#formatProjectionString should return an object with projection_field as keys and 1 as values', async () => {
     const next = () => {};
-    const context = { params: { population: 'name[test|name],name.test, name.ok[no|dac],field_1[ok|no]' },
-                      valencer: { query: { populations: {} } } };
+    const context = {
+      params: { population: 'name[test|name],name.test, name.ok[no|dac],field_1[ok|no]' },
+      valencer: { query: { populations: {} } },
+    };
     await formatter.formatPopulationString(context, next);
   });
 });

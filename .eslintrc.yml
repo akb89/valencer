@@ -35,7 +35,7 @@ rules:
   import/no-extraneous-dependencies: [error, {devDependencies: ['**/*.test.js']}]
 
   #Allow (pep) Python-style parameters indentation and alignment
-  indent: [error, 2, {FunctionDeclaration: {parameters: first}, FunctionExpression: {parameters: first}, CallExpression: {arguments: first}, ArrayExpression: first, ObjectExpression: first}]
+  indent: [error, 2, {FunctionDeclaration: {parameters: first}, FunctionExpression: {parameters: first}, CallExpression: {arguments: first}, ArrayExpression: first, ObjectExpression: first, MemberExpression: 1}]
 
   #Allow calls to object properties instead of using destructuring
   prefer-destructuring: [error, {VariableDeclarator: {object: false}}]

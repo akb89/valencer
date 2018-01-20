@@ -13,10 +13,10 @@ function getPatternWithPatternModel(Pattern) {
 async function getByID(context, next) {
   const startTime = utils.getStartTime();
   logger.info(`Querying for Pattern with _id = ${context.params.id}`);
-  context.body = await getPatternWithPatternModel(
-          context.valencer.models.Pattern)(context.params.id,
-                                           context.valencer.query.projections,
-                                           context.valencer.query.populations);
+  const patternModel = context.valencer.models.Pattern;
+  context.body = await getPatternWithPatternModel(patternModel)(context.params.id,
+                                                                context.valencer.query.projections,
+                                                                context.valencer.query.populations);
   logger.verbose(`Pattern with _id = ${context.params.id} retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }

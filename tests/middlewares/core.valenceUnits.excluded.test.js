@@ -70,8 +70,7 @@ describe('core.valenceUnits.excluded', () => {
   });
   it('#getExcludedFEids should return an array of Numbers', async () => {
     const excludedFEids = await getExcludedFEids(new Set(['A', 'B', 'C']));
-    excludedFEids.forEach(excludedFEid => (typeof excludedFEid).should.equal(
-      'number'));
+    excludedFEids.forEach(excludedFEid => (typeof excludedFEid).should.equal('number'));
   });
   it('#getExcludedFEids should return the correct FrameElement ids', async () => {
     const excludedFEids = await getExcludedFEids(new Set(['A', 'B', 'C']));
@@ -87,8 +86,8 @@ describe('core.valenceUnits.excluded', () => {
   });
   it('#getExcludedVUids should return an array of ObjectIDs', async () => {
     const excludedVUids = await getExcludedVUids([aFE._id, bFE._id, cFE._id]);
-    excludedVUids.forEach(excludedVUid => mongoose.Types.ObjectId.isValid(
-      excludedVUid).should.be.true);
+    excludedVUids.forEach(excludedVUid =>
+      mongoose.Types.ObjectId.isValid(excludedVUid).should.be.true);
   });
   it('#getExcludedVUids should return the correct ValenceUnit ids', async () => {
     const excludedVUids = await getExcludedVUids([aFE._id, bFE._id, cFE._id]);

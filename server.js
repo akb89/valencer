@@ -18,7 +18,7 @@ const logger = config.logger;
 const app = new Koa();
 
 app.use(cors({
-    exposeHeaders: ['Total-Count', 'Skip', 'Limit'],
+  exposeHeaders: ['Total-Count', 'Skip', 'Limit'],
 }));
 app.use(compress({
   threshold: 1024,

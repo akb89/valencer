@@ -13,10 +13,12 @@ function getPatternsWithPatternModel(Pattern) {
 async function getFromIDs(context, next) {
   const startTime = utils.getStartTime();
   logger.info(`Querying for all valence patterns matching: '${context.query.vp}'`);
-  context.valencer.results.patterns = await getPatternsWithPatternModel(
-          context.valencer.models.Pattern)(context.valencer.results.tmp.filteredPatternsIDs,
-                                           context.valencer.query.projections,
-                                           context.valencer.query.populations);
+  const patternModel = context.valencer.models.Pattern;
+  const filteredPatternsIDs = context.valencer.results.tmp.filteredPatternsIDs;
+  context.valencer.results.patterns =
+    await getPatternsWithPatternModel(patternModel)(filteredPatternsIDs,
+                                                    context.valencer.query.projections,
+                                                    context.valencer.query.populations);
   logger.verbose(`${context.valencer.results.patterns.length} unique Patterns retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }

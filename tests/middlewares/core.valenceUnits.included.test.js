@@ -45,8 +45,7 @@ describe('core.valenceUnits.included', () => {
   });
   it('#getValenceUnitsIDs should return an array of ObjectIDs', async () => {
     const vusIDs = await getValenceUnitsIDs([[1], 'NP', 'Obj']);
-    vusIDs.forEach(
-      vusID => mongoose.Types.ObjectId.isValid(vusID).should.be.true);
+    vusIDs.forEach(vusID => mongoose.Types.ObjectId.isValid(vusID).should.be.true);
   });
   it('#getValenceUnitsIDs should be able to process FE.PT.GF', async () => {
     const vusIDs = await getValenceUnitsIDs([[1], 'NP', 'Obj']);
@@ -117,8 +116,7 @@ describe('core.valenceUnits.included', () => {
   });
   it('#getArrayOfArrayOfValenceUnitsIDs should return an array of ObjectIDs', async () => {
     const vuidss = await getArrayOfArrayOfValenceUnitsIDs([[[1], 'NP', 'Obj'], [[3], 'NP', 'Ext'], [[4], 'PP[about]', 'Ext']]);
-    vuidss.forEach(
-      vuids => vuids.forEach(
-        vuid => mongoose.Types.ObjectId.isValid(vuid).should.be.true));
+    vuidss.forEach(vuids => vuids.forEach(vuid =>
+      mongoose.Types.ObjectId.isValid(vuid).should.be.true));
   });
 });

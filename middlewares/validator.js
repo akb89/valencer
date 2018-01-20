@@ -81,7 +81,7 @@ function validateParamsIDnotEmpty(context, next) {
 }
 
 function validateParamsIDisNumberOrObjectID(context, next) {
-  if (isNaN(context.params.id) && !/[a-fA-F0-9]{24}$/.test(context.params.id)) {
+  if (Number.isNaN(context.params.id) && !/[a-fA-F0-9]{24}$/.test(context.params.id)) {
     throw new ApiError.InvalidParams('context.params.id should be a Number or an ObjectID');
   }
   logger.debug(`context.params.id object is valid: ${JSON.stringify(context.params.id)}`);
@@ -127,7 +127,7 @@ function validateQueryVPcontainsNoInvalidSequence(context, next) {
 
 function getMaxValenceTokens(vp) {
   return utils.toTokenArray(utils.toValenceArray(vp))
-  .map(vu => vu.length).reduce((a, b) => Math.max(a, b));
+    .map(vu => vu.length).reduce((a, b) => Math.max(a, b));
 }
 
 // Check if a valenceUnit contains more than 3 tokens (Should always be at most FE.PT.GF)
@@ -173,7 +173,7 @@ function validateQueryWithExtraCoreFEsParameter(context, next) {
 
 function containsFrameElement(valenceUnitAsArrayWithFEids) {
   for (const token of valenceUnitAsArrayWithFEids) {
-    if (typeof token !== 'string' && (typeof token === 'number' || !token.some(isNaN))) {
+    if (typeof token !== 'string' && (typeof token === 'number' || !token.some(Number.isNaN))) {
       return true;
     }
   }
@@ -209,7 +209,7 @@ function validateQueryFrameIDparameter(context, next) {
     throw new ApiError.InvalidQueryParams('frameID parameter is mandatory');
   }
   const frameID = Number(context.query.frameID);
-  if (isNaN(frameID) || !Number.isInteger(frameID) || frameID < 0) {
+  if (Number.isNaN(frameID) || !Number.isInteger(frameID) || frameID < 0) {
     throw new ApiError.InvalidQueryParams(`Invalid frameID parameter:
      '${context.query.frameID}'. Should be a valid positive integer`);
   }
@@ -239,9 +239,9 @@ function validatePopulationString(context, next) {
     return next();
   }
   const disallowedEscapedChars = constants.DISALLOW_CHARS_PROJ_POPUL
-      .map(c => utils.regExpEscape(c)).join('');
+    .map(c => utils.regExpEscape(c)).join('');
   const disallowedCharsRegExp = new RegExp(constants.DISALLOW_CHARS_PROJ_POPUL
-        .map(c => utils.regExpEscape(c)).join('|'));
+    .map(c => utils.regExpEscape(c)).join('|'));
   const populationRegExp = new RegExp(`([^${disallowedEscapedChars}]+)(?:\\[([^\\]]+)\\])?`);
   const population = context.params.population;
   const populations = population.split(',').filter(p => p !== '');
@@ -283,7 +283,7 @@ function validateQuerySkipParameter(context, next) {
     return next();
   }
   const skip = Number(context.query.skip);
-  if (isNaN(skip) || !Number.isInteger(skip) || skip < 0) {
+  if (Number.isNaN(skip) || !Number.isInteger(skip) || skip < 0) {
     throw new ApiError.InvalidQueryParams(`Invalid skip parameter:
      '${context.query.skip}'. Should be a valid positive integer`);
   }
@@ -296,7 +296,7 @@ function validateQueryLimitParameter(context, next) {
     return next();
   }
   const limit = Number(context.query.limit);
-  if (isNaN(limit) || !Number.isInteger(limit) || limit < 0) {
+  if (Number.isNaN(limit) || !Number.isInteger(limit) || limit < 0) {
     throw new ApiError.InvalidQueryParams(`Invalid limit parameter:
      '${context.query.limit}'. Should be a valid positive integer`);
   }

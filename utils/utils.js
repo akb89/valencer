@@ -41,7 +41,7 @@ function getElapsedTime(startTime) {
  */
 function regExpEscape(s) {
   return String(s).replace(/([-()[\]{}+?*.$^|,:#<!\\])/g, '\\$1')
-      .replace(/\x08/g, '\\x08');
+    .replace(/\x08/g, '\\x08');
 }
 
 /* function regExpEscape(s) {

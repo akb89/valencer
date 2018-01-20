@@ -14,10 +14,11 @@ async function getFromIDs(context, next) {
   const startTime = utils.getStartTime();
   logger.info(`Querying for all valence units matching: '${context.query.vu}'`);
   const valenceUnitIDs = [].concat(...context.valencer.results.tmp.valenceUnitsIDs);
-  context.valencer.results.valenceUnits = await getValenceUnitsWithValenceUnitModel(
-          context.valencer.models.ValenceUnit)(valenceUnitIDs,
-                                               context.valencer.query.projections,
-                                               context.valencer.query.populations);
+  const vuModel = context.valencer.models.ValenceUnit;
+  context.valencer.results.valenceUnits =
+    await getValenceUnitsWithValenceUnitModel(vuModel)(valenceUnitIDs,
+                                                       context.valencer.query.projections,
+                                                       context.valencer.query.populations);
   logger.verbose(`${context.valencer.results.valenceUnits.length} unique ValenceUnits retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }
