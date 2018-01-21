@@ -331,7 +331,7 @@ router.get('/annoSet/:id/:projection/:population',
  * # Default usage (no option set)
  * curl -i "http://localhost:3030/v5/en/170/annoSets?vp=Donor.NP.Ext+Theme.NP.Obj"
  * @apiExample Projection/Population
- * # Projecting and populating sentence field
+ * # Projecting and populating the sentence field
  * curl -i "http://localhost:3030/v5/en/170/annoSets/sentence/sentence?vp=Donor.NP.Ext+Theme.NP.Obj"
  * @apiExample Skip/Limit
  * # Getting 20 documents skipping the first 10
@@ -435,7 +435,7 @@ router.get('/cluster/lexUnits',
  * # Default usage (no option set)
  * curl -i "http://localhost:3030/v5/en/170/frame/42"
  * @apiExample Projection/Population
- * # Projecting and populating frameElements field
+ * # Projecting and populating the frameElements field
  * curl -i "http://localhost:3030/v5/en/170/frame/42/frameElements/frameElements"
  * @apiUse FrameSuccess
  * @apiUse NotFoundIDError
@@ -467,7 +467,7 @@ router.get('/frame/:id/:projection/:population',
  * # Default usage (no option set)
  * curl -i "http://localhost:3030/v5/en/170/frames?vp=Donor.NP.Ext+Theme.NP.Obj"
  * @apiExample Projection/Population
- * # Projecting and populating frameElements field
+ * # Projecting and populating the frameElements field
  * curl -i "http://localhost:3030/v5/en/170/frames/frameElements/frameElements?vp=Donor.NP.Ext+Theme.NP.Obj"
  * @apiExample Skip/Limit
  * # Getting 20 documents skipping the first 10
@@ -540,7 +540,7 @@ router.get('/frameElement/:id/:projection/:population',
  * # Default usage (no option set)
  * curl -i "http://localhost:3030/v5/en/170/lexUnit/42"
  * @apiExample Projection/Population
- * # Projecting and populating frame and frame.frameElements field
+ * # Projecting and populating the frame and frame.frameElements fields
  * curl -i "http://localhost:3030/v5/en/170/lexUnit/42/frame/frame,frame.frameElements"
  * @apiUse LexUnitSuccess
  * @apiUse NotFoundIDError
@@ -560,7 +560,7 @@ router.get('/lexUnit/:id/:projection/:population',
            lexUnit.getByID);
 
 /**
- * @api {get} /lexUnits GetLexUnits
+ * @api {get} /lexUnits/:projection/:population?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs&skip=:skip&limit=:limit GetLexUnits
  * @apiVersion 5.0.0
  * @apiName GetLexUnits
  * @apiGroup LexUnit
@@ -568,8 +568,14 @@ router.get('/lexUnit/:id/:projection/:population',
  * empty array if no match is found
  * @apiUse vpParam
  * @apiUse apiConfig
- * @apiExample Example usage:
+ * @apiExample Default
  * curl -i "http://localhost:3030/v5/en/170/lexUnits?vp=Donor.NP.Ext+Theme.NP.Obj"
+ * @apiExample Projection/Population
+ * # Projecting and populating the lexemes field
+ * curl -i "http://localhost:3030/v5/en/170/lexUnits/lexemes/lexemes?vp=Donor.NP.Ext+Theme.NP.Obj"
+ * @apiExample Skip/Limit
+ * # Getting 3 documents skipping the first 5
+ * curl -i "http://localhost:3030/v5/en/170/lexUnits?vp=Donor.NP.Ext+Theme.NP.Obj&skip=5&limit=3"
  * @apiUse LexUnitSuccess
  * @apiUse NotFoundVPError
  * @apiUse InvalidQuery
@@ -594,7 +600,7 @@ router.get('/lexUnits/:projection/:population',
            displayQueryExecutionTime);
 
 /**
- * @api {get} /pattern/:id GetPattern
+ * @api {get} /pattern/:id/:projection/:population GetPattern
  * @apiVersion 5.0.0
  * @apiName GetPattern
  * @apiGroup Pattern
@@ -602,8 +608,12 @@ router.get('/lexUnits/:projection/:population',
  * document and throws an error if not found
  * @apiParam {Object}  id  The Pattern ObjectID
  * @apiUse apiConfig
- * @apiExample Example usage:
- * curl -i "http://localhost:3030/v5/en/170/pattern/595bacfcb062ee3a400e81e2"
+ * @apiExample Default
+ * # Default usage (no option set)
+ * curl -i "http://localhost:3030/v5/en/170/pattern/5a62f8b0e3bf318cbabc4beb"
+ * @apiExample Projection/Population
+ * # Projecting and populating the valenceUnits field
+ * curl -i "http://localhost:3030/v5/en/170/pattern/5a62f8b0e3bf318cbabc4beb/valenceUnits/valenceUnits"
  * @apiUse PatternSuccess
  * @apiUse NotFoundIDError
  * @apiUse InvalidQuery
@@ -622,7 +632,7 @@ router.get('/pattern/:id/:projection/:population',
            pattern.getByID);
 
 /**
- * @api {get} /patterns GetPatterns
+ * @api {get} /patterns/:projection/:population?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs&skip=:skip&limit=:limit GetPatterns
  * @apiVersion 5.0.0
  * @apiName GetPatterns
  * @apiGroup Pattern
@@ -630,8 +640,15 @@ router.get('/pattern/:id/:projection/:population',
  * empty array if no match is found
  * @apiUse vpParam
  * @apiUse apiConfig
- * @apiExample Example usage:
+ *  @apiExample Default
+ * # Default usage (no option set)
  * curl -i "http://localhost:3030/v5/en/170/patterns?vp=Donor.NP.Ext+Theme.NP.Obj"
+ * @apiExample Projection/Population
+ * # Projecting and populating the valenceUnits field
+ * curl -i "http://localhost:3030/v5/en/170/patterns/valenceUnits/valenceUnits?vp=Donor.NP.Ext+Theme.NP.Obj"
+ * @apiExample Skip/Limit
+ * # Getting 20 documents skipping the first 10
+ * curl -i "http://localhost:3030/v5/en/170/patterns?vp=Donor.NP.Ext+Theme.NP.Obj&skip=10&limit=20"
  * @apiUse PatternSuccess
  * @apiUse NotFoundVPError
  * @apiUse InvalidQuery
@@ -656,7 +673,7 @@ router.get('/patterns/:projection/:population',
            displayQueryExecutionTime);
 
 /**
- * @api {get} /valenceUnit/:id GetValenceUnit
+ * @api {get} /valenceUnit/:id/:projection/:population GetValenceUnit
  * @apiVersion 5.0.0
  * @apiName GetValenceUnit
  * @apiGroup ValenceUnit
@@ -664,8 +681,12 @@ router.get('/patterns/:projection/:population',
  * document and throws an error if not found
  * @apiParam {Object}  id  The ValenceUnit ObjectID
  * @apiUse apiConfig
- * @apiExample Example usage:
- * curl -i "http://localhost:3030/v5/en/170/valenceUnit/595bacfcb062ee3a400e81e0"
+ * @apiExample Default
+ * # Default usage (no option set)
+ * curl -i "http://localhost:3030/v5/en/170/valenceUnit/5a62f8b0e3bf318cbabc4be7"
+ * @apiExample Projection/Population
+ * # Projecting and populating the FE field
+ *  curl -i "http://localhost:3030/v5/en/170/valenceUnit/5a62f8b0e3bf318cbabc4be7/FE/FE"
  * @apiUse ValenceUnitSuccess
  * @apiUse NotFoundIDError
  * @apiUse InvalidQuery
@@ -684,7 +705,7 @@ router.get('/valenceUnit/:id/:projection/:population',
            valenceUnit.getByID);
 
 /**
- * @api {get} /valenceUnits GetValenceUnits
+ * @api {get} /valenceUnits/:projection/:population?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs&skip=:skip&limit=:limit GetValenceUnits
  * @apiVersion 5.0.0
  * @apiName GetValenceUnits
  * @apiGroup ValenceUnit
@@ -693,8 +714,15 @@ router.get('/valenceUnit/:id/:projection/:population',
  * @apiParam {String}  vu  The ValenceUnit: a single triplet FE.PT.GF. Can be
  * a partial triplet: FE, FE.PT, FE.GF, PT.GF, in any order: GF.FE, PT.FE, etc.
  * @apiUse apiConfig
- * @apiExample Example usage:
+ * @apiExample Default
+ * # Default usage (no option set)
  * curl -i "http://localhost:3030/v5/en/170/valenceUnits?vu=Donor.NP.Ext"
+ * @apiExample Projection/Population
+ * # Projecting and populating the FE field
+ * curl -i "http://localhost:3030/v5/en/170/valenceUnits/FE/FE?vu=Donor.NP.Ext"
+ * @apiExample Skip/Limit
+ * # Getting 1 documents skipping the first
+ * curl -i "http://localhost:3030/v5/en/170/valenceUnits?vu=Donor.NP.Ext&skip=1&limit=1"
  * @apiUse ValenceUnitSuccess
  * @apiUse NotFoundVPError
  * @apiUse InvalidQuery
