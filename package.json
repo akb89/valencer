@@ -14,7 +14,7 @@
   "scripts": {
     "doc": "rm -rf docs/ && ./node_modules/apidoc/bin/apidoc -i ./ -o ./docs/ -e node_modules",
     "dev": "./node_modules/.bin/pm2 start server.js --name valencer_dev --watch",
-    "try": "NODE_ENV=production node server.js",
+    "try": "NODE_ENV=development node server.js",
     "prepare": "./node_modules/.bin/pm2 install pm2-logrotate && ./node_modules/.bin/pm2 set pm2-logrotate:compress true && ./node_modules/.bin/pm2 set pm2-logrotate:retain 100 && ./node_modules/.bin/pm2 set pm2-logrotate:size 100M",
     "start": "NODE_ENV=production ./node_modules/.bin/pm2 start server.js --name valencer",
     "stop": "./node_modules/.bin/pm2 kill",
@@ -25,7 +25,7 @@
     "test": "NODE_ENV=testing ./node_modules/.bin/nyc --reporter=text mocha --timeout 5000 ./tests/**/*.test.js && npm run cleantestenv || npm run cleantestenv",
     "singletest": "NODE_ENV=testing ./node_modules/.bin/nyc --reporter=text mocha ./tests/middlewares/core.valenceUnits.excluded.test.js",
     "posttest": "npm run lint",
-    "coverage": "./node_modules/.bin/nyc report --reporter=text-lcov | coveralls"
+    "coverage": "./node_modules/.bin/nyc report --reporter=text-lcov | ./node_modules/.bin/coveralls"
   },
   "homepage": "https://github.com/akb89/valencer#readme",
   "repository": {
@@ -40,13 +40,13 @@
     "version": "5.0.0",
     "description": "Documentation for the Valencer API",
     "title": "Valencer API Doc",
-    "url": "http://api.valencer.io/v4/:langIsoCode/:datasetVersion",
+    "url": "http://api.valencer.io/v5/:langIsoCode/:datasetVersion",
     "header": {
       "title": "General",
       "filename": "header.md"
     },
     "footer": {
-      "title": "Help",
+      "title": "Optional Parameters",
       "filename": "footer.md"
     }
   },
@@ -67,7 +67,7 @@
   "devDependencies": {
     "apidoc": "^0.17.6",
     "chai": "^4.1.1",
-    "coveralls": "^2.13.1",
+    "coveralls": "^3.0.0",
     "eslint": "^4.16.0",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-import": "^2.3.0",

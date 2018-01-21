@@ -140,20 +140,20 @@ const validateFormatAndProcessVUquery = compose([
 
 /**
  * @apiDefine NotFoundIDError
- * @apiVersion 4.0.0
+ * @apiVersion 5.0.0
  * @apiError (Error 404) NotFoundError The id was not found in the database
  */
 
 /**
  * @apiDefine NotFoundVPError
- * @apiVersion 4.0.0
+ * @apiVersion 5.0.0
  * @apiError (Error 404) NotFoundError At least one valence unit composing the
  * input vp was not found in the database
  */
 
 /**
  * @apiDefine InvalidQuery
- * @apiVersion 4.0.0
+ * @apiVersion 5.0.0
  * @apiError (Error 400) InvalidQuery The specified <code>langIsoCode</code> or
  * <code>datasetVersion</code> is not supported; the database corresponding to
  * the language ISO639-1 and dataset version is supported but not up and
@@ -162,7 +162,7 @@ const validateFormatAndProcessVUquery = compose([
 
 /**
  * @apiDefine InvalidParams
- * @apiVersion 4.0.0
+ * @apiVersion 5.0.0
  * @apiError (Error 400) InvalidParams The specified <code>id</code> is empty,
  * null, undefined, or is specified but is neither a <code>Number</code> nor a
  * valid <code>ObjectID</code>
@@ -170,7 +170,7 @@ const validateFormatAndProcessVUquery = compose([
 
 /**
  * @apiDefine InvalidQueryParams
- * @apiVersion 4.0.0
+ * @apiVersion 5.0.0
  * @apiError (Error 400) InvalidQueryParams The <code>vp</code> parameter contains either
  * an invalid character, an invalid sequence of characters or more than 3
  * tokens separated by a dot in at least one of its valence units; the
@@ -181,16 +181,26 @@ const validateFormatAndProcessVUquery = compose([
 
 /**
  * @apiDefine apiConfig
- * @apiVersion 4.0.0
- * @apiParam {String}    langIsoCode   The language ISO639-1 code. Ex: 'en' for English
- * @apiParam {Number}    datasetVersion    The version of the FrameNet
+ * @apiVersion 5.0.0
+ * @apiParam {String}    langIsoCode   Set the language ISO639-1 code. Ex: 'en' for English
+ * @apiParam {Number}    datasetVersion    Set the version of the FrameNet
  * dataset, in semver format. Ex: '170' for the FrameNet 1.7 data release
+ * @apiParam {String}   [projection] Set the fields to be projected in the output
+ * documents. Projection is the process of returning only
+ * requested fields from input documents. See [project](https://docs.mongodb.com/manual/reference/operator/aggregation/project/index.html)
+ * in the MongoDB documentation and
+ * usage details in the [Optional Parameters](#opt) section.
+ * @apiParam {String}   [population] Set the fields to be populated in the output documents.
+ * Population is the process of automatically
+ * replacing the specified paths in the document with document(s) from other collection(s).
+ * See [populate](http://mongoosejs.com/docs/populate.html) in the Mongoose documentation and
+ * usage details in the [Optional Parameters](#opt) section.
  */
 
 /**
  * @apiDefine vpParam
- * @apiVersion 4.0.0
- * @apiParam {String}     vp          The Valence Pattern: a
+ * @apiVersion 5.0.0
+ * @apiParam {String}     vp          Set the Valence Pattern: a
  * combination of triplets FE.PT.GF
  * @apiParam {Boolean}    [strictVUMatching=false]     Specify whether
  * the number of valence units should match exactly. Ex: Querying for
@@ -198,11 +208,13 @@ const validateFormatAndProcessVUquery = compose([
  * one valenceUnit
  * @apiParam {Boolean}    [withExtraCoreFEs=true] Specify whether, in cases of
  * non-strict valence unit matching, extra Frame Elements can be core FEs.
+ * @apiParam {Number}   [skip=0] Set the number of documents to skip before returning.
+ * @apiParam {Number}   [limit=10] Set the number of documents to return. Set to 0 to return all possible documents.
  */
 
 /**
  * @apiDefine AnnotationSetSuccess
- * @apiVersion 4.0.0
+ * @apiVersion 5.0.0
  * @apiSuccess  {Number}   _id        The AnnotationSet id
  * @apiSuccess  {Number}   lexUnit    The LexUnit id
  * @apiSuccess  {Number}   sentence   The Sentence id
@@ -212,7 +224,7 @@ const validateFormatAndProcessVUquery = compose([
 
 /**
  * @apiDefine FrameSuccess
- * @apiVersion 4.0.0
+ * @apiVersion 5.0.0
  * @apiSuccess   {Number}    _id            The Frame id
  * @apiSuccess   {String}    name           The Frame name
  * @apiSuccess   {String}    definition     The Frame definition
@@ -227,7 +239,7 @@ const validateFormatAndProcessVUquery = compose([
 
 /**
  * @apiDefine FrameElementSuccess
- * @apiVersion 4.0.0
+ * @apiVersion 5.0.0
  * @apiSuccess   {Number}    _id            The FrameElement id
  * @apiSuccess   {String}    name           The FrameElement name
  * @apiSuccess   {String}    definition     The FrameElement definition
@@ -244,7 +256,7 @@ const validateFormatAndProcessVUquery = compose([
 
 /**
  * @apiDefine LexUnitSuccess
- * @apiVersion 4.0.0
+ * @apiVersion 5.0.0
  * @apiSuccess   {Number}    _id                  The LexUnit id
  * @apiSuccess   {String}    name                 The LexUnit name
  * @apiSuccess   {String}    pos                  The LexUnit part of speech
@@ -260,14 +272,14 @@ const validateFormatAndProcessVUquery = compose([
 
 /**
  * @apiDefine PatternSuccess
- * @apiVersion 4.0.0
+ * @apiVersion 5.0.0
  * @apiSuccess   {Object}    _id            The Pattern ObjectID
  * @apiSuccess   {Object[]}  valenceUnits   The Pattern ValenceUnits ObjectIDs
  */
 
 /**
  * @apiDefine ValenceUnitSuccess
- * @apiVersion 4.0.0
+ * @apiVersion 5.0.0
  * @apiSuccess   {Object}  _id  The ObjectID
  * @apiSuccess   {String}  FE   The frame element name
  * @apiSuccess   {String}  PT   The phrase type
@@ -275,16 +287,20 @@ const validateFormatAndProcessVUquery = compose([
  */
 
 /**
- * @api {get} /annoSet/:id GetAnnoSet
- * @apiVersion 4.0.0
+ * @api {get} /annoSet/:id/:projection/:population GetAnnoSet
+ * @apiVersion 5.0.0
  * @apiName GetAnnoSet
  * @apiGroup AnnotationSet
  * @apiDescription Get AnnotationSet with id. Returns at most one
  * document and throws an error if not found
  * @apiUse apiConfig
- * @apiParam {Number}  id  The AnnotationSet id
- * @apiExample Example usage:
- * curl -i "http://localhost:3030/v4/en/170/annoSet/2614616"
+ * @apiParam {Number}  id  Set the AnnotationSet id
+ * @apiExample Default
+ * # Default usage (no option set)
+ * curl -i "http://localhost:3030/v5/en/170/annoSet/2614616"
+ * @apiExample Projection/Population
+ * # Projecting lexUnit and sentence ids and populating both
+ * curl -i "http://localhost:3030/v5/en/170/annoSet/2614616/sentence,lexUnit/sentence,lexUnit"
  * @apiUse AnnotationSetSuccess
  * @apiUse NotFoundIDError
  * @apiUse InvalidQuery
@@ -302,17 +318,24 @@ router.get('/annoSet/:id/:projection/:population',
            validateAndFormatIDquery,
            annotationSet.getByID);
 /**
- * @api {get} /annoSets/:projection/:population?vp=:vp&strictVUMatching=:strictVUMatching
- * &withExtraCoreFEs=:withExtraCoreFEs GetAnnoSets
- * @apiVersion 4.0.0
+ * @api {get} /annoSets/:projection/:population?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs&skip=:skip&limit=:limit
+ * GetAnnoSets
+ * @apiVersion 5.0.0
  * @apiName GetAnnoSets
  * @apiGroup AnnotationSet
  * @apiDescription Get all AnnotationSets with pattern matching input
  * vp. Returns an empty array if no match is found
  * @apiUse vpParam
  * @apiUse apiConfig
- * @apiExample Example usage:
- * curl -i "http://localhost:3030/v4/en/170/annoSets?vp=Donor.NP.Ext+Theme.NP.Obj"
+ * @apiExample Default
+ * # Default usage (no option set)
+ * curl -i "http://localhost:3030/v5/en/170/annoSets?vp=Donor.NP.Ext+Theme.NP.Obj"
+ * @apiExample Projection/Population
+ * # Projecting and populating sentence field
+ * curl -i "http://localhost:3030/v5/en/170/annoSets/sentence/sentence?vp=Donor.NP.Ext+Theme.NP.Obj"
+ * @apiExample Skip/Limit
+ * # Getting 20 documents skipping the first 10
+ * curl -i "http://localhost:3030/v5/en/170/annoSets?vp=Donor.NP.Ext+Theme.NP.Obj&skip=10&limit=20"
  * @apiUse AnnotationSetSuccess
  * @apiUse NotFoundVPError
  * @apiUse InvalidQuery
@@ -336,7 +359,13 @@ router.get('/annoSets/:projection/:population',
            renderer.renderAnnotationSets,
            displayQueryExecutionTime);
 
-
+/**
+  * @api {get} /cluster/frames
+  * GetClusterFrames
+  * @apiVersion 5.0.0
+  * @apiName GetClusterFrames
+  * @apiGroup Cluster
+  */
 router.get('/cluster/frames',
            initializeValencerContext,
            validator.validatePathToDB,
@@ -361,6 +390,13 @@ router.get('/cluster/frames',
            renderer.renderCluster,
            displayQueryExecutionTime);
 
+/**
+  * @api {get} /cluster/lexUnits
+  * GetClusterLexUnits
+  * @apiVersion 5.0.0
+  * @apiName GetClusterLexUnits
+  * @apiGroup Cluster
+  */
 router.get('/cluster/lexUnits',
            initializeValencerContext,
            validator.validatePathToDB,
@@ -387,16 +423,20 @@ router.get('/cluster/lexUnits',
            displayQueryExecutionTime);
 
 /**
- * @api {get} /frame/:id GetFrame
- * @apiVersion 4.0.0
+ * @api {get} /frame/:id/:projection/:population GetFrame
+ * @apiVersion 5.0.0
  * @apiName GetFrame
  * @apiGroup Frame
  * @apiDescription Get Frame with id. Returns at most one
  * document and throws an error if not found
  * @apiUse apiConfig
  * @apiParam {Number}  id  The Frame id
- * @apiExample Example usage:
- * curl -i "http://localhost:3030/v4/en/170/frame/42"
+ * @apiExample Default
+ * # Default usage (no option set)
+ * curl -i "http://localhost:3030/v5/en/170/frame/42"
+ * @apiExample Projection/Population
+ * # Projecting and populating frameElements field
+ * curl -i "http://localhost:3030/v5/en/170/frame/42/frameElements/frameElements"
  * @apiUse FrameSuccess
  * @apiUse NotFoundIDError
  * @apiUse InvalidQuery
@@ -415,16 +455,23 @@ router.get('/frame/:id/:projection/:population',
            frame.getByID);
 
 /**
- * @api {get} /frames GetFrames
- * @apiVersion 4.0.0
+ * @api {get} /frames/:projection/:population?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs&skip=:skip&limit=:limit GetFrames
+ * @apiVersion 5.0.0
  * @apiName GetFrames
  * @apiGroup Frame
  * @apiDescription Get all Frames with pattern matching input vp. Returns an
  * empty array if no match is found
  * @apiUse vpParam
  * @apiUse apiConfig
- * @apiExample Example usage:
- * curl -i "http://localhost:3030/v4/en/170/frames?vp=Donor.NP.Ext+Theme.NP.Obj"
+ * @apiExample Default
+ * # Default usage (no option set)
+ * curl -i "http://localhost:3030/v5/en/170/frames?vp=Donor.NP.Ext+Theme.NP.Obj"
+ * @apiExample Projection/Population
+ * # Projecting and populating frameElements field
+ * curl -i "http://localhost:3030/v5/en/170/frames/frameElements/frameElements?vp=Donor.NP.Ext+Theme.NP.Obj"
+ * @apiExample Skip/Limit
+ * # Getting 20 documents skipping the first 10
+ * curl -i "http://localhost:3030/v5/en/170/frames?vp=Theme.NP.Obj&skip=10&limit=20"
  * @apiUse FrameSuccess
  * @apiUse NotFoundVPError
  * @apiUse InvalidQuery
@@ -449,16 +496,20 @@ router.get('/frames/:projection/:population',
            displayQueryExecutionTime);
 
 /**
- * @api {get} /frameElement/:id GetFrameElement
- * @apiVersion 4.0.0
+ * @api {get} /frameElement/:id/:projection/:population GetFrameElement
+ * @apiVersion 5.0.0
  * @apiName GetFrameElement
  * @apiGroup FrameElement
  * @apiDescription Get FrameElement with id. Returns at most one
  * document and throws an error if not found
  * @apiUse apiConfig
  * @apiParam {Number}  id  The FrameElement id
- * @apiExample Example usage:
- * curl -i "http://localhost:3030/v4/en/170/frameElement/42"
+ * @apiExample Default
+ * # Default usage (no option set)
+ * curl -i "http://localhost:3030/v5/en/170/frameElement/42"
+ * @apiExample Projection/Population
+ * # Projecting no fields and populating the semTypes field
+ * curl -i "http://localhost:3030/v5/en/170/frameElement/42/,/semTypes"
  * @apiUse FrameElementSuccess
  * @apiUse NotFoundIDError
  * @apiUse InvalidQuery
@@ -477,16 +528,20 @@ router.get('/frameElement/:id/:projection/:population',
            frameElement.getByID);
 
 /**
- * @api {get} /lexUnit/:id GetLexUnit
- * @apiVersion 4.0.0
+ * @api {get} /lexUnit/:id/:projection/:population GetLexUnit
+ * @apiVersion 5.0.0
  * @apiName GetLexUnit
  * @apiGroup LexUnit
  * @apiDescription Get LexUnit with id. Returns at most one
  * document and throws an error if not found
  * @apiParam {Number}  id  The LexUnit id
  * @apiUse apiConfig
- * @apiExample Example usage:
- * curl -i "http://localhost:3030/v4/en/170/lexUnit/42"
+ * @apiExample Default
+ * # Default usage (no option set)
+ * curl -i "http://localhost:3030/v5/en/170/lexUnit/42"
+ * @apiExample Projection/Population
+ * # Projecting and populating frame and frame.frameElements field
+ * curl -i "http://localhost:3030/v5/en/170/lexUnit/42/frame/frame,frame.frameElements"
  * @apiUse LexUnitSuccess
  * @apiUse NotFoundIDError
  * @apiUse InvalidQuery
@@ -506,7 +561,7 @@ router.get('/lexUnit/:id/:projection/:population',
 
 /**
  * @api {get} /lexUnits GetLexUnits
- * @apiVersion 4.0.0
+ * @apiVersion 5.0.0
  * @apiName GetLexUnits
  * @apiGroup LexUnit
  * @apiDescription Get all LexUnits with pattern matching input vp. Returns an
@@ -514,7 +569,7 @@ router.get('/lexUnit/:id/:projection/:population',
  * @apiUse vpParam
  * @apiUse apiConfig
  * @apiExample Example usage:
- * curl -i "http://localhost:3030/v4/en/170/lexUnits?vp=Donor.NP.Ext+Theme.NP.Obj"
+ * curl -i "http://localhost:3030/v5/en/170/lexUnits?vp=Donor.NP.Ext+Theme.NP.Obj"
  * @apiUse LexUnitSuccess
  * @apiUse NotFoundVPError
  * @apiUse InvalidQuery
@@ -540,7 +595,7 @@ router.get('/lexUnits/:projection/:population',
 
 /**
  * @api {get} /pattern/:id GetPattern
- * @apiVersion 4.0.0
+ * @apiVersion 5.0.0
  * @apiName GetPattern
  * @apiGroup Pattern
  * @apiDescription Get Pattern with id. Returns at most one
@@ -548,7 +603,7 @@ router.get('/lexUnits/:projection/:population',
  * @apiParam {Object}  id  The Pattern ObjectID
  * @apiUse apiConfig
  * @apiExample Example usage:
- * curl -i "http://localhost:3030/v4/en/170/pattern/595bacfcb062ee3a400e81e2"
+ * curl -i "http://localhost:3030/v5/en/170/pattern/595bacfcb062ee3a400e81e2"
  * @apiUse PatternSuccess
  * @apiUse NotFoundIDError
  * @apiUse InvalidQuery
@@ -568,7 +623,7 @@ router.get('/pattern/:id/:projection/:population',
 
 /**
  * @api {get} /patterns GetPatterns
- * @apiVersion 4.0.0
+ * @apiVersion 5.0.0
  * @apiName GetPatterns
  * @apiGroup Pattern
  * @apiDescription Get all Patterns with pattern matching input vp. Returns an
@@ -576,7 +631,7 @@ router.get('/pattern/:id/:projection/:population',
  * @apiUse vpParam
  * @apiUse apiConfig
  * @apiExample Example usage:
- * curl -i "http://localhost:3030/v4/en/170/patterns?vp=Donor.NP.Ext+Theme.NP.Obj"
+ * curl -i "http://localhost:3030/v5/en/170/patterns?vp=Donor.NP.Ext+Theme.NP.Obj"
  * @apiUse PatternSuccess
  * @apiUse NotFoundVPError
  * @apiUse InvalidQuery
@@ -602,7 +657,7 @@ router.get('/patterns/:projection/:population',
 
 /**
  * @api {get} /valenceUnit/:id GetValenceUnit
- * @apiVersion 4.0.0
+ * @apiVersion 5.0.0
  * @apiName GetValenceUnit
  * @apiGroup ValenceUnit
  * @apiDescription Get ValenceUnit with id. Returns at most one
@@ -610,7 +665,7 @@ router.get('/patterns/:projection/:population',
  * @apiParam {Object}  id  The ValenceUnit ObjectID
  * @apiUse apiConfig
  * @apiExample Example usage:
- * curl -i "http://localhost:3030/v4/en/170/valenceUnit/595bacfcb062ee3a400e81e0"
+ * curl -i "http://localhost:3030/v5/en/170/valenceUnit/595bacfcb062ee3a400e81e0"
  * @apiUse ValenceUnitSuccess
  * @apiUse NotFoundIDError
  * @apiUse InvalidQuery
@@ -630,7 +685,7 @@ router.get('/valenceUnit/:id/:projection/:population',
 
 /**
  * @api {get} /valenceUnits GetValenceUnits
- * @apiVersion 4.0.0
+ * @apiVersion 5.0.0
  * @apiName GetValenceUnits
  * @apiGroup ValenceUnit
  * @apiDescription Get all ValenceUnits with pattern matching input vp. Returns
@@ -639,7 +694,7 @@ router.get('/valenceUnit/:id/:projection/:population',
  * a partial triplet: FE, FE.PT, FE.GF, PT.GF, in any order: GF.FE, PT.FE, etc.
  * @apiUse apiConfig
  * @apiExample Example usage:
- * curl -i "http://localhost:3030/v4/en/170/valenceUnits?vu=Donor.NP.Ext"
+ * curl -i "http://localhost:3030/v5/en/170/valenceUnits?vu=Donor.NP.Ext"
  * @apiUse ValenceUnitSuccess
  * @apiUse NotFoundVPError
  * @apiUse InvalidQuery
