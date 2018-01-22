@@ -112,13 +112,10 @@ pm2 logs valencer
 ```
 
 ## HowTo &ndash; Shoot your first query
-Here is a sample HTTP request querying all the AnnotationSets in the database referring to the valence pattern `Donor.NP.Ext Theme.NP.Obj Recipient.PP[to].Dep`:
+Here is a sample HTTP request querying all the AnnotationSets in the database referring to the valence pattern `Donor.NP.Ext Theme.NP.Obj`:
 ```
-http://localhost:3030/v4/en/170/annoSets?vp=Donor.NP.Ext+Theme.NP.Obj
+curl -i "http://localhost:3030/v5/en/170/annoSets?vp=Donor.NP.Ext+Theme.NP.Obj"
 ```
-Copy-paste the above url to your web-browser.
-
-You can use [JSONView](https://addons.mozilla.org/en-US/firefox/addon/jsonview/) to format JSON in your web-browser and make it more reader-friendly.
 
 ## Documentation
 The full documentation of the API is available on our [GitHub Page](https://akb89.github.io/valencer/)
