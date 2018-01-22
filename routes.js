@@ -37,8 +37,10 @@ const valencer = new Router({
 
 const router = new Router();
 
-function initializeValencerContext(context, next) {
+async function initializeValencerContext(context, next) {
   context.valencer = {
+    config,
+    dbs: await database.getDBlist(),
     models: {},
     query: {
       vp: {

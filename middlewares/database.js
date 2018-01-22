@@ -35,6 +35,11 @@ function connect(models) {
     return next();
   };
 }
+
+function getDBlist() {
+  return mongoose.connection.db.admin().listDatabases();
+}
 module.exports = {
   connect,
+  getDBlist,
 };

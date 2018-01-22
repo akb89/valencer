@@ -1,10 +1,14 @@
 const chai = require('chai');
+const mongoose = require('mongoose');
 const rewire = require('rewire');
+const database = require('./../../middlewares/database');
 const ApiError = require('../../exceptions/apiException');
 const constants = require('../../utils/constants');
+const config = require('./../../config');
 
 const should = chai.should();
 
+const validatePathToDB = rewire('./../../middlewares/validator').__get__('validatePathToDB');
 const getMaxValenceTokens = rewire('./../../middlewares/validator').__get__('getMaxValenceTokens');
 const validateParamsNotEmpty = rewire('./../../middlewares/validator').__get__('validateParamsNotEmpty');
 const validateParamsIDnotEmpty = rewire('./../../middlewares/validator').__get__('validateParamsIDnotEmpty');
@@ -22,6 +26,96 @@ const validateQueryWithExtraCoreFEsParameter = rewire('./../../middlewares/valid
 const validateQueryParametersCombination = rewire('./../../middlewares/validator').__get__('validateQueryParametersCombination');
 
 describe('validator', () => {
+  before(async () => {
+    if (mongoose.connection.readyState === 0) {
+      await mongoose.connect(config.dbUri);
+    }
+  });
+  after(async () => {
+    await mongoose.connection.dropDatabase();
+    await mongoose.connection.close();
+  });
+  it('#validatePathToDB should not throw error on valid db lang and dataset', async () => {
+    const next = () => {};
+    const dbs = await database.getDBlist();
+    const context = {
+      request: { url: '/v5/en/170/frame/42' },
+      valencer: {
+        dbs,
+        config: {
+          databases: {
+            names: {
+              en: {
+                170: 'fn_en_170',
+              },
+            },
+          },
+        },
+      },
+    };
+    (() => validatePathToDB(context, next)).should.not.throw();
+  });
+  it('#validatePathToDB should throw InvalidQuery on invalid db lang', async () => {
+    const next = () => {};
+    const dbs = await database.getDBlist();
+    const context = {
+      request: { url: '/v5/ja/170/frame/42' },
+      valencer: {
+        dbs,
+        config: {
+          databases: {
+            names: {
+              en: {
+                170: 'fn_en_170',
+              },
+            },
+          },
+        },
+      },
+    };
+    (() => validatePathToDB(context, next)).should.throw(ApiError.InvalidQuery);
+  });
+  it('#validatePathToDB should throw InvalidQuery on invalid db dataset', async () => {
+    const next = () => {};
+    const dbs = await database.getDBlist();
+    const context = {
+      request: { url: '/v5/en/100/frame/42' },
+      valencer: {
+        dbs,
+        config: {
+          databases: {
+            names: {
+              en: {
+                170: 'fn_en_170',
+              },
+            },
+          },
+        },
+      },
+    };
+    (() => validatePathToDB(context, next)).should.throw(ApiError.InvalidQuery);
+  });
+  it('#validateQueryVPnotEmpty', () => {
+
+  });
+  it('#validateQueryVUnotEmpty', () => {
+
+  });
+  it('#validateQueryVUlength', () => {
+
+  });
+  it('#validateQueryVPcontainsNoInvalidCharacters', () => {
+
+  });
+  it('#validateQueryVUcontainsNoInvalidCharacters', () => {
+
+  });
+  it('#validateQueryFrameIDparameter', () => {
+
+  });
+  it('#validatePopulationString', () => {
+
+  });
   it('#getMaxValenceTokens should return the correct number of tokens', () => {
     let vp = 'A.B.C D.E.F G.H.I';
     getMaxValenceTokens(vp).should.equal(3);
