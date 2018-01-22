@@ -22,8 +22,8 @@
     "startmongo": "ps -ax | grep -v grep | grep mongo > /dev/null 2>&1 || mongod --fork --logpath ./mongod.valencer.log --pidfilepath $PWD/mongo.pid --bind_ip 127.0.0.1",
     "cleantestenv": "[ ! -f mongo.pid ] || (kill $(cat mongo.pid) && rm mongo.pid && rm mongod.valencer.log)",
     "pretest": "npm run startmongo",
-    "test": "NODE_ENV=testing ./node_modules/.bin/nyc --reporter=text ./node_modules/.bin/mocha --timeout 5000 ./tests/**/*.test.js && npm run cleantestenv || npm run cleantestenv",
-    "singletest": "NODE_ENV=testing ./node_modules/.bin/nyc --reporter=text mocha ./tests/middlewares/core.valenceUnits.excluded.test.js",
+    "test": "NODE_ENV=testing ./node_modules/.bin/nyc --reporter=text --reporter=html ./node_modules/.bin/mocha --timeout 5000 ./tests/**/*.test.js && npm run cleantestenv || npm run cleantestenv",
+    "singletest": "NODE_ENV=testing ./node_modules/.bin/nyc --reporter=text ./node_modules/.bin/mocha ./tests/middlewares/core.valenceUnits.excluded.test.js",
     "posttest": "npm run lint",
     "coverage": "./node_modules/.bin/nyc report --reporter=text-lcov | ./node_modules/.bin/coveralls"
   },
