@@ -1,14 +1,25 @@
 const chai = require('chai');
 const rewire = require('rewire');
-const validator = require('./../../middlewares/validator');
 const ApiError = require('../../exceptions/apiException');
 const constants = require('../../utils/constants');
 
 const should = chai.should();
 
 const getMaxValenceTokens = rewire('./../../middlewares/validator').__get__('getMaxValenceTokens');
+const validateParamsNotEmpty = rewire('./../../middlewares/validator').__get__('validateParamsNotEmpty');
+const validateParamsIDnotEmpty = rewire('./../../middlewares/validator').__get__('validateParamsIDnotEmpty');
+const validateParamsIDisNumberOrObjectID = rewire('./../../middlewares/validator').__get__('validateParamsIDisNumberOrObjectID');
+const validateProjectionString = rewire('./../../middlewares/validator').__get__('validateProjectionString');
+const validateQuerySkipParameter = rewire('./../../middlewares/validator').__get__('validateQuerySkipParameter');
+const validateQueryLimitParameter = rewire('./../../middlewares/validator').__get__('validateQueryLimitParameter');
+const validateQueryStrictVUmatchingParameter = rewire('./../../middlewares/validator').__get__('validateQueryStrictVUmatchingParameter');
+const validateQueryVPcontainsNoInvalidSequence = rewire('./../../middlewares/validator').__get__('validateQueryVPcontainsNoInvalidSequence');
+const validateQueryVPvalenceUnitLength = rewire('./../../middlewares/validator').__get__('validateQueryVPvalenceUnitLength');
 const validateQueryParamNotEmpty = rewire('./../../middlewares/validator').__get__('validateQueryParamNotEmpty');
+const validateQueryNotEmpty = rewire('./../../middlewares/validator').__get__('validateQueryNotEmpty');
 const validateQueryParamContainsNoInvalidCharacters = rewire('./../../middlewares/validator').__get__('validateQueryParamContainsNoInvalidCharacters');
+const validateQueryWithExtraCoreFEsParameter = rewire('./../../middlewares/validator').__get__('validateQueryWithExtraCoreFEsParameter');
+const validateQueryParametersCombination = rewire('./../../middlewares/validator').__get__('validateQueryParametersCombination');
 
 describe('validator', () => {
   it('#getMaxValenceTokens should return the correct number of tokens', () => {
@@ -21,7 +32,7 @@ describe('validator', () => {
     const next = () => {};
     const context = { query: null };
     try {
-      validator.validateQueryNotEmpty(context, next);
+      validateQueryNotEmpty(context, next);
     } catch (err) {
       err.name.should.equal('InvalidQuery');
       err.message.should.equal('context.query object is empty, null or undefined');
@@ -31,7 +42,7 @@ describe('validator', () => {
     const next = () => {};
     const context = { query: undefined };
     try {
-      validator.validateQueryNotEmpty(context, next);
+      validateQueryNotEmpty(context, next);
     } catch (err) {
       err.name.should.equal('InvalidQuery');
       err.message.should.equal('context.query object is empty, null or undefined');
@@ -41,7 +52,7 @@ describe('validator', () => {
     const next = () => {};
     const context = { query: '' };
     try {
-      validator.validateQueryNotEmpty(context, next);
+      validateQueryNotEmpty(context, next);
     } catch (err) {
       err.name.should.equal('InvalidQuery');
       err.message.should.equal('context.query object is empty, null or undefined');
@@ -51,7 +62,7 @@ describe('validator', () => {
     const next = () => {};
     const context = { params: null };
     try {
-      validator.validateParamsNotEmpty(context, next);
+      validateParamsNotEmpty(context, next);
     } catch (err) {
       err.name.should.equal('InvalidParams');
       err.message.should.equal('context.params object is empty, null or undefined');
@@ -61,7 +72,7 @@ describe('validator', () => {
     const next = () => {};
     const context = { params: undefined };
     try {
-      validator.validateParamsNotEmpty(context, next);
+      validateParamsNotEmpty(context, next);
     } catch (err) {
       err.name.should.equal('InvalidParams');
       err.message.should.equal('context.params object is empty, null or undefined');
@@ -71,7 +82,7 @@ describe('validator', () => {
     const next = () => {};
     const context = { params: '' };
     try {
-      validator.validateParamsNotEmpty(context, next);
+      validateParamsNotEmpty(context, next);
     } catch (err) {
       err.name.should.equal('InvalidParams');
       err.message.should.equal('context.params object is empty, null or undefined');
@@ -105,7 +116,7 @@ describe('validator', () => {
     const next = () => {};
     const context = { params: { id: null } };
     try {
-      validator.validateParamsIDnotEmpty(context, next);
+      validateParamsIDnotEmpty(context, next);
     } catch (err) {
       err.name.should.equal('InvalidParams');
       err.message.should.equal('context.params.id parameter is empty, null or undefined');
@@ -115,7 +126,7 @@ describe('validator', () => {
     const next = () => {};
     const context = { params: { id: undefined } };
     try {
-      validator.validateParamsIDnotEmpty(context, next);
+      validateParamsIDnotEmpty(context, next);
     } catch (err) {
       err.name.should.equal('InvalidParams');
       err.message.should.equal('context.params.id parameter is empty, null or undefined');
@@ -125,7 +136,7 @@ describe('validator', () => {
     const next = () => {};
     const context = { params: { id: '' } };
     try {
-      validator.validateParamsIDnotEmpty(context, next);
+      validateParamsIDnotEmpty(context, next);
     } catch (err) {
       err.name.should.equal('InvalidParams');
       err.message.should.equal('context.params.id parameter is empty, null or undefined');
@@ -134,23 +145,23 @@ describe('validator', () => {
   it('#validateParamsIDisNumberOrObjectID should not throw when context.params.id object is a plain Number', () => {
     const next = () => {};
     const context = { params: { id: 123 } };
-    (() => validator.validateParamsIDisNumberOrObjectID(context, next)).should.not.throw();
+    (() => validateParamsIDisNumberOrObjectID(context, next)).should.not.throw();
   });
   it('#validateParamsIDisNumberOrObjectID should not throw when context.params.id object is an ObjectID', () => {
     const next = () => {};
     const context = { params: { id: '5936efc57aa9948c54c157d8' } };
-    (() => validator.validateParamsIDisNumberOrObjectID(context, next)).should.not.throw();
+    (() => validateParamsIDisNumberOrObjectID(context, next)).should.not.throw();
   });
   it('#validateParamsIDisNumberOrObjectID should not throw when context.params.id object is a string-formatted Number', () => {
     const next = () => {};
     const context = { params: { id: '123' } };
-    (() => validator.validateParamsIDisNumberOrObjectID(context, next)).should.not.throw();
+    (() => validateParamsIDisNumberOrObjectID(context, next)).should.not.throw();
   });
   it('#validateParamsIDisNumberOrObjectID should throw InvalidParams when context.params.id object is neither a Number nor an ObjectID', () => {
     const next = () => {};
     const context = { params: { id: 'string' } };
     try {
-      validator.validateParamsIDisNumberOrObjectID(context, next);
+      validateParamsIDisNumberOrObjectID(context, next);
     } catch (err) {
       err.name.should.equal('InvalidParams');
       err.message.should.equal('context.params.id should be a Number or an ObjectID');
@@ -160,7 +171,7 @@ describe('validator', () => {
     const next = () => {};
     const context = { params: { id: '5936efc57aa99' } };
     try {
-      validator.validateParamsIDisNumberOrObjectID(context, next);
+      validateParamsIDisNumberOrObjectID(context, next);
     } catch (err) {
       err.name.should.equal('InvalidParams');
       err.message.should.equal('context.params.id should be a Number or an ObjectID');
@@ -193,7 +204,7 @@ describe('validator', () => {
     const next = () => {};
     const context = { query: { vp: '.A.B.C D.E.F' } };
     try {
-      validator.validateQueryVPcontainsNoInvalidSequence(context, next);
+      validateQueryVPcontainsNoInvalidSequence(context, next);
     } catch (err) {
       err.name.should.equal('InvalidQueryParams');
       err.message.should.equal('Invalid sequence in context.query.vp = \'.A.B.C D.E.F\' starting at index = 0');
@@ -203,7 +214,7 @@ describe('validator', () => {
     const next = () => {};
     const context = { query: { vp: 'A.B.C D.E.F.' } };
     try {
-      validator.validateQueryVPcontainsNoInvalidSequence(context, next);
+      validateQueryVPcontainsNoInvalidSequence(context, next);
     } catch (err) {
       err.name.should.equal('InvalidQueryParams');
       err.message.should.equal('Invalid sequence in context.query.vp = \'A.B.C D.E.F.\' starting at index = 11');
@@ -213,7 +224,7 @@ describe('validator', () => {
     const next = () => {};
     const context = { query: { vp: 'A.B.C. D.E.F' } };
     try {
-      validator.validateQueryVPcontainsNoInvalidSequence(context, next);
+      validateQueryVPcontainsNoInvalidSequence(context, next);
     } catch (err) {
       err.name.should.equal('InvalidQueryParams');
       err.message.should.equal('Invalid sequence in context.query.vp = \'A.B.C. D.E.F\' starting at index = 5');
@@ -223,7 +234,7 @@ describe('validator', () => {
     const next = () => {};
     const context = { query: { vp: 'A.B.C .D.E.F' } };
     try {
-      validator.validateQueryVPcontainsNoInvalidSequence(context, next);
+      validateQueryVPcontainsNoInvalidSequence(context, next);
     } catch (err) {
       err.name.should.equal('InvalidQueryParams');
       err.message.should.equal('Invalid sequence in context.query.vp = \'A.B.C .D.E.F\' starting at index = 5');
@@ -232,13 +243,13 @@ describe('validator', () => {
   it('#validateQueryVPcontainsNoInvalidSequence should not throw InvalidQueryParams when processing multiple dots', () => {
     const next = () => {};
     const context = { query: { vp: 'A.B.C..D.E.F' } };
-    (() => validator.validateQueryVPcontainsNoInvalidSequence(context, next)).should.not.throw();
+    (() => validateQueryVPcontainsNoInvalidSequence(context, next)).should.not.throw();
   });
   it('#validateQueryVPvalenceUnitLength should throw InvalidQueryParams when context.query.vp object (string) contains more than 3 tokens separated by a dot', () => {
     const next = () => {};
     const context = { query: { vp: 'A.B.C D.E.F.G' } };
     try {
-      validator.validateQueryVPvalenceUnitLength(context, next);
+      validateQueryVPvalenceUnitLength(context, next);
     } catch (err) {
       err.name.should.equal('InvalidQueryParams');
       err.message.should.equal('MaxValenceLengthExceeded in context.query.vp = \'A.B.C D.E.F.G\'. A valence can only contain up to 3 tokens FE.PT.GF separated by a dot');
@@ -247,20 +258,20 @@ describe('validator', () => {
   it('#validateQueryStrictVUmatchingParameter should set strictVUMatching to true when not specifying value', () => {
     const next = () => {};
     const context = { query: { strictVUMatching: '' } };
-    validator.validateQueryStrictVUmatchingParameter(context, next);
+    validateQueryStrictVUmatchingParameter(context, next);
     context.query.strictVUMatching.should.equal(true);
   });
   it('#validateQueryStrictVUmatchingParameter should set strictVUMatching to false by default', () => {
     const next = () => {};
     const context = { query: { strictVUMatching: undefined } };
-    validator.validateQueryStrictVUmatchingParameter(context, next);
+    validateQueryStrictVUmatchingParameter(context, next);
     context.query.strictVUMatching.should.equal(false);
   });
   it('#validateQueryStrictVUmatchingParameter should throw InvalidQueryParams when context.query.strictVUMatching parameter is neither true nor false', () => {
     const next = () => {};
     const context = { query: { strictVUMatching: 'fals' } };
     try {
-      validator.validateQueryStrictVUmatchingParameter(context, next);
+      validateQueryStrictVUmatchingParameter(context, next);
     } catch (err) {
       err.name.should.equal('InvalidQueryParams');
       err.message.should.equal('context.query.strictVUMatching parameter should be true or false');
@@ -269,14 +280,14 @@ describe('validator', () => {
   it('#validateQueryWithExtraCoreFEsParameter should set withExtraCoreFEs to true by default', () => {
     const next = () => {};
     const context = { query: { withExtraCoreFEs: undefined } };
-    validator.validateQueryWithExtraCoreFEsParameter(context, next);
+    validateQueryWithExtraCoreFEsParameter(context, next);
     context.query.withExtraCoreFEs.should.equal(true);
   });
   it('#validateQueryWithExtraCoreFEsParameter should throw InvalidQueryParams when context.query.withExtraCoreFEs parameter is neither true nor false', () => {
     const next = () => {};
     const context = { query: { withExtraCoreFEs: 'tru' } };
     try {
-      validator.validateQueryWithExtraCoreFEsParameter(context, next);
+      validateQueryWithExtraCoreFEsParameter(context, next);
     } catch (err) {
       err.name.should.equal('InvalidQueryParams');
       err.message.should.equal('context.query.withExtraCoreFEs parameter should be true or false');
@@ -286,32 +297,50 @@ describe('validator', () => {
     const next = () => {};
     const context = { valencer: { query: { vp: { withFEids: ['PT', 'GF'] } } }, query: { strictVUMatching: false, withExtraCoreFEs: false } };
     try {
-      validator.validateQueryParametersCombination(context, next);
+      validateQueryParametersCombination(context, next);
     } catch (err) {
       err.name.should.equal('InvalidQueryParams');
       err.message.should.equal('The Valencer API cannot process queries with strictVUMatching parameter set to false and withExtraCoreFEs parameter set to false if at least one Frame Element is unspecified in the input Valence Pattern');
     }
     context.valencer.query.vp.withFEids = [[1, 2, 3], 'PT', 'GF'];
-    (() => validator.validateQueryParametersCombination(context, next)).should.throw();
+    (() => validateQueryParametersCombination(context, next)).should.throw();
     context.valencer.query.vp.withFEids = ['PT', 'GF'];
     context.query.strictVUMatching = true;
-    (() => validator.validateQueryParametersCombination(context, next)).should.not.throw();
+    (() => validateQueryParametersCombination(context, next)).should.not.throw();
     context.query.strictVUMatching = false;
     context.query.withExtraCoreFEs = true;
-    (() => validator.validateQueryParametersCombination(context, next)).should.not.throw();
+    (() => validateQueryParametersCombination(context, next)).should.not.throw();
     context.query.strictVUMatching = true;
     context.query.withExtraCoreFEs = true;
-    (() => validator.validateQueryParametersCombination(context, next)).should.not.throw();
+    (() => validateQueryParametersCombination(context, next)).should.not.throw();
   });
-
   it('#validateProjectionString should throw InvalidQueryParams when disallowed characters are used', () => {
     const next = () => {};
     const disallowedChars = constants.DISALLOW_CHARS_PROJ_POPUL;
-
     disallowedChars.forEach((char) => {
       const context = { params: { projection: `name,${char}test,${char},${char}test2${char}` } };
-      const fn = validator.validateProjectionString.bind(null, context, next);
-      fn.should.throw(ApiError.InvalidQueryParams);
+      (() => validateProjectionString(context, next)).should.throw(ApiError.InvalidQueryParams);
     });
+  });
+  it('#validateQuerySkipParameter should throw InvalidQueryParams when specified skip parmeter is not a positive integer', () => {
+    const next = () => {};
+    const invalidSkipParams = ['-1', 'test', '1.7'];
+    invalidSkipParams.forEach((param) => {
+      const context = { query: { skip: param } };
+      (() => validateQuerySkipParameter(context, next)).should.throw(ApiError.InvalidQueryParams);
+    });
+    const context = { query: { skip: '1' } };
+    (() => validateQuerySkipParameter(context, next)).should.not.throw(ApiError.InvalidQueryParams);
+  });
+  it('#validateQueryLimitParameter should throw InvalidQueryParams when specified skip parmeter is not a positive integer', () => {
+    const next = () => {};
+    const invalidLimitParams = ['-1', 'test', '1.7'];
+    invalidLimitParams.forEach((param) => {
+      const context = { query: { limit: param } };
+      (() => validateQueryLimitParameter(context, next)).should.throw(ApiError.InvalidQueryParams);
+    });
+    const context = { query: { limit: '1' } };
+    (() => validateQueryLimitParameter(context, next))
+      .should.not.throw(ApiError.InvalidQueryParams);
   });
 });
