@@ -266,18 +266,6 @@ function validatePopulationString(context, next) {
   return next();
 }
 
-function validateQueryFormatParameter(context, next) {
-  if (context.query.format == null) {
-    return next();
-  } else if (context.query.format !== 'cytoscape'
-             && context.query.format !== 'valencer') {
-    throw new ApiError.InvalidQueryParams(`Unsupported format:
-      '${context.query.format}'. Should be 'cytoscape' or 'valencer'`);
-  }
-  context.valencer.query.format = context.query.format;
-  return next();
-}
-
 function validateQuerySkipParameter(context, next) {
   if (context.query.skip == null) {
     return next();
@@ -323,7 +311,6 @@ module.exports = {
   validateQueryFrameIDparameter,
   validateProjectionString,
   validatePopulationString,
-  validateQueryFormatParameter,
   validateQuerySkipParameter,
   validateQueryLimitParameter,
 };
