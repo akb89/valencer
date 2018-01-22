@@ -23,9 +23,7 @@ function getAnnoSetsWithAnnoSetModel(AnnotationSet) {
 
 async function getByValencePattern(context, next) {
   const startTime = utils.getStartTime();
-  logger.info(`Querying for AnnotationSets with skip =
-    '${context.valencer.query.skip}', limit = '${context.valencer.query.limit}'
-    and vp = '${context.query.vp}'`);
+  logger.info(`Querying for AnnotationSets with skip = '${context.valencer.query.skip}', limit = '${context.valencer.query.limit}' and vp = '${context.query.vp}'`);
   const annoSetModel = context.valencer.models.AnnotationSet;
   const filteredPatternsIDs = context.valencer.results.tmp.filteredPatternsIDs;
   const [count, results] = await Promise.all([
@@ -43,8 +41,7 @@ async function getByValencePattern(context, next) {
     Limit: context.valencer.query.limit,
   });
   context.valencer.results.annotationSets = results;
-  logger.verbose(`${results.length} unique AnnotationSets out of ${count}
-    retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
+  logger.verbose(`${results.length} unique AnnotationSets out of ${count} retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }
 
