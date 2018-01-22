@@ -130,6 +130,7 @@ describe('core.patterns', () => {
   });
   after(async () => {
     await mongoose.connection.dropDatabase();
+    await mongoose.connection.close();
   });
   it('#getPatternsIDs should return correct patterns when processing a single arrayOfValenceUnitIDs', async () => {
     const patterns = await getPatternsIDs([[aNPObj._id, bNPObj._id, cNPExt._id]], []);

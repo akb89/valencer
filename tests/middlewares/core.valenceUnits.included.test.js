@@ -13,7 +13,7 @@ const getArrayOfArrayOfValenceUnitsIDs = rewire('./../../middlewares/core/valenc
 describe('core.valenceUnits.included', () => {
   before(async () => {
     if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(config.dbUri, { useMongoClient: true });
+      await mongoose.connect(config.dbUri);
     }
     const aFE = new FrameElement({ _id: 1, name: 'A' });
     await aFE.save();
@@ -42,6 +42,7 @@ describe('core.valenceUnits.included', () => {
   });
   after(async () => {
     await mongoose.connection.dropDatabase();
+    await mongoose.connection.close();
   });
   it('#getValenceUnitsIDs should return an array of ObjectIDs', async () => {
     const vusIDs = await getValenceUnitsIDs([[1], 'NP', 'Obj']);

@@ -9,7 +9,7 @@ const should = chai.should();
 describe('formatter', () => {
   before(async () => {
     if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(config.dbUri, { useMongoClient: true });
+      await mongoose.connect(config.dbUri);
     }
     const aFE = new FrameElement({
       _id: 1,
@@ -44,6 +44,7 @@ describe('formatter', () => {
   });
   after(async () => {
     await mongoose.connection.dropDatabase();
+    await mongoose.connection.close();
   });
   it('#formatValencePatternToArrayOfArrayOfTokens should convert a full string formatted valence pattern to an array of array of tokens', () => {
     const next = () => {};

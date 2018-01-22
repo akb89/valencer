@@ -22,7 +22,7 @@ describe('core.valenceUnits.excluded', () => {
   let eSfinADJ;
   before(async () => {
     if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(config.dbUri, { useMongoClient: true });
+      await mongoose.connect(config.dbUri);
     }
     aFE = new FrameElement({ _id: 1, name: 'A', coreType: 'Core' });
     await aFE.save();
@@ -57,6 +57,7 @@ describe('core.valenceUnits.excluded', () => {
   });
   after(async () => {
     await mongoose.connection.dropDatabase();
+    await mongoose.connection.close();
   });
   it('#getFrameElementNamesSet should return the correct set of FrameElement names', async () => {
     const formattedVPquery = [['A', 'NP', 'Obj'], ['NP', 'D', 'Ext'], ['PP[about]', 'Dep', 'C']];

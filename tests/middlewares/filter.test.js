@@ -35,7 +35,7 @@ describe('filter', () => {
   let pattern12;
   before(async () => {
     if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(config.dbUri, { useMongoClient: true });
+      await mongoose.connect(config.dbUri);
     }
     aFE = new FrameElement({ _id: 1, name: 'A', coreType: 'Core' });
     await aFE.save();
@@ -100,6 +100,7 @@ describe('filter', () => {
   });
   after(async () => {
     await mongoose.connection.dropDatabase();
+    await mongoose.connection.close();
   });
   it('#filterByStrictVUMatching should return a correct array of patterns ids filtered by strict #valenceUnit matching', async () => {
     (await filterByStrictVUMatching([pattern2, pattern8, pattern12],
