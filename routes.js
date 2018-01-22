@@ -22,6 +22,8 @@ const valenceUnits = require('./middlewares/processors/valenceUnits');
 const utils = require('./utils/utils');
 const config = require('./config');
 
+/* eslint-disable max-len */
+
 const pkgVersion = process.env.npm_package_version;
 const apiVersion = `/v${pkgVersion.split('.')[0]}`;
 
@@ -209,7 +211,8 @@ const validateFormatAndProcessVUquery = compose([
  * @apiParam {Boolean}    [withExtraCoreFEs=true] Specify whether, in cases of
  * non-strict valence unit matching, extra Frame Elements can be core FEs.
  * @apiParam {Number}   [skip=0] Set the number of documents to skip before returning.
- * @apiParam {Number}   [limit=10] Set the number of documents to return. Set to 0 to return all possible documents.
+ * @apiParam {Number}   [limit=10] Set the number of documents to return.
+ * Set to 0 to return all possible documents.
  */
 
 /**
@@ -317,6 +320,7 @@ router.get('/annoSet/:id/:projection',
 router.get('/annoSet/:id/:projection/:population',
            validateAndFormatIDquery,
            annotationSet.getByID);
+
 /**
  * @api {get} /annoSets/:projection/:population?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs&skip=:skip&limit=:limit
  * GetAnnoSets
