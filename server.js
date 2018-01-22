@@ -25,9 +25,6 @@ app.use(compress({
   flush: zlib.constants.Z_SYNC_FLUSH,
 }));
 
-// app.keys = ['my-secret-key'];
-// app.use(authenticate());
-
 app.use(async (context, next) => {
   try {
     await next();
