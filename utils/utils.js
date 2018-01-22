@@ -44,11 +44,6 @@ function regExpEscape(s) {
     .replace(/\x08/g, '\\x08');
 }
 
-/* function regExpEscape(s) {
-  return String(s).replace(/([-()\[\]{}+?*.$\^|,:#<!\\])/g, '\\$1')
-      .replace(/\x08/g, '\\x08');
-} */
-
 module.exports = {
   toValenceArray,
   toTokenArray,
