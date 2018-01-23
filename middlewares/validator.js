@@ -196,7 +196,7 @@ function validateQueryParametersCombination(context, next) {
 }
 
 function validateQueryFrameIDparameter(context, next) {
-  if (context.query.frameID == null) {
+  if (context.query.frameID == null || context.query.frameID.length === 0) {
     throw new ApiError.InvalidQueryParams('frameID parameter is mandatory');
   }
   const frameID = Number(context.query.frameID);

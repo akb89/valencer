@@ -9,17 +9,24 @@ const config = require('./../../config');
 const should = chai.should();
 
 const validatePathToDB = rewire('./../../middlewares/validator').__get__('validatePathToDB');
+const validateQueryFrameIDparameter = rewire('./../../middlewares/validator').__get__('validateQueryFrameIDparameter');
 const getMaxValenceTokens = rewire('./../../middlewares/validator').__get__('getMaxValenceTokens');
 const validateParamsNotEmpty = rewire('./../../middlewares/validator').__get__('validateParamsNotEmpty');
+const validateQueryVUlength = rewire('./../../middlewares/validator').__get__('validateQueryVUlength');
+const validateQueryVPcontainsNoInvalidCharacters = rewire('./../../middlewares/validator').__get__('validateQueryVPcontainsNoInvalidCharacters');
+const validateQueryVUcontainsNoInvalidCharacters = rewire('./../../middlewares/validator').__get__('validateQueryVUcontainsNoInvalidCharacters');
 const validateParamsIDnotEmpty = rewire('./../../middlewares/validator').__get__('validateParamsIDnotEmpty');
 const validateParamsIDisNumberOrObjectID = rewire('./../../middlewares/validator').__get__('validateParamsIDisNumberOrObjectID');
 const validateProjectionString = rewire('./../../middlewares/validator').__get__('validateProjectionString');
+const validatePopulationString = rewire('./../../middlewares/validator').__get__('validatePopulationString');
 const validateQuerySkipParameter = rewire('./../../middlewares/validator').__get__('validateQuerySkipParameter');
 const validateQueryLimitParameter = rewire('./../../middlewares/validator').__get__('validateQueryLimitParameter');
 const validateQueryStrictVUmatchingParameter = rewire('./../../middlewares/validator').__get__('validateQueryStrictVUmatchingParameter');
 const validateQueryVPcontainsNoInvalidSequence = rewire('./../../middlewares/validator').__get__('validateQueryVPcontainsNoInvalidSequence');
 const validateQueryVPvalenceUnitLength = rewire('./../../middlewares/validator').__get__('validateQueryVPvalenceUnitLength');
 const validateQueryParamNotEmpty = rewire('./../../middlewares/validator').__get__('validateQueryParamNotEmpty');
+const validateQueryVPnotEmpty = rewire('./../../middlewares/validator').__get__('validateQueryVPnotEmpty');
+const validateQueryVUnotEmpty = rewire('./../../middlewares/validator').__get__('validateQueryVUnotEmpty');
 const validateQueryNotEmpty = rewire('./../../middlewares/validator').__get__('validateQueryNotEmpty');
 const validateQueryParamContainsNoInvalidCharacters = rewire('./../../middlewares/validator').__get__('validateQueryParamContainsNoInvalidCharacters');
 const validateQueryWithExtraCoreFEsParameter = rewire('./../../middlewares/validator').__get__('validateQueryWithExtraCoreFEsParameter');
@@ -95,26 +102,91 @@ describe('validator', () => {
     };
     (() => validatePathToDB(context, next)).should.throw(ApiError.InvalidQuery);
   });
-  it('#validateQueryVPnotEmpty', () => {
-
+  it('#validateQueryVPnotEmpty should throw InvalidQueryParams if context.query.vp is empty, null or undefined', () => {
+    const next = () => {};
+    const context = { query: { vp: null } };
+    (() => validateQueryVPnotEmpty(context, next)).should.throw(ApiError.InvalidQueryParams);
+    context.query.vp = undefined;
+    (() => validateQueryVPnotEmpty(context, next)).should.throw(ApiError.InvalidQueryParams);
+    context.query.vp = '';
+    (() => validateQueryVPnotEmpty(context, next)).should.throw(ApiError.InvalidQueryParams);
+    context.query.vp = ' test ';
+    validateQueryVPnotEmpty(context, next);
+    context.query.vp.should.equal('test');
   });
-  it('#validateQueryVUnotEmpty', () => {
-
+  it('#validateQueryVUnotEmpty should throw InvalidQueryParams if context.query.vu is empty, null or undefined', () => {
+    const next = () => {};
+    const context = { query: { vu: null } };
+    (() => validateQueryVUnotEmpty(context, next)).should.throw(ApiError.InvalidQueryParams);
+    context.query.vu = undefined;
+    (() => validateQueryVUnotEmpty(context, next)).should.throw(ApiError.InvalidQueryParams);
+    context.query.vu = '';
+    (() => validateQueryVUnotEmpty(context, next)).should.throw(ApiError.InvalidQueryParams);
+    context.query.vu = ' test ';
+    validateQueryVUnotEmpty(context, next);
+    context.query.vu.should.equal('test');
   });
-  it('#validateQueryVUlength', () => {
-
+  it('#validateQueryVUlength should return InvalidQueryParams when VU contains more than a single triplet FE.PT.GF', () => {
+    const next = () => {};
+    const context = { query: { vu: 'A.B.C D.E.F' } };
+    (() => validateQueryVUlength(context, next)).should.throw(ApiError.InvalidQueryParams);
+    context.query.vu = 'A.B.C';
+    (() => validateQueryVUlength(context, next)).should.not.throw();
   });
-  it('#validateQueryVPcontainsNoInvalidCharacters', () => {
-
+  it('#validateQueryVPcontainsNoInvalidCharacters should throw InvalidQueryParams when context.query.vu contains invalid characters', () => {
+    const next = () => {};
+    const context = { query: { vp: '$.B.C E.F.G' } };
+    (() => validateQueryVPcontainsNoInvalidCharacters(context, next))
+      .should.throw(ApiError.InvalidQueryParams);
+    context.query.vp = 'A_B.C.E F.G';
+    (() => validateQueryVPcontainsNoInvalidCharacters(context, next)).should.not.throw();
   });
-  it('#validateQueryVUcontainsNoInvalidCharacters', () => {
-
+  it('#validateQueryVUcontainsNoInvalidCharacters should throw InvalidQueryParams when context.query.vu contains invalid characters', () => {
+    const next = () => {};
+    const context = { query: { vu: 'test$.name.*' } };
+    (() => validateQueryVUcontainsNoInvalidCharacters(context, next))
+      .should.throw(ApiError.InvalidQueryParams);
+    context.query.vu = 'Defaut_name.for.test';
+    (() => validateQueryVUcontainsNoInvalidCharacters(context, next)).should.not.throw();
   });
-  it('#validateQueryFrameIDparameter', () => {
-
+  it('#validateQueryFrameIDparameter should throw InvalidQueryParams when frameID is null, empty or undefined', () => {
+    const next = () => {};
+    const context = {
+      query: { frameID: null },
+    };
+    (() => validateQueryFrameIDparameter(context, next)).should.throw(ApiError.InvalidQueryParams);
+    context.query.frameID = undefined;
+    (() => validateQueryFrameIDparameter(context, next)).should.throw(ApiError.InvalidQueryParams);
+    context.query.frameID = '';
+    (() => validateQueryFrameIDparameter(context, next)).should.throw(ApiError.InvalidQueryParams);
   });
-  it('#validatePopulationString', () => {
-
+  it('#validateQueryFrameIDparameter should throw InvalidQueryParams when frameID is not a positive integer', () => {
+    const next = () => {};
+    const context = {
+      query: { frameID: '-2' },
+      valencer: { query: { frameID: null } },
+    };
+    (() => validateQueryFrameIDparameter(context, next)).should.throw(ApiError.InvalidQueryParams);
+    context.query.frameID = '18';
+    (() => validateQueryFrameIDparameter(context, next)).should.not.throw();
+  });
+  it('#validatePopulationString should throw InvalidQueryParams when context.params.population field contains invalid char', () => {
+    const next = () => {};
+    const context = {
+      params: { population: 'test]' },
+    };
+    (() => validatePopulationString(context, next)).should.throw(ApiError.InvalidQueryParams);
+    context.params.population = 'test';
+    (() => validatePopulationString(context, next)).should.not.throw();
+  });
+  it('#validatePopulationString should throw InvalidQueryParams when context.params.population is not well-formed', () => {
+    const next = () => {};
+    const context = {
+      params: { population: 'abc.def' },
+    };
+    (() => validatePopulationString(context, next)).should.not.throw();
+    context.params.population = 'abc$[def|hi]';
+    (() => validatePopulationString(context, next)).should.throw(ApiError.InvalidQueryParams);
   });
   it('#getMaxValenceTokens should return the correct number of tokens', () => {
     let vp = 'A.B.C D.E.F G.H.I';
@@ -254,22 +326,19 @@ describe('validator', () => {
   it('#validateParamsIDisNumberOrObjectID should throw InvalidParams when context.params.id object is neither a Number nor an ObjectID', () => {
     const next = () => {};
     const context = { params: { id: 'string' } };
-    try {
-      validateParamsIDisNumberOrObjectID(context, next);
-    } catch (err) {
-      err.name.should.equal('InvalidParams');
-      err.message.should.equal('context.params.id should be a Number or an ObjectID');
-    }
+    (() => validateParamsIDisNumberOrObjectID(context, next)).should.throw(ApiError.InvalidParams);
   });
   it('#validateParamsIDisNumberOrObjectID should throw InvalidParams when context.params.id object is neither a Number nor an ObjectID', () => {
     const next = () => {};
     const context = { params: { id: '5936efc57aa99' } };
-    try {
-      validateParamsIDisNumberOrObjectID(context, next);
-    } catch (err) {
-      err.name.should.equal('InvalidParams');
-      err.message.should.equal('context.params.id should be a Number or an ObjectID');
-    }
+    (() => validateParamsIDisNumberOrObjectID(context, next)).should.throw(ApiError.InvalidParams);
+    context.params.id = '$^vshc';
+    (() => validateParamsIDisNumberOrObjectID(context, next)).should.throw(ApiError.InvalidParams);
+  });
+  it('#validateParamsIDisNumberOrObjectID should throw InvalidParams when context.params.id object is an invalid ObjectID of more than 24 characters', () => {
+    const next = () => {};
+    const context = { params: { id: '5936efc57aa9df867hfc928jksle3' } };
+    (() => validateParamsIDisNumberOrObjectID(context, next)).should.throw(ApiError.InvalidParams);
   });
   it('#validateQueryParamContainsNoInvalidCharacters should throw InvalidQueryParams when query parameter object (string) contains an invalid character (non-alphanumeric except for . and whitespace)', () => {
     try {
