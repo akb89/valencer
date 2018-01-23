@@ -26,6 +26,7 @@ function validatePathToDB(context, next) {
     throw new ApiError.InvalidQuery(`Specified database '${dbName}' for language '${lang}' and dataset '${dataset}' was not found on the current instance of MongoDB running on server '${context.valencer.config.databases.server}' and port '${context.valencer.config.databases.port}'`);
   }
   logger.debug(`database language '${lang}', dataset '${dataset}' and name '${dbName}' are valid`);
+  context.valencer.dbName = dbName;
   return next();
 }
 

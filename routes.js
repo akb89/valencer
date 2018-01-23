@@ -27,8 +27,6 @@ const config = require('./config');
 const pkgVersion = process.env.npm_package_version;
 const apiVersion = `/v${pkgVersion.split('.')[0]}`;
 
-const models = {};
-
 const logger = config.logger;
 
 const valencer = new Router({
@@ -41,6 +39,7 @@ async function initializeValencerContext(context, next) {
   context.valencer = {
     config,
     dbs: await database.getDBlist(),
+    dbName: '',
     models: {},
     query: {
       vp: {
@@ -93,7 +92,7 @@ const validateAndFormatIDquery = compose([
   validator.validatePopulationString,
   formatter.formatProjectionString,
   formatter.formatPopulationString,
-  database.connect(models),
+  database.connect(),
 ]);
 
 const validateFormatAndProcessVPquery = compose([
@@ -112,7 +111,7 @@ const validateFormatAndProcessVPquery = compose([
   validator.validateQueryLimitParameter,
   formatter.formatProjectionString,
   formatter.formatPopulationString,
-  database.connect(models),
+  database.connect(),
   formatter.formatValencePatternToArrayOfArrayOfTokens,
   formatter.replaceFrameElementNamesByFrameElementIds,
   validator.validateQueryParametersCombination, // Needs to be done after formatting
@@ -135,7 +134,7 @@ const validateFormatAndProcessVUquery = compose([
   validator.validateQueryLimitParameter,
   formatter.formatProjectionString,
   formatter.formatPopulationString,
-  database.connect(models),
+  database.connect(),
   (context, next) => { context.query.vp = context.query.vu; return next(); },
   formatter.formatValencePatternToArrayOfArrayOfTokens,
   formatter.replaceFrameElementNamesByFrameElementIds,
@@ -384,7 +383,7 @@ router.get('/cluster/frames',
            validator.validateQueryStrictVUmatchingParameter,
            validator.validateQueryWithExtraCoreFEsParameter,
            (context, next) => { context.valencer.query.limit = 0; return next(); },
-           database.connect(models),
+           database.connect(),
            formatter.formatValencePatternToArrayOfArrayOfTokens,
            formatter.replaceFrameElementNamesByFrameElementIds,
            validator.validateQueryParametersCombination, // Needs to be done after formatting
@@ -416,7 +415,7 @@ router.get('/cluster/lexUnits',
            validator.validateQueryWithExtraCoreFEsParameter,
            validator.validateQueryFrameIDparameter,
            (context, next) => { context.valencer.query.limit = 0; return next(); },
-           database.connect(models),
+           database.connect(),
            formatter.formatValencePatternToArrayOfArrayOfTokens,
            formatter.replaceFrameElementNamesByFrameElementIds,
            validator.validateQueryParametersCombination, // Needs to be done after formatting
