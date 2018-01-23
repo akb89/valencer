@@ -82,6 +82,27 @@ describe('validator', () => {
     };
     (() => validatePathToDB(context, next)).should.throw(ApiError.InvalidQuery);
   });
+  it('#validatePathToDB should throw InvalidQuery if dbName is invalid', async () => {
+    const next = () => {};
+    const dbs = await database.getDBlist();
+    const context = {
+      request: { url: '/v5/en/160/frame/42' },
+      valencer: {
+        dbs,
+        config: {
+          databases: {
+            names: {
+              en: {
+                170: 'fn_en_170',
+                160: '',
+              },
+            },
+          },
+        },
+      },
+    };
+    (() => validatePathToDB(context, next)).should.throw(ApiError.InvalidQuery);
+  });
   it('#validatePathToDB should throw InvalidQuery on invalid db dataset', async () => {
     const next = () => {};
     const dbs = await database.getDBlist();
@@ -337,7 +358,7 @@ describe('validator', () => {
   });
   it('#validateParamsIDisNumberOrObjectID should throw InvalidParams when context.params.id object is an invalid ObjectID of more than 24 characters', () => {
     const next = () => {};
-    const context = { params: { id: '5936efc57aa9df867hfc928jksle3' } };
+    const context = { params: { id: '5936efc57aa9df867bfc928jadle3' } };
     (() => validateParamsIDisNumberOrObjectID(context, next)).should.throw(ApiError.InvalidParams);
   });
   it('#validateQueryParamContainsNoInvalidCharacters should throw InvalidQueryParams when query parameter object (string) contains an invalid character (non-alphanumeric except for . and whitespace)', () => {

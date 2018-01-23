@@ -72,7 +72,7 @@ function validateParamsIDnotEmpty(context, next) {
 }
 
 function validateParamsIDisNumberOrObjectID(context, next) {
-  if (Number.isNaN(context.params.id) && !/[a-fA-F0-9]{24}$/.test(context.params.id)) {
+  if (Number.isNaN(Number(context.params.id)) && !/[a-fA-F0-9]{24}$/.test(context.params.id)) {
     throw new ApiError.InvalidParams('context.params.id should be a Number or an ObjectID');
   }
   logger.debug(`context.params.id object is valid: ${JSON.stringify(context.params.id)}`);
