@@ -41,7 +41,7 @@ function formatValencePatternToArrayOfArrayOfTokens(context, next) {
  * [[[fe_1_id_1,...,fe_1_id_n], 'PT_1', 'GF_1'], ...,
  * [[fe_n_id_1,...,fn_n_id_n], 'PT_n', 'GF_n']]
  */
-function getValenceUnitAsArrayWithFEidsWithFEmodel(FrameElement) {
+function getVUasArrayWithFEidsWithFEmodel(FrameElement) {
   return async function getValenceUnitAsArrayWithFEids(valenceUnitAsArray) {
     return valenceUnitAsArray.reduce(async (valenceUnitArrayWithFEidsPromise, token) => {
       const valenceUnitArrayWithFEids = await valenceUnitArrayWithFEidsPromise;
@@ -52,19 +52,17 @@ function getValenceUnitAsArrayWithFEidsWithFEmodel(FrameElement) {
   };
 }
 
-function getValencePatternAsArrayWithFEidsWithFEmodel(FrameElement) {
+function getVPasArrayWithFEidsWithFEmodel(FrameElement) {
   return async function getValencePatternAsArrayWithFEids(formattedVP) {
     return Promise.all(formattedVP
-      .map(async vUnitArray => getValenceUnitAsArrayWithFEidsWithFEmodel(
-        FrameElement)(vUnitArray)));
+      .map(async vUnitArray => getVUasArrayWithFEidsWithFEmodel(FrameElement)(vUnitArray)));
   };
 }
 
 async function replaceFrameElementNamesByFrameElementIds(context, next) {
+  const feModel = context.valencer.models.FrameElement;
   context.valencer.query.vp.withFEids =
-    await getValencePatternAsArrayWithFEidsWithFEmodel(
-      context.valencer.models.FrameElement)(
-        context.valencer.query.vp.formatted);
+    await getVPasArrayWithFEidsWithFEmodel(feModel)(context.valencer.query.vp.formatted);
   logger.debug(`context.valencer.query.vp.withFEids = ${JSON.stringify(context.valencer.query.vp.withFEids)}`);
   return next();
 }
@@ -93,7 +91,7 @@ function formatPopulationString(context, next) {
       }
 
       return {
-                populate: obj,
+        populate: obj,
       };
     }, {});
     return object.populate;
@@ -103,7 +101,7 @@ function formatPopulationString(context, next) {
   }
 
   const disallowedEscapedChars = constants.DISALLOW_CHARS_PROJ_POPUL
-        .map(c => utils.regExpEscape(c)).join('');
+    .map(c => utils.regExpEscape(c)).join('');
 
   const populationRegExp = new RegExp(`([^${disallowedEscapedChars}]+)(?:\\[([^\\]]+)\\])?`);
   const population = context.params.population;

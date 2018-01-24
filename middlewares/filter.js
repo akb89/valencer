@@ -12,7 +12,7 @@ function filterByStrictVUMatching(allPatterns, arrayOfArrayOfValenceUnitIDs) {
   }, []);
 }
 
-function getFilteredPatternsIDsWithPatternModel(Pattern) {
+function getFilteredPIDsWithPModel(Pattern) {
   return async function getFilteredPatternsIDs(allPatternsIDs,
                                                arrayOfArrayOfValenceUnitIDs,
                                                strictVUMatching) {
@@ -27,12 +27,11 @@ function getFilteredPatternsIDsWithPatternModel(Pattern) {
 async function filterPatternsIDs(context, next) {
   logger.debug(`Filtering patternsIDs with strictVUMatching = ${context.query.strictVUMatching}`);
   const startTime = utils.getStartTime();
+  const patternModel = context.valencer.models.Pattern;
   context.valencer.results.tmp.filteredPatternsIDs =
-    await getFilteredPatternsIDsWithPatternModel(
-      context.valencer.models.Pattern)(
-        context.valencer.results.tmp.patternsIDs,
-        context.valencer.results.tmp.valenceUnitsIDs,
-        context.query.strictVUMatching);
+    await getFilteredPIDsWithPModel(patternModel)(context.valencer.results.tmp.patternsIDs,
+                                                  context.valencer.results.tmp.valenceUnitsIDs,
+                                                  context.query.strictVUMatching);
   logger.debug(`context.valencer.results.tmp.filteredPatternsIDs.length = ${context.valencer.results.tmp.filteredPatternsIDs.length}`);
   logger.verbose(`context.valencer.results.tmp.filteredPatternsIDs processed in ${utils.getElapsedTime(startTime)}ms`);
   return next();

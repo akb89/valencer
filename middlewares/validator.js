@@ -1,40 +1,32 @@
-const mongoose = require('mongoose');
 const ApiError = require('../exceptions/apiException');
-const config = require('../config');
 const utils = require('../utils/utils');
 const constants = require('../utils/constants');
+const config = require('./../config');
 
 const logger = config.logger;
 
-async function validatePathToDB(context, next) {
+function validatePathToDB(context, next) {
   const urlSplit = context.request.url.split('/');
   const lang = urlSplit[2];
   const dataset = urlSplit[3];
-  const dbName = config.databases.names[lang][dataset];
-  if (config.databases.names[lang] === undefined) {
+  if (context.valencer.config.databases.names[lang] === undefined) {
     throw new ApiError.InvalidQuery(`language ISO639-1 code '${lang}' is not supported`);
   }
+  const dbName = context.valencer.config.databases.names[lang][dataset];
   if (dbName === undefined) {
     throw new ApiError.InvalidQuery(`dataset '${dataset}' is not supported`);
   }
-  const dbs = await new Promise((resolve, reject) => {
-    mongoose.connection.db.admin().listDatabases((err, result) => {
-      if (err) {
-        return reject(err);
-      }
-      return resolve(result);
-    });
-  });
   let isValidDBName = false;
-  dbs.databases.forEach((database) => {
+  context.valencer.dbs.databases.forEach((database) => {
     if (database.name === dbName) {
       isValidDBName = true;
     }
   });
   if (!isValidDBName) {
-    throw new ApiError.InvalidQuery(`Specified database '${dbName}' for language '${lang}' and dataset '${dataset}' was not found on the current instance of MongoDB running on server '${config.databases.server}' and port '${config.databases.port}'`);
+    throw new ApiError.InvalidQuery(`Specified database '${dbName}' for language '${lang}' and dataset '${dataset}' was not found on the current instance of MongoDB running on server '${context.valencer.config.databases.server}' and port '${context.valencer.config.databases.port}'`);
   }
   logger.debug(`database language '${lang}', dataset '${dataset}' and name '${dbName}' are valid`);
+  context.valencer.dbName = dbName;
   return next();
 }
 
@@ -81,7 +73,7 @@ function validateParamsIDnotEmpty(context, next) {
 }
 
 function validateParamsIDisNumberOrObjectID(context, next) {
-  if (isNaN(context.params.id) && !/[a-fA-F0-9]{24}$/.test(context.params.id)) {
+  if (Number.isNaN(Number(context.params.id)) && !/[a-fA-F0-9]{24}$/.test(context.params.id)) {
     throw new ApiError.InvalidParams('context.params.id should be a Number or an ObjectID');
   }
   logger.debug(`context.params.id object is valid: ${JSON.stringify(context.params.id)}`);
@@ -127,7 +119,7 @@ function validateQueryVPcontainsNoInvalidSequence(context, next) {
 
 function getMaxValenceTokens(vp) {
   return utils.toTokenArray(utils.toValenceArray(vp))
-  .map(vu => vu.length).reduce((a, b) => Math.max(a, b));
+    .map(vu => vu.length).reduce((a, b) => Math.max(a, b));
 }
 
 // Check if a valenceUnit contains more than 3 tokens (Should always be at most FE.PT.GF)
@@ -173,7 +165,7 @@ function validateQueryWithExtraCoreFEsParameter(context, next) {
 
 function containsFrameElement(valenceUnitAsArrayWithFEids) {
   for (const token of valenceUnitAsArrayWithFEids) {
-    if (typeof token !== 'string' && (typeof token === 'number' || !token.some(isNaN))) {
+    if (typeof token !== 'string' && (typeof token === 'number' || !token.some(Number.isNaN))) {
       return true;
     }
   }
@@ -205,11 +197,11 @@ function validateQueryParametersCombination(context, next) {
 }
 
 function validateQueryFrameIDparameter(context, next) {
-  if (context.query.frameID == null) {
+  if (context.query.frameID == null || context.query.frameID.length === 0) {
     throw new ApiError.InvalidQueryParams('frameID parameter is mandatory');
   }
   const frameID = Number(context.query.frameID);
-  if (isNaN(frameID) || !Number.isInteger(frameID) || frameID < 0) {
+  if (Number.isNaN(frameID) || !Number.isInteger(frameID) || frameID < 0) {
     throw new ApiError.InvalidQueryParams(`Invalid frameID parameter:
      '${context.query.frameID}'. Should be a valid positive integer`);
   }
@@ -239,9 +231,9 @@ function validatePopulationString(context, next) {
     return next();
   }
   const disallowedEscapedChars = constants.DISALLOW_CHARS_PROJ_POPUL
-      .map(c => utils.regExpEscape(c)).join('');
+    .map(c => utils.regExpEscape(c)).join('');
   const disallowedCharsRegExp = new RegExp(constants.DISALLOW_CHARS_PROJ_POPUL
-        .map(c => utils.regExpEscape(c)).join('|'));
+    .map(c => utils.regExpEscape(c)).join('|'));
   const populationRegExp = new RegExp(`([^${disallowedEscapedChars}]+)(?:\\[([^\\]]+)\\])?`);
   const population = context.params.population;
   const populations = population.split(',').filter(p => p !== '');
@@ -266,24 +258,12 @@ function validatePopulationString(context, next) {
   return next();
 }
 
-function validateQueryFormatParameter(context, next) {
-  if (context.query.format == null) {
-    return next();
-  } else if (context.query.format !== 'cytoscape'
-             && context.query.format !== 'valencer') {
-    throw new ApiError.InvalidQueryParams(`Unsupported format:
-      '${context.query.format}'. Should be 'cytoscape' or 'valencer'`);
-  }
-  context.valencer.query.format = context.query.format;
-  return next();
-}
-
 function validateQuerySkipParameter(context, next) {
   if (context.query.skip == null) {
     return next();
   }
   const skip = Number(context.query.skip);
-  if (isNaN(skip) || !Number.isInteger(skip) || skip < 0) {
+  if (Number.isNaN(skip) || !Number.isInteger(skip) || skip < 0) {
     throw new ApiError.InvalidQueryParams(`Invalid skip parameter:
      '${context.query.skip}'. Should be a valid positive integer`);
   }
@@ -296,7 +276,7 @@ function validateQueryLimitParameter(context, next) {
     return next();
   }
   const limit = Number(context.query.limit);
-  if (isNaN(limit) || !Number.isInteger(limit) || limit < 0) {
+  if (Number.isNaN(limit) || !Number.isInteger(limit) || limit < 0) {
     throw new ApiError.InvalidQueryParams(`Invalid limit parameter:
      '${context.query.limit}'. Should be a valid positive integer`);
   }
@@ -323,7 +303,6 @@ module.exports = {
   validateQueryFrameIDparameter,
   validateProjectionString,
   validatePopulationString,
-  validateQueryFormatParameter,
   validateQuerySkipParameter,
   validateQueryLimitParameter,
 };

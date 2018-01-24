@@ -1,6 +1,6 @@
 {
   "name": "Valencer",
-  "version": "4.5.2",
+  "version": "5.0.0",
   "description": "A REST API to query valence patterns in FrameNet",
   "keywords": [
     "FrameNet",
@@ -14,18 +14,18 @@
   "scripts": {
     "doc": "rm -rf docs/ && ./node_modules/apidoc/bin/apidoc -i ./ -o ./docs/ -e node_modules",
     "dev": "./node_modules/.bin/pm2 start server.js --name valencer_dev --watch",
-    "try": "NODE_ENV=production node server.js",
+    "try": "NODE_ENV=development node server.js",
     "prepare": "./node_modules/.bin/pm2 install pm2-logrotate && ./node_modules/.bin/pm2 set pm2-logrotate:compress true && ./node_modules/.bin/pm2 set pm2-logrotate:retain 100 && ./node_modules/.bin/pm2 set pm2-logrotate:size 100M",
     "start": "NODE_ENV=production ./node_modules/.bin/pm2 start server.js --name valencer",
     "stop": "./node_modules/.bin/pm2 kill",
     "lint": "./node_modules/.bin/eslint . --ext .js",
-    "startmongo": "ps -ax | grep -v grep | grep mongo > /dev/null 2>&1 || mongod --fork --logpath ./mongod.valencer.log --pidfilepath $PWD/mongo.pid",
+    "startmongo": "ps -ax | grep -v grep | grep mongo > /dev/null 2>&1 || mongod --fork --logpath ./mongod.valencer.log --pidfilepath $PWD/mongo.pid --bind_ip 127.0.0.1",
     "cleantestenv": "[ ! -f mongo.pid ] || (kill $(cat mongo.pid) && rm mongo.pid && rm mongod.valencer.log)",
     "pretest": "npm run startmongo",
-    "test": "NODE_ENV=testing nyc --reporter=text mocha --timeout 5000 ./tests/**/*.test.js && npm run cleantestenv || npm run cleantestenv",
-    "singletest": "NODE_ENV=testing nyc --reporter=text mocha ./tests/middlewares/core.valenceUnits.excluded.test.js",
+    "test": "NODE_ENV=testing ./node_modules/.bin/nyc --reporter=text --reporter=html ./node_modules/.bin/mocha --timeout 5000 ./tests/**/*.test.js && npm run cleantestenv || npm run cleantestenv",
+    "singletest": "NODE_ENV=testing ./node_modules/.bin/nyc --reporter=text ./node_modules/.bin/mocha ./tests/middlewares/core.valenceUnits.excluded.test.js",
     "posttest": "npm run lint",
-    "coverage": "nyc report --reporter=text-lcov | coveralls"
+    "coverage": "./node_modules/.bin/nyc report --reporter=text-lcov | ./node_modules/.bin/coveralls"
   },
   "homepage": "https://github.com/akb89/valencer#readme",
   "repository": {
@@ -37,16 +37,16 @@
   },
   "apidoc": {
     "name": "valencer-doc",
-    "version": "4.0.0",
+    "version": "5.0.0",
     "description": "Documentation for the Valencer API",
     "title": "Valencer API Doc",
-    "url": "http://api.valencer.io/v4/:langIsoCode/:datasetVersion",
+    "url": "http://api.valencer.io/v5/:langIsoCode/:datasetVersion",
     "header": {
       "title": "General",
       "filename": "header.md"
     },
     "footer": {
-      "title": "Help",
+      "title": "Optional Parameters",
       "filename": "footer.md"
     }
   },
@@ -59,22 +59,22 @@
     "koa-compress": "^2.0.0",
     "koa-router": "^7.2.0",
     "moment": "^2.18.1",
-    "mongoose": "^4.10.8",
-    "noframenet-core": "^4.0.0",
+    "mongoose": "^5.0.0",
+    "noframenet-core": "5.0.5",
     "pm2": "^2.6.1",
     "winston": "^2.3.1"
   },
   "devDependencies": {
     "apidoc": "^0.17.6",
     "chai": "^4.1.1",
-    "coveralls": "^2.13.1",
-    "eslint": "^3.0.5",
-    "eslint-config-airbnb": "^15.1.0",
+    "coveralls": "^3.0.0",
+    "eslint": "^4.16.0",
+    "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-import": "^2.3.0",
-    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.1.0",
-    "mocha": "^3.4.2",
+    "mocha": "5.0.0",
     "nyc": "^11.0.2",
-    "rewire": "^2.5.2"
+    "rewire": "^3.0.2"
   }
 }
