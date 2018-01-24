@@ -28,11 +28,20 @@ rules:
   #Ignore until upgraded to eslint 4.0 where overrides is supported
   no-unused-expressions: warn
 
+  #Allow control chars in regex (used in escaping special chars from regular expressions
+  no-control-regex: warn
+
   #Allow devDependencies for tests
   import/no-extraneous-dependencies: [error, {devDependencies: ['**/*.test.js']}]
 
   #Allow (pep) Python-style parameters indentation and alignment
-  indent: [error, 2, {FunctionDeclaration: {parameters: first}, FunctionExpression: {parameters: first}, CallExpression: {arguments: first}, ArrayExpression: first, ObjectExpression: first}]
+  indent: [error, 2, {FunctionDeclaration: {parameters: first}, FunctionExpression: {parameters: first}, CallExpression: {arguments: first}, ArrayExpression: first, ObjectExpression: first, MemberExpression: 1}]
+
+  #Allow calls to object properties instead of using destructuring
+  prefer-destructuring: [error, {VariableDeclarator: {object: false}}]
+
+  #Avoid function-paren-newline to simulate python-style function params style
+  function-paren-newline: [error, never]
 
 overrides:
   -

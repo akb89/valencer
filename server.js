@@ -9,15 +9,21 @@
 const Koa = require('koa');
 const cors = require('kcors');
 const mongoose = require('mongoose');
+const compress = require('koa-compress');
+const zlib = require('zlib');
 const router = require('./routes');
 const config = require('./config');
 
 const logger = config.logger;
 const app = new Koa();
 
-app.use(cors());
-// app.keys = ['my-secret-key'];
-// app.use(authenticate());
+app.use(cors({
+  exposeHeaders: ['Total-Count', 'Skip', 'Limit'],
+}));
+app.use(compress({
+  threshold: 1024,
+  flush: zlib.constants.Z_SYNC_FLUSH,
+}));
 
 app.use(async (context, next) => {
   try {
@@ -47,7 +53,7 @@ function printLogo() {
     const dbServer = config.databases.server;
     const dbPort = config.databases.port;
     const dbUri = `mongodb://${dbServer}:${dbPort}`;
-    await mongoose.connect(dbUri, { useMongoClient: true });
+    await mongoose.connect(dbUri);
     logger.info(`Connected to MongoDB on server: '${dbServer}' and port '${dbPort}'`);
     await app.listen(config.api.port);
     logger.info(`Valencer started on port ${config.api.port}`);

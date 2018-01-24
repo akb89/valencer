@@ -8,6 +8,8 @@ const config = require('./../../config');
 
 const should = chai.should();
 const filterByStrictVUMatching = rewire('./../../middlewares/filter').__get__('filterByStrictVUMatching');
+const getFilteredPIDsWithPModel = rewire('./../../middlewares/filter').__get__('getFilteredPIDsWithPModel');
+const filterPatternsIDs = rewire('./../../middlewares/filter').__get__('filterPatternsIDs');
 
 describe('filter', () => {
   let aFE;
@@ -35,7 +37,7 @@ describe('filter', () => {
   let pattern12;
   before(async () => {
     if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(config.dbUri, { useMongoClient: true });
+      await mongoose.connect(config.dbUri);
     }
     aFE = new FrameElement({ _id: 1, name: 'A', coreType: 'Core' });
     await aFE.save();
@@ -100,11 +102,52 @@ describe('filter', () => {
   });
   after(async () => {
     await mongoose.connection.dropDatabase();
+    await mongoose.connection.close();
   });
   it('#filterByStrictVUMatching should return a correct array of patterns ids filtered by strict #valenceUnit matching', async () => {
     (await filterByStrictVUMatching([pattern2, pattern8, pattern12],
-       [[aNPObj._id], [bNPObj._id], [cNPExt._id]])).length.should.equal(1);
-    (await filterByStrictVUMatching([pattern8, pattern12], [[aNPObj._id],
-       [bNPObj._id], [cNPExt._id]])).length.should.equal(0);
+                                    [[aNPObj._id],
+                                     [bNPObj._id],
+                                     [cNPExt._id]])).length.should.equal(1);
+    (await filterByStrictVUMatching([pattern8, pattern12],
+                                    [[aNPObj._id],
+                                     [bNPObj._id],
+                                     [cNPExt._id]])).length.should.equal(0);
+  });
+  it('#getFilteredPIDsWithPModel should return a correct array of patterns ids filtered by strict #valenceUnit matching', async () => {
+    (await getFilteredPIDsWithPModel(Pattern)([pattern2, pattern8, pattern12],
+                                              [[aNPObj._id],
+                                               [bNPObj._id],
+                                               [cNPExt._id]], true)).length.should.equal(1);
+    (await getFilteredPIDsWithPModel(Pattern)([pattern2, pattern8, pattern12],
+                                              [[aNPObj._id],
+                                               [bNPObj._id],
+                                               [cNPExt._id]], false)).length.should.equal(3);
+  });
+  it('#filterPatternsIDs  should lead to the correct array of patterns ids filtered by strict #valenceUnit matching', async () => {
+    const next = () => {};
+    // console.log(require('noframenet-core').Pattern);
+    const context = {
+      valencer: {
+        models: { Pattern },
+        results: {
+          tmp: {
+            patternsIDs: [pattern2, pattern8, pattern12],
+            valenceUnitsIDs: [[aNPObj._id],
+                              [bNPObj._id],
+                              [cNPExt._id]],
+            filteredPatternsIDs: [],
+          },
+        },
+      },
+      query: {
+        strictVUMatching: true,
+      },
+    };
+    await filterPatternsIDs(context, next);
+    context.valencer.results.tmp.filteredPatternsIDs.length.should.equal(1);
+    context.query.strictVUMatching = false;
+    await filterPatternsIDs(context, next);
+    context.valencer.results.tmp.filteredPatternsIDs.length.should.equal(3);
   });
 });

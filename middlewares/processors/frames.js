@@ -1,27 +1,62 @@
-const config = require('./../../config');
-const utils = require('./../../utils/utils');
+const config = require('../../config');
+const utils = require('../../utils/utils');
 
 const logger = config.logger;
 
-function getFramesWithFrameModel(Frame, LexUnit) {
-  return async function getFrames(annotationSets) {
-    const lexUnits = await LexUnit.find().where('_id')
-                                  .in(annotationSets.map(annoset => annoset.lexUnit));
-    return Frame.find().where('_id')
-                  .in(lexUnits.map(lexUnit => lexUnit.frame));
+function getFramesWithModel(Frame) {
+  return async function getFrames(frameIDs, countMode = false,
+                                  projections = {}, populations = [],
+                                  skip, limit) {
+    if (countMode) {
+      return Frame.find().where('_id').in(frameIDs).count();
+    }
+    const frames = Frame.find({}, projections).where('_id').in(frameIDs)
+      .skip(skip)
+      .limit(limit);
+    return populations.reduce((query, p) => query.populate(p), frames);
   };
 }
 
-async function getByAnnotationSets(context, next) {
+function getFrameIDsWithModel(AnnotationSet) {
+  return async function getFrameIDs(filteredPatternsIDs) {
+    return Array.from((await AnnotationSet.find({}, 'lexUnit').where('pattern')
+      .in(filteredPatternsIDs).populate('lexUnit', 'frame'))
+      .reduce((frameIDset, annoSet) => {
+        if (!frameIDset.has(annoSet.lexUnit.frame)) {
+          frameIDset.add(annoSet.lexUnit.frame);
+        }
+        return frameIDset;
+      }, new Set()));
+  };
+}
+
+async function getByVP(context, next) {
   const startTime = utils.getStartTime();
-  logger.info(`Querying for all Frames containing lexical units with a valence pattern matching: '${context.query.vp}'`);
-  context.valencer.results.frames = await getFramesWithFrameModel(
-    context.valencer.models.Frame,
-    context.valencer.models.LexUnit)(context.valencer.results.annotationSets);
-  logger.verbose(`${context.valencer.results.frames.length} unique Frames retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
+  logger.info(`Querying for Frames with skip =
+    '${context.valencer.query.skip}', limit = '${context.valencer.query.limit}'
+    and vp = '${context.query.vp}'`);
+  const annoSetModel = context.valencer.models.AnnotationSet;
+  const frameIDs =
+    await getFrameIDsWithModel(annoSetModel)(context.valencer.results.tmp.filteredPatternsIDs);
+  const [count, results] = await Promise.all([
+    getFramesWithModel(context.valencer.models.Frame)(frameIDs, true),
+    getFramesWithModel(context.valencer.models.Frame)(frameIDs, false,
+                                                      context.valencer.query.projections,
+                                                      context.valencer.query.populations,
+                                                      context.valencer.query.skip,
+                                                      context.valencer.query.limit),
+  ]);
+  context.set({
+    'Total-Count': count,
+    Skip: context.valencer.query.skip,
+    Limit: context.valencer.query.limit,
+  });
+  context.valencer.results.frames = results;
+  logger.verbose(`${results.length} unique Frames out of ${count} retrieved
+    from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }
 
 module.exports = {
-  getByAnnotationSets,
+  getByVP,
 };

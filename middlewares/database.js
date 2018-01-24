@@ -4,13 +4,11 @@ const nfc = require('noframenet-core');
 
 const logger = config.logger;
 
-function connect(models) {
+function connect() {
   return async function aconnect(context, next) {
-    const urlSplit = context.request.url.split('/');
-    const lang = urlSplit[2];
-    const dataset = urlSplit[3];
-    const dbName = config.databases.names[lang][dataset];
+    const dbName = context.valencer.dbName;
     logger.info(`Using database ${dbName}`);
+    const models = context.valencer.models;
     if (!(dbName in models)) {
       const db = mongoose.connection.useDb(dbName);
       models[dbName] = {
@@ -35,6 +33,11 @@ function connect(models) {
     return next();
   };
 }
+
+function getDBlist() {
+  return mongoose.connection.db.admin().listDatabases();
+}
 module.exports = {
   connect,
+  getDBlist,
 };
