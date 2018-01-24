@@ -13,7 +13,7 @@ const getArrayOfArrayOfValenceUnitsIDs = rewire('./../../middlewares/core/valenc
 describe('core.valenceUnits.included', () => {
   before(async () => {
     if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(config.dbUri, { useMongoClient: true });
+      await mongoose.connect(config.dbUri);
     }
     const aFE = new FrameElement({ _id: 1, name: 'A' });
     await aFE.save();
@@ -42,11 +42,11 @@ describe('core.valenceUnits.included', () => {
   });
   after(async () => {
     await mongoose.connection.dropDatabase();
+    await mongoose.connection.close();
   });
   it('#getValenceUnitsIDs should return an array of ObjectIDs', async () => {
     const vusIDs = await getValenceUnitsIDs([[1], 'NP', 'Obj']);
-    vusIDs.forEach(
-      vusID => mongoose.Types.ObjectId.isValid(vusID).should.be.true);
+    vusIDs.forEach(vusID => mongoose.Types.ObjectId.isValid(vusID).should.be.true);
   });
   it('#getValenceUnitsIDs should be able to process FE.PT.GF', async () => {
     const vusIDs = await getValenceUnitsIDs([[1], 'NP', 'Obj']);
@@ -117,8 +117,7 @@ describe('core.valenceUnits.included', () => {
   });
   it('#getArrayOfArrayOfValenceUnitsIDs should return an array of ObjectIDs', async () => {
     const vuidss = await getArrayOfArrayOfValenceUnitsIDs([[[1], 'NP', 'Obj'], [[3], 'NP', 'Ext'], [[4], 'PP[about]', 'Ext']]);
-    vuidss.forEach(
-      vuids => vuids.forEach(
-        vuid => mongoose.Types.ObjectId.isValid(vuid).should.be.true));
+    vuidss.forEach(vuids => vuids.forEach(vuid =>
+      mongoose.Types.ObjectId.isValid(vuid).should.be.true));
   });
 });

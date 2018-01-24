@@ -1,24 +1,53 @@
-const config = require('./../../config');
-const utils = require('./../../utils/utils');
+const config = require('../../config');
+const utils = require('../../utils/utils');
 
 const logger = config.logger;
 
-function getLexUnitsWithLexUnitModel(LexUnit) {
-  return async function getLexUnits(annotationSets) {
-    return LexUnit.find().where('_id')
-                  .in(annotationSets.map(annoset => annoset.lexUnit));
+function getLexUnitsWithModel(LexUnit) {
+  return async function getLexUnits(lexUnitIDs, countMode = false,
+                                    projections = {}, populations = [],
+                                    skip, limit) {
+    if (countMode) {
+      return LexUnit.find().where('_id').in(lexUnitIDs).count();
+    }
+    const lexUnits = LexUnit.find({}, projections).where('_id').in(lexUnitIDs)
+      .skip(skip)
+      .limit(limit);
+    return populations.reduce((query, p) => query.populate(p), lexUnits);
   };
 }
 
-async function getByAnnotationSets(context, next) {
+function getLexUnitIDsWithModel(AnnotationSet) {
+  return async function getLexUnitIDs(filteredPatternsIDs) {
+    return AnnotationSet.distinct('lexUnit').where('pattern').in(filteredPatternsIDs);
+  };
+}
+
+async function getByVP(context, next) {
   const startTime = utils.getStartTime();
-  logger.info(`Querying for all LexUnits with a valence pattern matching: '${context.query.vp}'`);
-  context.valencer.results.lexUnits = await getLexUnitsWithLexUnitModel(
-    context.valencer.models.LexUnit)(context.valencer.results.annotationSets);
-  logger.verbose(`${context.valencer.results.lexUnits.length} unique LexUnits retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
+  logger.info(`Querying for LexUnits with skip = '${context.valencer.query.skip}', limit = '${context.valencer.query.limit}' and vp = '${context.query.vp}'`);
+  const annosetModel = context.valencer.models.AnnotationSet;
+  const lexUnitIDs =
+    await getLexUnitIDsWithModel(annosetModel)(context.valencer.results.tmp.filteredPatternsIDs);
+  const [count, results] = await Promise.all([
+    getLexUnitsWithModel(context.valencer.models.LexUnit)(lexUnitIDs, true),
+    getLexUnitsWithModel(context.valencer.models.LexUnit)(lexUnitIDs, false,
+                                                          context.valencer.query.projections,
+                                                          context.valencer.query.populations,
+                                                          context.valencer.query.skip,
+                                                          context.valencer.query.limit),
+  ]);
+  context.set({
+    'Total-Count': count,
+    Skip: context.valencer.query.skip,
+    Limit: context.valencer.query.limit,
+  });
+  context.valencer.results.lexUnits = results;
+  logger.verbose(`${results.length} unique LexUnits out of ${count} retrieved
+    from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }
 
 module.exports = {
-  getByAnnotationSets,
+  getByVP,
 };

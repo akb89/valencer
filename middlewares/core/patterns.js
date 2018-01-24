@@ -73,8 +73,9 @@ async function retrievePatternsIDs(context, next) {
   const valenceUnitsIDs = context.valencer.results.tmp.valenceUnitsIDs;
   if (valenceUnitsIDs) {
     const excludedVUids = context.valencer.results.tmp.excludedVUids;
-    const patternsIDs = await getPatternIDsWithPatternModel(
-      context.valencer.models.Pattern)(valenceUnitsIDs, excludedVUids);
+    const patternsIDs =
+      await getPatternIDsWithPatternModel(context.valencer.models.Pattern)(valenceUnitsIDs,
+                                                                           excludedVUids);
     context.valencer.results.tmp.patternsIDs = patternsIDs || [];
   }
   logger.debug(`context.valencer.results.tmp.patternsIDs.length = ${context.valencer.results.tmp.patternsIDs.length}`);

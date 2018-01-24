@@ -2,6 +2,7 @@
 [![GitHub release][release-image]][release-url]
 [![Build][travis-image]][travis-url]
 [![Dependencies][david-image]][david-url]
+[![DevDependencies][david-dev-dep-image]][david-dev-url]
 [![Code Coverage][coverage-image]][coverage-url]
 [![Code Quality][quality-image]][quality-url]
 [![FrameNet][framenet-image]][framenet-url]
@@ -28,26 +29,32 @@ Welcome to **Valencer**, a RESTful API to query combinations of syntactic realiz
 - [Mongo](https://docs.mongodb.com/manual/administration/install-community/) >= v3.4
 - [Node](https://nodejs.org/en/download/) >= v7.6
 
-To import FrameNet data to a Mongo database, check out [NoFrameNet](https://github.com/akb89/noframenet)
+To import FrameNet data to a Mongo database, check out
+[NoFrameNet](https://github.com/akb89/noframenet)
 
-Alternatively, we provide two MongoDB dumps for [FrameNet 1.5](data/fn_en_150.tar.bz2) and [FrameNet 1.7](data/fn_en_170.tar.bz2) data. If you are running MongoDB on localhost and port 27017, you can easily import the dumps once unzipped via:
+Alternatively, we provide two MongoDB dumps for
+[FrameNet 1.5](data/fn_en_150.tar.bz2) and
+[FrameNet 1.7](data/fn_en_170.tar.bz2) data.
+If you are running MongoDB on localhost and port 27017,
+you can easily import the dumps once unzipped via:
 ```
 mongorestore -d fn_en_170 /path/to/fn_en_170/
 ```
-More information is available via the MongoDB [documentation](https://docs.mongodb.com/manual/tutorial/backup-and-restore-tools/)
+More information is available via the MongoDB
+[documentation](https://docs.mongodb.com/manual/tutorial/backup-and-restore-tools/)
 
 If you are using our dumps, please do not forget to file in a [FrameNet Data Request](https://framenet.icsi.berkeley.edu/fndrupal/framenet_request_data).
 
 
 ## HowTo &ndash; Start the Valencer server
 
-### 1. Install the required dependencies
+### Install the required dependencies
 Run the following command in your terminal, under the Valencer directory:
 ```
 npm install
 ```
 
-### 2. Set-up the configuration
+### Set-up the configuration
 Modify the `config/production.js` file according to your desired settings:
 ```
 const config = {
@@ -72,20 +79,50 @@ const config = {
 };
 ```
 
-### 3. Start the server
-Run the following command in your terminal, under the Valencer directory:
+### Start the server
+To start a single instance of the Valencer, run the following command in your
+terminal, under the Valencer directory:
 ```
 npm run start
 ```
+For better performances, you can also start multiple instances of the Valencer.
+To do so, pass on the `-i` argument to npm:
+```
+npm run start -- -i num_instances
+```
+To create the maximum number of instances depending on available threads, do:
+```
+npm run start -- -i 0
+```
+
+### Stop the server
+To stop the server, run:
+```
+npm run stop
+```
+Note that it will stop ALL instances of the Valencer
+
+### Monitoring
+To monitor the Valencer API once started, run:
+```
+pm2 monit valencer
+```
+If pm2 is not installed globally in your environment, you can also do:
+```
+./node_modules/.bin/pm2 monit valencer
+```
+
+To access the Valencer logs, run:
+```
+pm2 logs valencer
+```
 
 ## HowTo &ndash; Shoot your first query
-Here is a sample HTTP request querying all the AnnotationSets in the database referring to the valence pattern `Donor.NP.Ext Theme.NP.Obj Recipient.PP[to].Dep`:
+Here is a sample HTTP request querying the first 10 AnnotationSets in the
+database referring to the valence pattern `Donor.NP.Ext Theme.NP.Obj`:
 ```
-http://localhost:3030/v4/en/170/annoSets?vp=Donor.NP.Ext+Theme.NP.Obj
+curl -i "http://localhost:3030/v5/en/170/annoSets?vp=Donor.NP.Ext+Theme.NP.Obj"
 ```
-Copy-paste the above url to your web-browser.
-
-You can use [JSONView](https://addons.mozilla.org/en-US/firefox/addon/jsonview/) to format JSON in your web-browser and make it more reader-friendly.
 
 ## Documentation
 The full documentation of the API is available on our [GitHub Page](https://akb89.github.io/valencer/)
@@ -107,3 +144,5 @@ For additional details regarding the background of the API, its architecture and
 [license-url]:LICENSE.txt
 [david-url]: https://david-dm.org/akb89/valencer
 [david-image]: https://david-dm.org/akb89/valencer.svg?style=flat-square
+[david-dev-dep-image]: https://img.shields.io/david/dev/akb89/valencer.svg?style=flat-square
+[david-dev-url]: https://david-dm.org/akb89/valencer?type=dev
