@@ -150,8 +150,8 @@ For additional details regarding the background of the API, its architecture and
 [travis-url]:https://travis-ci.org/akb89/valencer
 [coverage-image]:https://img.shields.io/coveralls/akb89/valencer/master.svg?style=flat-square
 [coverage-url]:https://coveralls.io/github/akb89/valencer?branch=master
-[quality-image]:https://api.codeclimate.com/v1/badges/d905b0ac9fd8bbed39c7/maintainability
-[quality-url]:https://codeclimate.com/github/akb89/valencer/maintainability
+[quality-image]:https://api.codeclimate.com/v1/badges/d905b0ac9fd8bbed39c7/maintainability?style=flat-square
+[quality-url]:https://img.shields.io/codeclimate/maintainability/Nickersoft/dql.svg?style=flat-square
 [framenet-image]:https://img.shields.io/badge/framenet-1.5%E2%87%A1-blue.svg?style=flat-square
 [framenet-url]:https://framenet.icsi.berkeley.edu/fndrupal
 [license-image]:http://img.shields.io/badge/license-MIT-000000.svg?style=flat-square
