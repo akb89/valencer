@@ -11,6 +11,7 @@ function getFramesWithModel(Frame) {
       return Frame.find().where('_id').in(frameIDs).count();
     }
     const frames = Frame.find({}, projections).where('_id').in(frameIDs)
+      .sort({ name: 1 })
       .skip(skip)
       .limit(limit);
     return populations.reduce((query, p) => query.populate(p), frames);

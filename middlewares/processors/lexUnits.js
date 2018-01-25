@@ -11,6 +11,7 @@ function getLexUnitsWithModel(LexUnit) {
       return LexUnit.find().where('_id').in(lexUnitIDs).count();
     }
     const lexUnits = LexUnit.find({}, projections).where('_id').in(lexUnitIDs)
+      .sort({ name: 1 })
       .skip(skip)
       .limit(limit);
     return populations.reduce((query, p) => query.populate(p), lexUnits);
