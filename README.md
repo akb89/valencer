@@ -4,7 +4,6 @@
 [![Dependencies][david-image]][david-url]
 [![DevDependencies][david-dev-dep-image]][david-dev-url]
 [![Code Coverage][coverage-image]][coverage-url]
-[![Maintainability][quality-image]][quality-url]
 [![FrameNet][framenet-image]][framenet-url]
 [![MIT License][license-image]][license-url]
 
