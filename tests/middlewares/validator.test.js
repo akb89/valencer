@@ -35,7 +35,7 @@ const validateQueryParametersCombination = rewire('./../../middlewares/validator
 describe('validator', () => {
   before(async () => {
     if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(config.dbUri);
+      await mongoose.connect(config.dbUri, { keepAlive: 1, connectTimeoutMS: 30000 });
     }
   });
   after(async () => {

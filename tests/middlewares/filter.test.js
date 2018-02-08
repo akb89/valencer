@@ -37,7 +37,7 @@ describe('filter', () => {
   let pattern12;
   before(async () => {
     if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(config.dbUri);
+      await mongoose.connect(config.dbUri, { keepAlive: 1, connectTimeoutMS: 30000 });
     }
     aFE = new FrameElement({ _id: 1, name: 'A', coreType: 'Core' });
     await aFE.save();
