@@ -144,20 +144,20 @@ const validateFormatAndProcessVUquery = compose([
 
 /**
  * @apiDefine NotFoundIDError
- * @apiVersion 5.0.0
+ * @apiVersion 5.0
  * @apiError (Error 404) NotFoundError The id was not found in the database
  */
 
 /**
  * @apiDefine NotFoundVPError
- * @apiVersion 5.0.0
+ * @apiVersion 5.0
  * @apiError (Error 404) NotFoundError At least one valence unit composing the
  * input vp was not found in the database
  */
 
 /**
  * @apiDefine InvalidQuery
- * @apiVersion 5.0.0
+ * @apiVersion 5.0
  * @apiError (Error 400) InvalidQuery The specified <code>langIsoCode</code> or
  * <code>datasetVersion</code> is not supported; the database corresponding to
  * the language ISO639-1 and dataset version is supported but not up and
@@ -166,7 +166,7 @@ const validateFormatAndProcessVUquery = compose([
 
 /**
  * @apiDefine InvalidParams
- * @apiVersion 5.0.0
+ * @apiVersion 5.0
  * @apiError (Error 400) InvalidParams The specified <code>id</code> is empty,
  * null, undefined, or is specified but is neither a <code>Number</code> nor a
  * valid <code>ObjectID</code>
@@ -174,7 +174,7 @@ const validateFormatAndProcessVUquery = compose([
 
 /**
  * @apiDefine InvalidQueryParams
- * @apiVersion 5.0.0
+ * @apiVersion 5.0
  * @apiError (Error 400) InvalidQueryParams The <code>vp</code> parameter contains either
  * an invalid character, an invalid sequence of characters or more than 3
  * tokens separated by a dot in at least one of its valence units; the
@@ -185,7 +185,7 @@ const validateFormatAndProcessVUquery = compose([
 
 /**
  * @apiDefine apiConfig
- * @apiVersion 5.0.0
+ * @apiVersion 5.0
  * @apiParam {String}    langIsoCode   Set the language ISO639-1 code. Ex: 'en' for English
  * @apiParam {Number}    datasetVersion    Set the version of the FrameNet
  * dataset, in semver format. Ex: '170' for the FrameNet 1.7 data release
@@ -193,7 +193,7 @@ const validateFormatAndProcessVUquery = compose([
 
 /**
   * @apiDefine projPop
-  * @apiVersion 5.0.0
+  * @apiVersion 5.0
   * @apiParam {String}   [projection] Set the fields to be projected in the output
   * documents. Projection is the process of returning only
   * requested fields from input documents. See [project](https://docs.mongodb.com/manual/reference/operator/aggregation/project/index.html)
@@ -208,7 +208,7 @@ const validateFormatAndProcessVUquery = compose([
 
 /**
  * @apiDefine vpParam
- * @apiVersion 5.0.0
+ * @apiVersion 5.0
  * @apiParam {String}     vp          Set the Valence Pattern: a
  * combination of triplets FE.PT.GF
  * @apiParam {Boolean}    [strictVUMatching=false]     Specify whether
@@ -221,7 +221,7 @@ const validateFormatAndProcessVUquery = compose([
 
 /**
   * @apiDefine skipLimit
-  * @apiVersion 5.0.0
+  * @apiVersion 5.0
   * @apiParam {Number}   [skip=0] Set the number of documents to skip before returning.
   * @apiParam {Number}   [limit=10] Set the number of documents to return.
   * Set to 0 to return all possible documents.
@@ -229,7 +229,7 @@ const validateFormatAndProcessVUquery = compose([
 
 /**
  * @apiDefine AnnotationSetSuccess
- * @apiVersion 5.0.0
+ * @apiVersion 5.0
  * @apiSuccess  {Number}   _id        The AnnotationSet id
  * @apiSuccess  {Number}   lexUnit    The LexUnit id
  * @apiSuccess  {Number}   sentence   The Sentence id
@@ -239,7 +239,7 @@ const validateFormatAndProcessVUquery = compose([
 
 /**
   * @apiDefine ClusterFrameSuccess
-  * @apiVersion 5.0.0
+  * @apiVersion 5.0
   * @apiSuccess   {Number}    data.id         The Frame or FrameRelation id
   * @apiSuccess   {String}    data.name       The Frame name
   * @apiSuccess   {Number}    data.source     The source FrameRelation
@@ -249,7 +249,7 @@ const validateFormatAndProcessVUquery = compose([
 
   /**
     * @apiDefine ClusterLexUnitSuccess
-    * @apiVersion 5.0.0
+    * @apiVersion 5.0
     * @apiSuccess   {Number}    data.id         The LexUnit id
     * @apiSuccess   {String}    data.name       The LexUnit name
     * @apiSuccess   {String}    data.frame      The Frame name
@@ -260,7 +260,7 @@ const validateFormatAndProcessVUquery = compose([
 
 /**
  * @apiDefine FrameSuccess
- * @apiVersion 5.0.0
+ * @apiVersion 5.0
  * @apiSuccess   {Number}    _id            The Frame id
  * @apiSuccess   {String}    name           The Frame name
  * @apiSuccess   {String}    definition     The Frame definition
@@ -275,7 +275,7 @@ const validateFormatAndProcessVUquery = compose([
 
 /**
  * @apiDefine FrameElementSuccess
- * @apiVersion 5.0.0
+ * @apiVersion 5.0
  * @apiSuccess   {Number}    _id            The FrameElement id
  * @apiSuccess   {String}    name           The FrameElement name
  * @apiSuccess   {String}    definition     The FrameElement definition
@@ -292,7 +292,7 @@ const validateFormatAndProcessVUquery = compose([
 
 /**
  * @apiDefine LexUnitSuccess
- * @apiVersion 5.0.0
+ * @apiVersion 5.0
  * @apiSuccess   {Number}    _id                  The LexUnit id
  * @apiSuccess   {String}    name                 The LexUnit name
  * @apiSuccess   {String}    pos                  The LexUnit part of speech
@@ -308,14 +308,14 @@ const validateFormatAndProcessVUquery = compose([
 
 /**
  * @apiDefine PatternSuccess
- * @apiVersion 5.0.0
+ * @apiVersion 5.0
  * @apiSuccess   {Object}    _id            The Pattern ObjectID
  * @apiSuccess   {Object[]}  valenceUnits   The Pattern ValenceUnits ObjectIDs
  */
 
 /**
  * @apiDefine ValenceUnitSuccess
- * @apiVersion 5.0.0
+ * @apiVersion 5.0
  * @apiSuccess   {Object}  _id  The ObjectID
  * @apiSuccess   {String}  FE   The frame element name
  * @apiSuccess   {String}  PT   The phrase type
@@ -324,7 +324,7 @@ const validateFormatAndProcessVUquery = compose([
 
 /**
  * @api {get} /annoSet/:id/:projection/:population GetAnnoSet
- * @apiVersion 5.0.0
+ * @apiVersion 5.0
  * @apiName GetAnnoSet
  * @apiGroup AnnotationSet
  * @apiDescription Get AnnotationSet with id. Returns at most one
@@ -358,7 +358,7 @@ router.get('/annoSet/:id/:projection/:population',
 /**
  * @api {get} /annoSets/:projection/:population?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs&skip=:skip&limit=:limit
  * GetAnnoSets
- * @apiVersion 5.0.0
+ * @apiVersion 5.0
  * @apiName GetAnnoSets
  * @apiGroup AnnotationSet
  * @apiDescription Get all AnnotationSets with pattern matching input
@@ -402,7 +402,7 @@ router.get('/annoSets/:projection/:population',
 /**
   * @api {get} /cluster/frames?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs
   * GetClusterFrames
-  * @apiVersion 5.0.0
+  * @apiVersion 5.0
   * @apiName GetClusterFrames
   * @apiGroup Cluster
   * @apiDescription Get [cytoscape](http://js.cytoscape.org/index.html)-formatted
@@ -447,7 +447,7 @@ router.get('/cluster/frames',
 /**
   * @api {get} /cluster/lexUnits?vp=:vp&frameID=:frameID&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs
   * GetClusterLexUnits
-  * @apiVersion 5.0.0
+  * @apiVersion 5.0
   * @apiName GetClusterLexUnits
   * @apiGroup Cluster
   * @apiDescription Get [cytoscape](http://js.cytoscape.org/index.html)-formatted
@@ -493,7 +493,7 @@ router.get('/cluster/lexUnits',
 
 /**
  * @api {get} /frame/:id/:projection/:population GetFrame
- * @apiVersion 5.0.0
+ * @apiVersion 5.0
  * @apiName GetFrame
  * @apiGroup Frame
  * @apiDescription Get Frame with id. Returns at most one
@@ -526,7 +526,7 @@ router.get('/frame/:id/:projection/:population',
 
 /**
  * @api {get} /frames/:projection/:population?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs&skip=:skip&limit=:limit GetFrames
- * @apiVersion 5.0.0
+ * @apiVersion 5.0
  * @apiName GetFrames
  * @apiGroup Frame
  * @apiDescription Get all Frames with pattern matching input vp. Returns an
@@ -569,7 +569,7 @@ router.get('/frames/:projection/:population',
 
 /**
  * @api {get} /frameElement/:id/:projection/:population GetFrameElement
- * @apiVersion 5.0.0
+ * @apiVersion 5.0
  * @apiName GetFrameElement
  * @apiGroup FrameElement
  * @apiDescription Get FrameElement with id. Returns at most one
@@ -602,7 +602,7 @@ router.get('/frameElement/:id/:projection/:population',
 
 /**
  * @api {get} /lexUnit/:id/:projection/:population GetLexUnit
- * @apiVersion 5.0.0
+ * @apiVersion 5.0
  * @apiName GetLexUnit
  * @apiGroup LexUnit
  * @apiDescription Get LexUnit with id. Returns at most one
@@ -635,7 +635,7 @@ router.get('/lexUnit/:id/:projection/:population',
 
 /**
  * @api {get} /lexUnits/:projection/:population?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs&skip=:skip&limit=:limit GetLexUnits
- * @apiVersion 5.0.0
+ * @apiVersion 5.0
  * @apiName GetLexUnits
  * @apiGroup LexUnit
  * @apiDescription Get all LexUnits with pattern matching input vp. Returns an
@@ -677,7 +677,7 @@ router.get('/lexUnits/:projection/:population',
 
 /**
  * @api {get} /pattern/:id/:projection/:population GetPattern
- * @apiVersion 5.0.0
+ * @apiVersion 5.0
  * @apiName GetPattern
  * @apiGroup Pattern
  * @apiDescription Get Pattern with id. Returns at most one
@@ -710,7 +710,7 @@ router.get('/pattern/:id/:projection/:population',
 
 /**
  * @api {get} /patterns/:projection/:population?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs&skip=:skip&limit=:limit GetPatterns
- * @apiVersion 5.0.0
+ * @apiVersion 5.0
  * @apiName GetPatterns
  * @apiGroup Pattern
  * @apiDescription Get all Patterns with pattern matching input vp. Returns an
@@ -753,7 +753,7 @@ router.get('/patterns/:projection/:population',
 
 /**
  * @api {get} /valenceUnit/:id/:projection/:population GetValenceUnit
- * @apiVersion 5.0.0
+ * @apiVersion 5.0
  * @apiName GetValenceUnit
  * @apiGroup ValenceUnit
  * @apiDescription Get ValenceUnit with id. Returns at most one
@@ -786,7 +786,7 @@ router.get('/valenceUnit/:id/:projection/:population',
 
 /**
  * @api {get} /valenceUnits/:projection/:population?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs&skip=:skip&limit=:limit GetValenceUnits
- * @apiVersion 5.0.0
+ * @apiVersion 5.0
  * @apiName GetValenceUnits
  * @apiGroup ValenceUnit
  * @apiDescription Get all ValenceUnits with pattern matching input vp. Returns

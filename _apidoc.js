@@ -1,19 +1,19 @@
 /**
  * @apiDefine NotFoundIDError
- * @apiVersion 4.0.0
+ * @apiVersion 4.0
  * @apiError (Error 404) NotFoundError The id was not found in the database
  */
 
 /**
  * @apiDefine NotFoundVPError
- * @apiVersion 4.0.0
+ * @apiVersion 4.0
  * @apiError (Error 404) NotFoundError At least one valence unit composing the
  * input vp was not found in the database
  */
 
 /**
  * @apiDefine InvalidQuery
- * @apiVersion 4.0.0
+ * @apiVersion 4.0
  * @apiError (Error 400) InvalidQuery The specified <code>langIsoCode</code> or
  * <code>datasetVersion</code> is not supported; the database corresponding to
  * the language ISO639-1 and dataset version is supported but not up and
@@ -22,7 +22,7 @@
 
 /**
  * @apiDefine InvalidParams
- * @apiVersion 4.0.0
+ * @apiVersion 4.0
  * @apiError (Error 400) InvalidParams The specified <code>id</code> is empty,
  * null, undefined, or is specified but is neither a <code>Number</code> nor a
  * valid <code>ObjectID</code>
@@ -30,7 +30,7 @@
 
 /**
  * @apiDefine InvalidQueryParams
- * @apiVersion 4.0.0
+ * @apiVersion 4.0
  * @apiError (Error 400) InvalidQueryParams The <code>vp</code> parameter contains either
  * an invalid character, an invalid sequence of characters or more than 3
  * tokens separated by a dot in at least one of its valence units; the
@@ -41,7 +41,7 @@
 
 /**
  * @apiDefine apiConfig
- * @apiVersion 4.0.0
+ * @apiVersion 4.0
  * @apiParam {String}    langIsoCode   The language ISO639-1 code. Ex: 'en' for English
  * @apiParam {Number}    datasetVersion    The version of the FrameNet
  * dataset, in semver format. Ex: '170' for the FrameNet 1.7 data release
@@ -49,7 +49,7 @@
 
 /**
  * @apiDefine vpParam
- * @apiVersion 4.0.0
+ * @apiVersion 4.0
  * @apiParam {String}     vp          The Valence Pattern: a
  * combination of triplets FE.PT.GF
  * @apiParam {Boolean}    [strictVUMatching=false]     Specify whether
@@ -62,7 +62,7 @@
 
 /**
  * @apiDefine AnnotationSetSuccess
- * @apiVersion 4.0.0
+ * @apiVersion 4.0
  * @apiSuccess  {Number}   _id        The AnnotationSet id
  * @apiSuccess  {Number}   lexUnit    The LexUnit id
  * @apiSuccess  {Number}   sentence   The Sentence id
@@ -72,7 +72,7 @@
 
 /**
  * @apiDefine FrameSuccess
- * @apiVersion 4.0.0
+ * @apiVersion 4.0
  * @apiSuccess   {Number}    _id            The Frame id
  * @apiSuccess   {String}    name           The Frame name
  * @apiSuccess   {String}    definition     The Frame definition
@@ -87,7 +87,7 @@
 
 /**
  * @apiDefine FrameElementSuccess
- * @apiVersion 4.0.0
+ * @apiVersion 4.0
  * @apiSuccess   {Number}    _id            The FrameElement id
  * @apiSuccess   {String}    name           The FrameElement name
  * @apiSuccess   {String}    definition     The FrameElement definition
@@ -104,7 +104,7 @@
 
 /**
  * @apiDefine LexUnitSuccess
- * @apiVersion 4.0.0
+ * @apiVersion 4.0
  * @apiSuccess   {Number}    _id                  The LexUnit id
  * @apiSuccess   {String}    name                 The LexUnit name
  * @apiSuccess   {String}    pos                  The LexUnit part of speech
@@ -120,14 +120,14 @@
 
 /**
  * @apiDefine PatternSuccess
- * @apiVersion 4.0.0
+ * @apiVersion 4.0
  * @apiSuccess   {Object}    _id            The Pattern ObjectID
  * @apiSuccess   {Object[]}  valenceUnits   The Pattern ValenceUnits ObjectIDs
  */
 
 /**
  * @apiDefine ValenceUnitSuccess
- * @apiVersion 4.0.0
+ * @apiVersion 4.0
  * @apiSuccess   {Object}  _id  The ObjectID
  * @apiSuccess   {String}  FE   The frame element name
  * @apiSuccess   {String}  PT   The phrase type
@@ -136,7 +136,7 @@
 
 /**
  * @api {get} /annoSet/:id GetAnnoSet
- * @apiVersion 4.0.0
+ * @apiVersion 4.0
  * @apiName GetAnnoSet
  * @apiGroup AnnotationSet
  * @apiDescription Get AnnotationSet with id. Returns at most one
@@ -153,7 +153,7 @@
 
 /**
   * @api {get} /annoSets GetAnnoSets
-  * @apiVersion 4.0.0
+  * @apiVersion 4.0
   * @apiName GetAnnoSets
   * @apiGroup AnnotationSet
   * @apiDescription Get all AnnotationSets with pattern matching input
@@ -171,7 +171,7 @@
 
 /**
  * @api {get} /frame/:id GetFrame
- * @apiVersion 4.0.0
+ * @apiVersion 4.0
  * @apiName GetFrame
  * @apiGroup Frame
  * @apiDescription Get Frame with id. Returns at most one
@@ -189,7 +189,7 @@
 
 /**
  * @api {get} /frames GetFrames
- * @apiVersion 4.0.0
+ * @apiVersion 4.0
  * @apiName GetFrames
  * @apiGroup Frame
  * @apiDescription Get all Frames with pattern matching input vp. Returns an
@@ -207,7 +207,7 @@
 
 /**
  * @api {get} /frameElement/:id GetFrameElement
- * @apiVersion 4.0.0
+ * @apiVersion 4.0
  * @apiName GetFrameElement
  * @apiGroup FrameElement
  * @apiDescription Get FrameElement with id. Returns at most one
@@ -225,7 +225,7 @@
 
 /**
  * @api {get} /lexUnit/:id GetLexUnit
- * @apiVersion 4.0.0
+ * @apiVersion 4.0
  * @apiName GetLexUnit
  * @apiGroup LexUnit
  * @apiDescription Get LexUnit with id. Returns at most one
@@ -243,7 +243,7 @@
 
 /**
  * @api {get} /lexUnits GetLexUnits
- * @apiVersion 4.0.0
+ * @apiVersion 4.0
  * @apiName GetLexUnits
  * @apiGroup LexUnit
  * @apiDescription Get all LexUnits with pattern matching input vp. Returns an
@@ -261,7 +261,7 @@
 
 /**
  * @api {get} /pattern/:id GetPattern
- * @apiVersion 4.0.0
+ * @apiVersion 4.0
  * @apiName GetPattern
  * @apiGroup Pattern
  * @apiDescription Get Pattern with id. Returns at most one
@@ -278,7 +278,7 @@
 
 /**
  * @api {get} /patterns GetPatterns
- * @apiVersion 4.0.0
+ * @apiVersion 4.0
  * @apiName GetPatterns
  * @apiGroup Pattern
  * @apiDescription Get all Patterns with pattern matching input vp. Returns an
@@ -295,7 +295,7 @@
 
 /**
  * @api {get} /valenceUnit/:id GetValenceUnit
- * @apiVersion 4.0.0
+ * @apiVersion 4.0
  * @apiName GetValenceUnit
  * @apiGroup ValenceUnit
  * @apiDescription Get ValenceUnit with id. Returns at most one
@@ -312,7 +312,7 @@
 
 /**
  * @api {get} /valenceUnits GetValenceUnits
- * @apiVersion 4.0.0
+ * @apiVersion 4.0
  * @apiName GetValenceUnits
  * @apiGroup ValenceUnit
  * @apiDescription Get all ValenceUnits with pattern matching input vp. Returns
@@ -330,26 +330,26 @@
 
 /**
  * @apiDefine NotFoundIDError
- * @apiVersion 3.0.0
+ * @apiVersion 3.0
  * @apiError (Error 404) NotFoundError The id was not found
  */
 
 /**
  * @apiDefine NotFoundVPError
- * @apiVersion 3.0.0
+ * @apiVersion 3.0
  * @apiError (Error 404) NotFoundError A valence unit of the vp was not found
  */
 
 /**
  * @apiDefine InvalidQuery
- * @apiVersion 3.0.0
+ * @apiVersion 3.0
  * @apiError (Error 400) InvalidQuery The specified query is null, empty or
  * combines :id and vp in request
  */
 
 /**
  * @apiDefine InvalidQueryParamsID
- * @apiVersion 3.0.0
+ * @apiVersion 3.0
  * @apiError (Error 400) InvalidQueryParams The populate parameter is neither
  * <code>true</code> nor <code>false</code> or the specified :id is
  * neither a <code>Number</code> nor a valid <code>ObjectID</code>
@@ -357,7 +357,7 @@
 
 /**
  * @apiDefine InvalidQueryParamsVP
- * @apiVersion 3.0.0
+ * @apiVersion 3.0
  * @apiError (Error 400) InvalidQueryParams The populate parameter is neither
  * <code>true</code> nor <code>false</code> or the vp parameter contains either
  * an invalid character, an invalid sequence of characters or more than 3
@@ -366,7 +366,7 @@
 
 /**
  * @apiDefine idParam
- * @apiVersion 3.0.0
+ * @apiVersion 3.0
  * @apiParam {Number}     id          The id
  * @apiParam {Boolean} [populate=false]    Specify whether documents
  * should be populated
@@ -374,7 +374,7 @@
 
 /**
  * @apiDefine vpParam
- * @apiVersion 3.0.0
+ * @apiVersion 3.0
  * @apiParam {String}     vp          The Valence Pattern: a
  * combination of triplets FE.PT.GF
  * @apiParam {Boolean}    [populate=false]     Specify whether documents
@@ -389,7 +389,7 @@
 
 /**
  * @apiDefine AnnotationSetSuccess
- * @apiVersion 3.0.0
+ * @apiVersion 3.0
  * @apiSuccess  {Number}   _id        The AnnotationSet id
  * @apiSuccess  {Number}   lexUnit    The LexUnit id
  * @apiSuccess  {Number}   sentence   The Sentence id
@@ -398,7 +398,7 @@
 
 /**
  * @apiDefine AnnotationSetSuccessPopulated
- * @apiVersion 3.0.0
+ * @apiVersion 3.0
  * @apiSuccess   {Number}    _id                          The AnnotationSet id
  * @apiSuccess   {Object}    lexUnit                      The LexUnit
  * @apiSuccess   {Number}    lexUnit._id                  The LexUnit id
@@ -457,7 +457,7 @@
 
 /**
  * @apiDefine FrameSuccess
- * @apiVersion 3.0.0
+ * @apiVersion 3.0
  * @apiSuccess   {Number}    _id            The Frame id
  * @apiSuccess   {String}    name           The Frame name
  * @apiSuccess   {String}    definition     The Frame definition
@@ -472,7 +472,7 @@
 
 /**
  * @apiDefine FrameSuccessPopulated
- * @apiVersion 3.0.0
+ * @apiVersion 3.0
  * @apiSuccess   {Number}    _id            The Frame id
  * @apiSuccess   {String}    name           The Frame name
  * @apiSuccess   {String}    definition     The Frame definition
@@ -499,7 +499,7 @@
 
 /**
  * @apiDefine LexUnitSuccess
- * @apiVersion 3.0.0
+ * @apiVersion 3.0
  * @apiSuccess   {Number}    _id                  The LexUnit id
  * @apiSuccess   {String}    name                 The LexUnit name
  * @apiSuccess   {String}    pos                  The LexUnit part of speech
@@ -515,7 +515,7 @@
 
 /**
  * @apiDefine LexUnitSuccessPopulated
- * @apiVersion 3.0.0
+ * @apiVersion 3.0
  * @apiSuccess   {Number}    _id                  The LexUnit id
  * @apiSuccess   {String}    name                 The LexUnit name
  * @apiSuccess   {String}    pos                  The LexUnit part of speech
@@ -553,14 +553,14 @@
 
 /**
  * @apiDefine PatternSuccess
- * @apiVersion 3.0.0
+ * @apiVersion 3.0
  * @apiSuccess   {Object}    _id            The Pattern ObjectID
  * @apiSuccess   {Object[]}  valenceUnits   The Pattern ValenceUnits ObjectIDs
  */
 
 /**
  * @apiDefine PatternSuccessPopulated
- * @apiVersion 3.0.0
+ * @apiVersion 3.0
  * @apiSuccess   {Object}    _id            The Pattern ObjectID
  * @apiSuccess   {Object[]}  valenceUnits   The Pattern ValenceUnits
  * @apiSuccess   {Object}  valenceUnits._id   The ValenceUnits ObjectIDs
@@ -571,7 +571,7 @@
 
 /**
  * @apiDefine ValenceUnitSuccess
- * @apiVersion 3.0.0
+ * @apiVersion 3.0
  * @apiSuccess   {Object}  _id  The ObjectID
  * @apiSuccess   {String}  FE   The frame element name
  * @apiSuccess   {String}  PT   The phrase type
@@ -580,7 +580,7 @@
 
 /**
  * @api {get} /annoSet/:id GetAnnoSet
- * @apiVersion 3.0.0
+ * @apiVersion 3.0
  * @apiName GetAnnoSet
  * @apiGroup AnnotationSet
  * @apiDescription Get AnnotationSet with id. Returns at most one
@@ -597,7 +597,7 @@
 
 /**
  * @api {get} /annoSets GetAnnoSets
- * @apiVersion 3.0.0
+ * @apiVersion 3.0
  * @apiName GetAnnoSets
  * @apiGroup AnnotationSet
  * @apiDescription Get all AnnotationSets with pattern matching input
@@ -614,7 +614,7 @@
 
 /**
  * @api {get} /frame/:id GetFrame
- * @apiVersion 3.0.0
+ * @apiVersion 3.0
  * @apiName GetFrame
  * @apiGroup Frame
  * @apiDescription Get Frame with id. Returns at most one
@@ -631,7 +631,7 @@
 
 /**
  * @api {get} /frames GetFrames
- * @apiVersion 3.0.0
+ * @apiVersion 3.0
  * @apiName GetFrames
  * @apiGroup Frame
  * @apiDescription Get all Frames with pattern matching input vp. Returns an
@@ -648,7 +648,7 @@
 
 /**
  * @api {get} /lexUnit/:id GetLexUnit
- * @apiVersion 3.0.0
+ * @apiVersion 3.0
  * @apiName GetLexUnit
  * @apiGroup LexUnit
  * @apiDescription Get LexUnit with id. Returns at most one
@@ -665,7 +665,7 @@
 
 /**
  * @api {get} /lexUnits GetLexUnits
- * @apiVersion 3.0.0
+ * @apiVersion 3.0
  * @apiName GetLexUnits
  * @apiGroup LexUnit
  * @apiDescription Get all LexUnits with pattern matching input vp. Returns an
@@ -682,7 +682,7 @@
 
 /**
  * @api {get} /pattern/:id GetPattern
- * @apiVersion 3.0.0
+ * @apiVersion 3.0
  * @apiName GetPattern
  * @apiGroup Pattern
  * @apiDescription Get Pattern with id. Returns at most one
@@ -699,7 +699,7 @@
 
 /**
  * @api {get} /patterns GetPatterns
- * @apiVersion 3.0.0
+ * @apiVersion 3.0
  * @apiName GetPatterns
  * @apiGroup Pattern
  * @apiDescription Get all Patterns with pattern matching input vp. Returns an
@@ -716,7 +716,7 @@
 
 /**
  * @api {get} /valenceUnit/:id GetValenceUnit
- * @apiVersion 3.0.0
+ * @apiVersion 3.0
  * @apiName GetValenceUnit
  * @apiGroup ValenceUnit
  * @apiDescription Get ValenceUnit with id. Returns at most one
@@ -732,7 +732,7 @@
 
 /**
  * @api {get} /valenceUnits GetValenceUnits
- * @apiVersion 3.0.0
+ * @apiVersion 3.0
  * @apiName GetValenceUnits
  * @apiGroup ValenceUnit
  * @apiDescription Get all ValenceUnits with pattern matching input vp. Returns
@@ -749,26 +749,26 @@
 
 /**
  * @apiDefine NotFoundIDError
- * @apiVersion 2.0.0
+ * @apiVersion 2.0
  * @apiError (Error 404) NotFoundError The id was not found
  */
 
 /**
  * @apiDefine NotFoundVPError
- * @apiVersion 2.0.0
+ * @apiVersion 2.0
  * @apiError (Error 404) NotFoundError A valence unit of the vp was not found
  */
 
 /**
  * @apiDefine InvalidQuery
- * @apiVersion 2.0.0
+ * @apiVersion 2.0
  * @apiError (Error 400) InvalidQuery The specified query is null, empty or
  * combines :id and vp in request
  */
 
 /**
  * @apiDefine InvalidQueryParamsID
- * @apiVersion 2.0.0
+ * @apiVersion 2.0
  * @apiError (Error 400) InvalidQueryParams The populate parameter is neither
  * <code>true</code> nor <code>false</code> or the specified :id is
  * neither a <code>Number</code> nor a valid <code>ObjectID</code>
@@ -776,7 +776,7 @@
 
 /**
  * @apiDefine InvalidQueryParamsVP
- * @apiVersion 2.0.0
+ * @apiVersion 2.0
  * @apiError (Error 400) InvalidQueryParams The populate parameter is neither
  * <code>true</code> nor <code>false</code> or the vp parameter contains either
  * an invalid character, an invalid sequence of characters or more than 3
@@ -785,7 +785,7 @@
 
 /**
  * @apiDefine idParam
- * @apiVersion 2.0.0
+ * @apiVersion 2.0
  * @apiParam {Number}     id          The id
  * @apiParam {Boolean} [populate=false]    Specify whether documents
  * should be populated
@@ -793,7 +793,7 @@
 
 /**
  * @apiDefine vpParam
- * @apiVersion 2.0.0
+ * @apiVersion 2.0
  * @apiParam {String}     vp          The Valence Pattern: a
  * combination of triplets FE.PT.GF
  * @apiParam {Boolean}    [populate=false]     Specify whether documents
@@ -808,7 +808,7 @@
 
 /**
  * @apiDefine AnnotationSetSuccess
- * @apiVersion 2.0.0
+ * @apiVersion 2.0
  * @apiSuccess  {Number}   _id        The AnnotationSet id
  * @apiSuccess  {Number}   lexUnit    The LexUnit id
  * @apiSuccess  {Number}   sentence   The Sentence id
@@ -817,7 +817,7 @@
 
 /**
  * @apiDefine AnnotationSetSuccessPopulated
- * @apiVersion 2.0.0
+ * @apiVersion 2.0
  * @apiSuccess   {Number}    _id                          The AnnotationSet id
  * @apiSuccess   {Object}    lexUnit                      The LexUnit
  * @apiSuccess   {Number}    lexUnit._id                  The LexUnit id
@@ -876,7 +876,7 @@
 
 /**
  * @apiDefine FrameSuccess
- * @apiVersion 2.0.0
+ * @apiVersion 2.0
  * @apiSuccess   {Number}    _id            The Frame id
  * @apiSuccess   {String}    name           The Frame name
  * @apiSuccess   {String}    definition     The Frame definition
@@ -891,7 +891,7 @@
 
 /**
  * @apiDefine FrameSuccessPopulated
- * @apiVersion 2.0.0
+ * @apiVersion 2.0
  * @apiSuccess   {Number}    _id            The Frame id
  * @apiSuccess   {String}    name           The Frame name
  * @apiSuccess   {String}    definition     The Frame definition
@@ -918,7 +918,7 @@
 
 /**
  * @apiDefine LexUnitSuccess
- * @apiVersion 2.0.0
+ * @apiVersion 2.0
  * @apiSuccess   {Number}    _id                  The LexUnit id
  * @apiSuccess   {String}    name                 The LexUnit name
  * @apiSuccess   {String}    pos                  The LexUnit part of speech
@@ -934,7 +934,7 @@
 
 /**
  * @apiDefine LexUnitSuccessPopulated
- * @apiVersion 2.0.0
+ * @apiVersion 2.0
  * @apiSuccess   {Number}    _id                  The LexUnit id
  * @apiSuccess   {String}    name                 The LexUnit name
  * @apiSuccess   {String}    pos                  The LexUnit part of speech
@@ -972,14 +972,14 @@
 
 /**
  * @apiDefine PatternSuccess
- * @apiVersion 2.0.0
+ * @apiVersion 2.0
  * @apiSuccess   {Object}    _id            The Pattern ObjectID
  * @apiSuccess   {Object[]}  valenceUnits   The Pattern ValenceUnits ObjectIDs
  */
 
 /**
  * @apiDefine PatternSuccessPopulated
- * @apiVersion 2.0.0
+ * @apiVersion 2.0
  * @apiSuccess   {Object}    _id            The Pattern ObjectID
  * @apiSuccess   {Object[]}  valenceUnits   The Pattern ValenceUnits
  * @apiSuccess   {Object}  valenceUnits._id   The ValenceUnits ObjectIDs
@@ -990,7 +990,7 @@
 
 /**
  * @apiDefine ValenceUnitSuccess
- * @apiVersion 2.0.0
+ * @apiVersion 2.0
  * @apiSuccess   {Object}  _id  The ObjectID
  * @apiSuccess   {String}  FE   The frame element name
  * @apiSuccess   {String}  PT   The phrase type
@@ -999,7 +999,7 @@
 
 /**
  * @api {get} /annoSet/:id GetAnnoSet
- * @apiVersion 2.0.0
+ * @apiVersion 2.0
  * @apiName GetAnnoSet
  * @apiGroup AnnotationSet
  * @apiDescription Get AnnotationSet with id. Returns at most one
@@ -1016,7 +1016,7 @@
 
 /**
  * @api {get} /annoSets GetAnnoSets
- * @apiVersion 2.0.0
+ * @apiVersion 2.0
  * @apiName GetAnnoSets
  * @apiGroup AnnotationSet
  * @apiDescription Get all AnnotationSets with pattern matching input
@@ -1033,7 +1033,7 @@
 
 /**
  * @api {get} /frame/:id GetFrame
- * @apiVersion 2.0.0
+ * @apiVersion 2.0
  * @apiName GetFrame
  * @apiGroup Frame
  * @apiDescription Get Frame with id. Returns at most one
@@ -1050,7 +1050,7 @@
 
 /**
  * @api {get} /frames GetFrames
- * @apiVersion 2.0.0
+ * @apiVersion 2.0
  * @apiName GetFrames
  * @apiGroup Frame
  * @apiDescription Get all Frames with pattern matching input vp. Returns an
@@ -1067,7 +1067,7 @@
 
 /**
  * @api {get} /lexUnit/:id GetLexUnit
- * @apiVersion 2.0.0
+ * @apiVersion 2.0
  * @apiName GetLexUnit
  * @apiGroup LexUnit
  * @apiDescription Get LexUnit with id. Returns at most one
@@ -1084,7 +1084,7 @@
 
 /**
  * @api {get} /lexUnits GetLexUnits
- * @apiVersion 2.0.0
+ * @apiVersion 2.0
  * @apiName GetLexUnits
  * @apiGroup LexUnit
  * @apiDescription Get all LexUnits with pattern matching input vp. Returns an
@@ -1101,7 +1101,7 @@
 
 /**
  * @api {get} /pattern/:id GetPattern
- * @apiVersion 2.0.0
+ * @apiVersion 2.0
  * @apiName GetPattern
  * @apiGroup Pattern
  * @apiDescription Get Pattern with id. Returns at most one
@@ -1118,7 +1118,7 @@
 
 /**
  * @api {get} /patterns GetPatterns
- * @apiVersion 2.0.0
+ * @apiVersion 2.0
  * @apiName GetPatterns
  * @apiGroup Pattern
  * @apiDescription Get all Patterns with pattern matching input vp. Returns an
@@ -1135,7 +1135,7 @@
 
 /**
  * @api {get} /valenceUnit/:id GetValenceUnit
- * @apiVersion 2.0.0
+ * @apiVersion 2.0
  * @apiName GetValenceUnit
  * @apiGroup ValenceUnit
  * @apiDescription Get ValenceUnit with id. Returns at most one
@@ -1151,7 +1151,7 @@
 
 /**
  * @api {get} /valenceUnits GetValenceUnits
- * @apiVersion 2.0.0
+ * @apiVersion 2.0
  * @apiName GetValenceUnits
  * @apiGroup ValenceUnit
  * @apiDescription Get all ValenceUnits with pattern matching input vp. Returns
@@ -1167,26 +1167,26 @@
 
 /**
  * @apiDefine NotFoundIDError
- * @apiVersion 1.0.0
+ * @apiVersion 1.0
  * @apiError (Error 404) NotFoundError The id was not found
  */
 
 /**
  * @apiDefine NotFoundVPError
- * @apiVersion 1.0.0
+ * @apiVersion 1.0
  * @apiError (Error 404) NotFoundError A valence unit of the vp was not found
  */
 
 /**
  * @apiDefine InvalidQuery
- * @apiVersion 1.0.0
+ * @apiVersion 1.0
  * @apiError (Error 400) InvalidQuery The specified query is null, empty or
  * combines :id and vp in request
  */
 
 /**
  * @apiDefine InvalidQueryParamsID
- * @apiVersion 1.0.0
+ * @apiVersion 1.0
  * @apiError (Error 400) InvalidQueryParams The populate parameter is neither
  * <code>true</code> nor <code>false</code> or the specified :id is
  * neither a <code>Number</code> nor a valid <code>ObjectID</code>
@@ -1194,7 +1194,7 @@
 
 /**
  * @apiDefine InvalidQueryParamsVP
- * @apiVersion 1.0.0
+ * @apiVersion 1.0
  * @apiError (Error 400) InvalidQueryParams The populate parameter is neither
  * <code>true</code> nor <code>false</code> or the vp parameter contains either
  * an invalid character, an invalid sequence of characters or more than 3
@@ -1203,7 +1203,7 @@
 
 /**
  * @apiDefine idParam
- * @apiVersion 1.0.0
+ * @apiVersion 1.0
  * @apiParam {Number}     id          The id
  * @apiParam {Boolean} [populate=false]    Specify whether documents
  * should be populated
@@ -1211,7 +1211,7 @@
 
 /**
  * @apiDefine vpParam
- * @apiVersion 1.0.0
+ * @apiVersion 1.0
  * @apiParam {String}     vp          The Valence Pattern: a
  * combination of triplets FE.PT.GF
  * @apiParam {Boolean}    [populate=false]     Specify whether documents
@@ -1220,7 +1220,7 @@
 
 /**
  * @apiDefine AnnotationSetSuccess
- * @apiVersion 1.0.0
+ * @apiVersion 1.0
  * @apiSuccess  {Number}   _id        The AnnotationSet id
  * @apiSuccess  {Number}   lexUnit    The LexUnit id
  * @apiSuccess  {Number}   sentence   The Sentence id
@@ -1229,7 +1229,7 @@
 
 /**
  * @apiDefine AnnotationSetSuccessPopulated
- * @apiVersion 1.0.0
+ * @apiVersion 1.0
  * @apiSuccess   {Number}    _id                          The AnnotationSet id
  * @apiSuccess   {Object}    lexUnit                      The LexUnit
  * @apiSuccess   {Number}    lexUnit._id                  The LexUnit id
@@ -1288,7 +1288,7 @@
 
 /**
  * @apiDefine FrameSuccess
- * @apiVersion 1.0.0
+ * @apiVersion 1.0
  * @apiSuccess   {Number}    _id            The Frame id
  * @apiSuccess   {String}    name           The Frame name
  * @apiSuccess   {String}    definition     The Frame definition
@@ -1303,7 +1303,7 @@
 
 /**
  * @apiDefine FrameSuccessPopulated
- * @apiVersion 1.0.0
+ * @apiVersion 1.0
  * @apiSuccess   {Number}    _id            The Frame id
  * @apiSuccess   {String}    name           The Frame name
  * @apiSuccess   {String}    definition     The Frame definition
@@ -1330,7 +1330,7 @@
 
 /**
  * @apiDefine LexUnitSuccess
- * @apiVersion 1.0.0
+ * @apiVersion 1.0
  * @apiSuccess   {Number}    _id                  The LexUnit id
  * @apiSuccess   {String}    name                 The LexUnit name
  * @apiSuccess   {String}    pos                  The LexUnit part of speech
@@ -1346,7 +1346,7 @@
 
 /**
  * @apiDefine LexUnitSuccessPopulated
- * @apiVersion 1.0.0
+ * @apiVersion 1.0
  * @apiSuccess   {Number}    _id                  The LexUnit id
  * @apiSuccess   {String}    name                 The LexUnit name
  * @apiSuccess   {String}    pos                  The LexUnit part of speech
@@ -1384,14 +1384,14 @@
 
 /**
  * @apiDefine PatternSuccess
- * @apiVersion 1.0.0
+ * @apiVersion 1.0
  * @apiSuccess   {Object}    _id            The Pattern ObjectID
  * @apiSuccess   {Object[]}  valenceUnits   The Pattern ValenceUnits ObjectIDs
  */
 
 /**
  * @apiDefine PatternSuccessPopulated
- * @apiVersion 1.0.0
+ * @apiVersion 1.0
  * @apiSuccess   {Object}    _id            The Pattern ObjectID
  * @apiSuccess   {Object[]}  valenceUnits   The Pattern ValenceUnits
  * @apiSuccess   {Object}  valenceUnits._id   The ValenceUnits ObjectIDs
@@ -1402,7 +1402,7 @@
 
 /**
  * @apiDefine ValenceUnitSuccess
- * @apiVersion 1.0.0
+ * @apiVersion 1.0
  * @apiSuccess   {Object}  _id  The ObjectID
  * @apiSuccess   {String}  FE   The frame element name
  * @apiSuccess   {String}  PT   The phrase type
@@ -1411,7 +1411,7 @@
 
 /**
  * @api {get} /annoSet/:id GetAnnoSet
- * @apiVersion 1.0.0
+ * @apiVersion 1.0
  * @apiName GetAnnoSet
  * @apiGroup AnnotationSet
  * @apiDescription Get AnnotationSet with id. Returns at most one
@@ -1428,7 +1428,7 @@
 
 /**
  * @api {get} /annoSets GetAnnoSets
- * @apiVersion 1.0.0
+ * @apiVersion 1.0
  * @apiName GetAnnoSets
  * @apiGroup AnnotationSet
  * @apiDescription Get all AnnotationSets with pattern matching input
@@ -1445,7 +1445,7 @@
 
 /**
  * @api {get} /frame/:id GetFrame
- * @apiVersion 1.0.0
+ * @apiVersion 1.0
  * @apiName GetFrame
  * @apiGroup Frame
  * @apiDescription Get Frame with id. Returns at most one
@@ -1462,7 +1462,7 @@
 
 /**
  * @api {get} /frames GetFrames
- * @apiVersion 1.0.0
+ * @apiVersion 1.0
  * @apiName GetFrames
  * @apiGroup Frame
  * @apiDescription Get all Frames with pattern matching input vp. Returns an
@@ -1479,7 +1479,7 @@
 
 /**
  * @api {get} /lexUnit/:id GetLexUnit
- * @apiVersion 1.0.0
+ * @apiVersion 1.0
  * @apiName GetLexUnit
  * @apiGroup LexUnit
  * @apiDescription Get LexUnit with id. Returns at most one
@@ -1496,7 +1496,7 @@
 
 /**
  * @api {get} /lexUnits GetLexUnits
- * @apiVersion 1.0.0
+ * @apiVersion 1.0
  * @apiName GetLexUnits
  * @apiGroup LexUnit
  * @apiDescription Get all LexUnits with pattern matching input vp. Returns an
@@ -1513,7 +1513,7 @@
 
 /**
  * @api {get} /pattern/:id GetPattern
- * @apiVersion 1.0.0
+ * @apiVersion 1.0
  * @apiName GetPattern
  * @apiGroup Pattern
  * @apiDescription Get Pattern with id. Returns at most one
@@ -1530,7 +1530,7 @@
 
 /**
  * @api {get} /patterns GetPatterns
- * @apiVersion 1.0.0
+ * @apiVersion 1.0
  * @apiName GetPatterns
  * @apiGroup Pattern
  * @apiDescription Get all Patterns with pattern matching input vp. Returns an
@@ -1547,7 +1547,7 @@
 
 /**
  * @api {get} /valenceUnit/:id GetValenceUnit
- * @apiVersion 1.0.0
+ * @apiVersion 1.0
  * @apiName GetValenceUnit
  * @apiGroup ValenceUnit
  * @apiDescription Get ValenceUnit with id. Returns at most one
@@ -1563,7 +1563,7 @@
 
 /**
  * @api {get} /valenceUnits GetValenceUnits
- * @apiVersion 1.0.0
+ * @apiVersion 1.0
  * @apiName GetValenceUnits
  * @apiGroup ValenceUnit
  * @apiDescription Get all ValenceUnits with pattern matching input vp. Returns
