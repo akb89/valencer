@@ -1,6 +1,6 @@
 {
   "name": "Valencer",
-  "version": "5.1.2",
+  "version": "5.1.3",
   "description": "A REST API to query valence patterns in FrameNet",
   "keywords": [
     "FrameNet",
@@ -37,7 +37,7 @@
   },
   "apidoc": {
     "name": "valencer-doc",
-    "version": "5.0.0",
+    "version": "5.0",
     "description": "Documentation for the Valencer API",
     "title": "Valencer API Doc",
     "url": "http://api.valencer.io/v5/:langIsoCode/:datasetVersion",
