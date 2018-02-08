@@ -14,7 +14,7 @@ const formatPopulationString = rewire('./../../middlewares/formatter').__get__('
 describe('formatter', () => {
   before(async () => {
     if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(config.dbUri);
+      await mongoose.connect(config.dbUri, { keepAlive: 1, connectTimeoutMS: 30000 });
     }
     const aFE = new FrameElement({
       _id: 1,

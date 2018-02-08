@@ -13,7 +13,7 @@ const getArrayOfArrayOfValenceUnitsIDs = rewire('./../../middlewares/core/valenc
 describe('core.valenceUnits.included', () => {
   before(async () => {
     if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(config.dbUri);
+      await mongoose.connect(config.dbUri, { keepAlive: 1, connectTimeoutMS: 30000 });
     }
     const aFE = new FrameElement({ _id: 1, name: 'A' });
     await aFE.save();
