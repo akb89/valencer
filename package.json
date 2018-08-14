@@ -1,6 +1,6 @@
 {
   "name": "Valencer",
-  "version": "5.1.3",
+  "version": "5.2.0",
   "description": "A REST API to query valence patterns in FrameNet",
   "keywords": [
     "FrameNet",
@@ -23,7 +23,7 @@
     "cleantestenv": "[ ! -f mongo.pid ] || (kill $(cat mongo.pid) && rm mongo.pid && rm mongod.valencer.log)",
     "pretest": "npm run startmongo",
     "test": "NODE_ENV=testing ./node_modules/.bin/nyc --reporter=text --reporter=html ./node_modules/.bin/mocha --timeout 5000 ./tests/**/*.test.js && npm run cleantestenv || npm run cleantestenv",
-    "singletest": "NODE_ENV=testing ./node_modules/.bin/nyc --reporter=text ./node_modules/.bin/mocha ./tests/middlewares/core.valenceUnits.excluded.test.js",
+    "singletest": "NODE_ENV=testing npm run startmongo && ./node_modules/.bin/nyc --reporter=text ./node_modules/.bin/mocha --timeout 5000 ./tests/middlewares/formatter.test.js && npm run cleantestenv || npm run cleantestenv",
     "posttest": "npm run lint",
     "coverage": "./node_modules/.bin/nyc report --reporter=text-lcov | ./node_modules/.bin/coveralls"
   },
@@ -59,7 +59,7 @@
     "koa-compress": "^2.0.0",
     "koa-router": "^7.2.0",
     "mongoose": "^5.0.0",
-    "noframenet-core": "^5.0.5",
+    "noframenet-core": "^5.2.0",
     "pm2": "^2.6.1",
     "winston": "^2.3.1"
   },

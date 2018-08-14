@@ -4,7 +4,7 @@
  * combination of FE.PT.GF tags) to an array of array (first).
  * The formatter manipulates the input query.
  * It transforms , and to an array of array with Frame Element ids then.
-*/
+ */
 const bluebird = require('bluebird');
 const utils = require('../utils/utils');
 const constants = require('../utils/constants');
@@ -36,7 +36,7 @@ function formatValencePatternToArrayOfArrayOfTokens(context, next) {
  * [['FE_1', 'PT_1', 'GF_1'], ['FE_2', 'PT_2', 'GF_2'], ..., ['FE_n', 'PT_n',
  * 'GF_n']]
  * and replace each Frame Element name by an array of Frame Element ids
- * matching the given Frame Element name in the database.
+ * matching the given Frame Element name in the database (case insensitive).
  * Frame Element ids matching the given name
  * [[[fe_1_id_1,...,fe_1_id_n], 'PT_1', 'GF_1'], ...,
  * [[fe_n_id_1,...,fn_n_id_n], 'PT_n', 'GF_n']]
