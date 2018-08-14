@@ -16,8 +16,9 @@ const logger = config.logger;
  * Retrieve an array of valenceUnit objects from the db matching any combination of
  * FE.PT.GF, in any order, and with potentially unspecified elements:
  * FE.PT.GF / PT.FE.GF / PT.GF / GF.FE / FE / GF etc.
- * @param unit: an array of FE/PT/GF tags: ['FE', 'PT', 'GF'] corresponding to a
+ * @param unit: an array of [FEids]/PT/GF tags: [[fe_id1,...,fe_idn], 'PT', 'GF'] corresponding to a
  * single valenceUnit inside a tokenArray pattern (@see formatter)
+ *
  */
 function getValenceUnitsIDsWithValenceUnitModel(ValenceUnit) {
   return async function getValenceUnitsIDs(valenceUnitAsArrayWithFEids) {

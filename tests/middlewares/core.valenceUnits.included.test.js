@@ -33,6 +33,10 @@ describe('core.valenceUnits.included', () => {
     await bNPObj.save();
     const cNPExt = new ValenceUnit({ FE: 3, PT: 'NP', GF: 'Ext' });
     await cNPExt.save();
+    const dNPExt = new ValenceUnit({ FE: 4, PT: 'np', GF: 'ext' });
+    await dNPExt.save();
+    const cPPaExt = new ValenceUnit({ FE: 3, PT: 'PP[about]', GF: 'Ext' });
+    await cPPaExt.save();
     const dPPaExt = new ValenceUnit({ FE: 4, PT: 'PP[about]', GF: 'Ext' });
     await dPPaExt.save();
     const dPPaExt2 = new ValenceUnit({ FE: 5, PT: 'PP[about]', GF: 'Ext' });
@@ -88,14 +92,18 @@ describe('core.valenceUnits.included', () => {
   });
   it('#getValenceUnitsIDs should be able to process multiple FE ids', async () => {
     const vusIDs = await getValenceUnitsIDs([[4, 5, 6]]);
-    vusIDs.length.should.equal(3);
+    vusIDs.length.should.equal(4);
   });
-  it('#getValenceUnitsIDs should be able to process PT', async () => {
+  it('#getValenceUnitsIDs should be able to process PT with case insensitive', async () => {
     const vusIDs = await getValenceUnitsIDs(['NP']);
-    vusIDs.length.should.equal(3);
+    vusIDs.length.should.equal(4);
   });
   it('#getValenceUnitsIDs should be able to process PT.GF', async () => {
     const vusIDs = await getValenceUnitsIDs(['NP', 'Obj']);
+    vusIDs.length.should.equal(2);
+  });
+  it('#getValenceUnitsIDs should be able to process PT.GF with case insensitive', async () => {
+    const vusIDs = await getValenceUnitsIDs(['np', 'ext']);
     vusIDs.length.should.equal(2);
   });
   it('#getValenceUnitsIDs should be able to process FE.GF', async () => {
