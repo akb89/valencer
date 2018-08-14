@@ -110,6 +110,14 @@ describe('core.valenceUnits.included', () => {
     const vusIDs = await getValenceUnitsIDs([[1], 'Obj']);
     vusIDs.length.should.equal(1);
   });
+  it('#getValenceUnitsIDs should be able to process arrays of PT GF items', async () => {
+    const vusIDs = await getValenceUnitsIDs([['NP'], ['Ext', 'Obj']]);
+    vusIDs.length.should.equal(4);
+  });
+  it('#getValenceUnitsIDs should be able to process arrays of PT GF items with specified FEs', async () => {
+    const vusIDs = await getValenceUnitsIDs([[3], ['NP'], ['Ext', 'Obj']]);
+    vusIDs.length.should.equal(1);
+  });
   it('#getValenceUnitsIDs should return an empty array when all tokens are found in the database but not in the given configuration', async () => {
     const vusIDs = await getValenceUnitsIDs([[3], 'PP[about]', 'Obj']);
     vusIDs.length.should.equal(0);

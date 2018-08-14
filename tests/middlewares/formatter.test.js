@@ -10,6 +10,7 @@ const formatValencePatternToArrayOfArrayOfTokens = rewire('./../../middlewares/f
 const replaceFrameElementNamesByFrameElementIds = rewire('./../../middlewares/formatter').__get__('replaceFrameElementNamesByFrameElementIds');
 const formatProjectionString = rewire('./../../middlewares/formatter').__get__('formatProjectionString');
 const formatPopulationString = rewire('./../../middlewares/formatter').__get__('formatPopulationString');
+const convertPTandGFtoFNstyle = rewire('./../../middlewares/formatter').__get__('convertPTandGFtoFNstyle');
 
 describe('formatter', () => {
   before(async () => {
@@ -161,6 +162,33 @@ describe('formatter', () => {
       ['G', 'H', [9, 10, 11]],
     ]);
   });
+  it('#replaceFrameElementNamesByFrameElementIds should be able to process mapped queries', async () => {
+    const next = () => {};
+    const context = {
+      valencer: {
+        models: {
+          FrameElement,
+        },
+        query: {
+          vp: {
+            formatted: [
+              ['A', 'B', 'C'],
+              [['D', 'G', 'S'], 'E', ['X', 'Y', 'Z']],
+              [['G'], 'H', 'I'],
+            ],
+          },
+        },
+      },
+    };
+    await replaceFrameElementNamesByFrameElementIds(context, next);
+    context.valencer.query.vp.withFEids.should.deep.equal([
+      [
+        [1], 'B', 'C',
+      ],
+      [['D', 'G', 'S'], [4, 5], ['X', 'Y', 'Z']],
+      [['G'], 'H', [9, 10, 11]],
+    ]);
+  });
   it('#replaceFrameElementNamesByFrameElementIds should be case insensitive', async () => {
     const next = () => {};
     const context = {
@@ -205,7 +233,6 @@ describe('formatter', () => {
       field_1: 1,
     });
   });
-
   it('#formatProjectionString should return an object with projection_field as keys and 1 as values', async () => {
     const next = () => {};
     const context = {
@@ -219,5 +246,24 @@ describe('formatter', () => {
       },
     };
     await formatPopulationString(context, next);
+  });
+  it('#convertPTandGFtoFNstyle', async () => {
+    const next = () => {};
+    const context = {
+      valencer: {
+        query: {
+          vp: {
+            formatted: [
+              ['A', 'nsubj'],
+              ['adjp', 'E', 'F'],
+            ],
+          },
+        },
+      },
+    };
+    await convertPTandGFtoFNstyle(context, next);
+    context.valencer.query.vp.formatted.should.deep.equal([
+      ['A', ['NP', 'Poss', 'PP', 'AVP', 'N', 'VPto'], 'Ext'],
+      [['ADJ', 'A'], 'E', 'F']]);
   });
 });
