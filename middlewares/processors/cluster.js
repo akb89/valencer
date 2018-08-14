@@ -54,8 +54,7 @@ async function getFrames(context, next) {
   const frModel = context.valencer.models.FrameRelation;
   context.valencer.results.cluster =
     await getClusterFramesWithModel(frModel)(context.valencer.results.frames);
-  logger.verbose(`${context.valencer.results.cluster.length} cluster frames
-    retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
+  logger.verbose(`${context.valencer.results.cluster.length} cluster frames retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }
 
@@ -68,8 +67,7 @@ async function getLexUnits(context, next) {
   context.valencer.results.cluster =
     await getClusterLexUnitsWithModel(luModel)(context.valencer.results.lexUnits,
                                                context.valencer.query.frameID);
-  logger.verbose(`${context.valencer.results.cluster.length} cluster lexUnits
-        retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
+  logger.verbose(`${context.valencer.results.cluster.length} cluster lexUnits retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }
 

@@ -33,9 +33,7 @@ function getFrameIDsWithModel(AnnotationSet) {
 
 async function getByVP(context, next) {
   const startTime = utils.getStartTime();
-  logger.info(`Querying for Frames with skip =
-    '${context.valencer.query.skip}', limit = '${context.valencer.query.limit}'
-    and vp = '${context.query.vp}'`);
+  logger.info(`Querying for Frames with skip = '${context.valencer.query.skip}', limit = '${context.valencer.query.limit}' and vp = '${context.query.vp}'`);
   const annoSetModel = context.valencer.models.AnnotationSet;
   const frameIDs =
     await getFrameIDsWithModel(annoSetModel)(context.valencer.results.tmp.filteredPatternsIDs);
@@ -53,8 +51,7 @@ async function getByVP(context, next) {
     Limit: context.valencer.query.limit,
   });
   context.valencer.results.frames = results;
-  logger.verbose(`${results.length} unique Frames out of ${count} retrieved
-    from database in ${utils.getElapsedTime(startTime)}ms`);
+  logger.verbose(`${results.length} unique Frames out of ${count} retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }
 
