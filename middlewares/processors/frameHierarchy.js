@@ -3,24 +3,22 @@ const utils = require('../../utils/utils');
 
 const logger = config.logger;
 
-function getFrameWithFrameModel(Frame) {
-  return async function getFrame(id, projections = {}, populations = []) {
-    const q = Frame.findById(id, projections);
-    return populations.reduce((query, p) => query.populate(p), q);
+function getFrameHierarchyWithFrameHierarchyModel(FrameHierarchy) {
+  return async function getFrameHierarchy(frameName, projections = {}) {
+    return FrameHierarchy.findOne({}, projections).where('name').equals(frameName);
   };
 }
 
-async function getByID(context, next) {
+async function getByName(context, next) {
   const startTime = utils.getStartTime();
-  logger.info(`Querying FrameHierarchy for Frame with _id = ${context.params.id}`);
-  const frameModel = context.valencer.models.Frame;
+  logger.info(`Querying for FrameHierarchy for Frame with name = ${context.query.frameName}`);
+  const frameHierarchyModel = context.valencer.models.FrameHierarchy;
   context.body =
-    await getFrameHierarchyWithFrameModel(frameModel)(context.params.id, context.valencer.query.projections,
-                                             context.valencer.query.populations);
-  logger.verbose(`Frame with _id = ${context.params.id} retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
+    await getFrameHierarchyWithFrameHierarchyModel(frameHierarchyModel)(context.query.frameName, context.valencer.query.projections);
+  logger.verbose(`FrameHierarchy retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }
 
 module.exports = {
-  getByID,
+  getByName,
 };

@@ -97,6 +97,16 @@ function validateQueryParamContainsNoInvalidCharacters(queryParam) {
   logger.debug('Query parameter contains no invalid characters');
 }
 
+function validateQueryFrameName(context, next) {
+  const name = context.query.frameName;
+  const invalidCharacterIndex = name.search(/[^a-zA-Z.\s[\]_-]/);
+  if (invalidCharacterIndex !== -1) {
+    throw new ApiError.InvalidQueryParams(`Invalid character in query parameter '${name}' at index = ${invalidCharacterIndex}: '${name[invalidCharacterIndex]}'`);
+  }
+  logger.debug('Frame name contains no invalid characters');
+  return next();
+}
+
 function validateQueryVPcontainsNoInvalidCharacters(context, next) {
   validateQueryParamContainsNoInvalidCharacters(context.query.vp);
   return next();
@@ -292,6 +302,7 @@ module.exports = {
   validateQueryVUnotEmpty,
   validateParamsIDnotEmpty,
   validateParamsIDisNumberOrObjectID,
+  validateQueryFrameName,
   validateQueryVUlength,
   validateQueryVPcontainsNoInvalidCharacters,
   validateQueryVUcontainsNoInvalidCharacters,

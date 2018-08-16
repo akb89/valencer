@@ -49,6 +49,7 @@ async function initializeValencerContext(context, next) {
         formatted: [],
         withFEids: [],
       },
+      frameName: '',
       feNamesSet: new Set(),
       projections: {},
       populations: [],
@@ -96,6 +97,16 @@ const validateAndFormatIDquery = compose([
   validator.validatePopulationString,
   formatter.formatProjectionString,
   formatter.formatPopulationString,
+  database.connect(),
+]);
+
+const validateAndFormatFrameNameQuery = compose([
+  initializeValencerContext,
+  validator.validatePathToDB,
+  validator.validateQueryNotEmpty,
+  validator.validateQueryFrameName,
+  validator.validateProjectionString,
+  formatter.formatProjectionString,
   database.connect(),
 ]);
 
@@ -164,120 +175,151 @@ const validateFormatAndProcessVUquery = compose([
 
 
 /**
- * @apiDefine NotFoundIDError
- * @apiVersion 5.0.0
- * @apiError (Error 404) NotFoundError The id was not found in the database
- */
+* @apiDefine NotFoundIDError
+* @apiVersion 5.0.0
+* @apiError (Error 404) NotFoundError The id was not found in the database
+*/
 
 /**
- * @apiDefine NotFoundVPError
- * @apiVersion 5.0.0
- * @apiError (Error 404) NotFoundError At least one valence unit composing the
- * input vp was not found in the database
- */
+* @apiDefine NotFoundVPError
+* @apiVersion 5.0.0
+* @apiError (Error 404) NotFoundError At least one valence unit composing the
+* input vp was not found in the database
+*/
 
 /**
- * @apiDefine InvalidQuery
- * @apiVersion 5.0.0
- * @apiError (Error 400) InvalidQuery The specified <code>langIsoCode</code> or
- * <code>datasetVersion</code> is not supported; the database corresponding to
- * the language ISO639-1 and dataset version is supported but not up and
- * running; the specified query is empty, null or undefined
- */
+* @apiDefine NotFoundNameError
+* @apiVersion 5.0.0
+* @apiError (Error 404) NotFoundError The Frame name was not found in the database
+*/
 
 /**
- * @apiDefine InvalidParams
- * @apiVersion 5.0.0
- * @apiError (Error 400) InvalidParams The specified <code>id</code> is empty,
- * null, undefined, or is specified but is neither a <code>Number</code> nor a
- * valid <code>ObjectID</code>
- */
+* @apiDefine InvalidQuery
+* @apiVersion 5.0.0
+* @apiError (Error 400) InvalidQuery The specified <code>langIsoCode</code> or
+* <code>datasetVersion</code> is not supported; the database corresponding to
+* the language ISO639-1 and dataset version is supported but not up and
+* running; the specified query is empty, null or undefined
+*/
 
 /**
- * @apiDefine InvalidQueryParams
- * @apiVersion 5.0.0
- * @apiError (Error 400) InvalidQueryParams The <code>vp</code> parameter contains either
- * an invalid character, an invalid sequence of characters or more than 3
- * tokens separated by a dot in at least one of its valence units; the
- * <code>strictVUMatching</code> parameter is neither <code>true</code> nor
- * <code>false</code>; the <code>withExtraCoreFEs</code> parameter is neither
- * <code>true</code> nor <code>false</code>
- */
+* @apiDefine InvalidParams
+* @apiVersion 5.0.0
+* @apiError (Error 400) InvalidParams The specified <code>id</code> is empty,
+* null, undefined, or is specified but is neither a <code>Number</code> nor a
+* valid <code>ObjectID</code>
+*/
 
 /**
- * @apiDefine apiConfig
- * @apiVersion 5.0.0
- * @apiParam {String}    langIsoCode   Set the language ISO639-1 code. Ex: 'en' for English
- * @apiParam {Number}    datasetVersion    Set the version of the FrameNet
- * dataset, in semver format. Ex: '170' for the FrameNet 1.7 data release
- */
+* @apiDefine InvalidQueryParams
+* @apiVersion 5.0.0
+* @apiError (Error 400) InvalidQueryParams The <code>vp</code> parameter contains either
+* an invalid character, an invalid sequence of characters or more than 3
+* tokens separated by a dot in at least one of its valence units; the
+* <code>strictVUMatching</code> parameter is neither <code>true</code> nor
+* <code>false</code>; the <code>withExtraCoreFEs</code> parameter is neither
+* <code>true</code> nor <code>false</code>
+*/
 
 /**
-  * @apiDefine projPop
-  * @apiVersion 5.0.0
-  * @apiParam {String}   [projection] Set the fields to be projected in the output
-  * documents. Projection is the process of returning only
-  * requested fields from input documents. See [project](https://docs.mongodb.com/manual/reference/operator/aggregation/project/index.html)
-  * in the MongoDB documentation and
-  * usage details in the [Optional Parameters](#opt) section.
-  * @apiParam {String}   [population] Set the fields to be populated in the output documents.
-  * Population is the process of automatically
-  * replacing the specified paths in the document with document(s) from other collection(s).
-  * See [populate](http://mongoosejs.com/docs/populate.html) in the Mongoose documentation and
-  * usage details in the [Optional Parameters](#opt) section.
-  */
+* @apiDefine InvalidQueryNameParam
+* @apiVersion 5.0.0
+* @apiError (Error 400) InvalidParams The specified <code>frameName</code> is empty,
+* null, undefined, or is specified but is not a proper ascii <code>String</code>
+*/
 
 /**
- * @apiDefine vpParam
- * @apiVersion 5.0.0
- * @apiParam {String}     vp          Set the Valence Pattern: a
- * combination of triplets FE.PT.GF
- * @apiParam {Boolean}    [strictVUMatching=false]     Specify whether
- * the number of valence units should match exactly. Ex: Querying for
- * Donor.NP.Ext with strictVUMatching=true will return all patterns with only
- * one valenceUnit
- * @apiParam {Boolean}    [withExtraCoreFEs=true] Specify whether, in cases of
- * non-strict valence unit matching, extra Frame Elements can be core FEs.
- */
+* @apiDefine apiConfig
+* @apiVersion 5.0.0
+* @apiParam {String}    langIsoCode   Set the language ISO639-1 code. Ex: 'en' for English
+* @apiParam {Number}    datasetVersion    Set the version of the FrameNet
+* dataset, in semver format. Ex: '170' for the FrameNet 1.7 data release
+*/
 
 /**
-  * @apiDefine skipLimit
-  * @apiVersion 5.0.0
-  * @apiParam {Number}   [skip=0] Set the number of documents to skip before returning.
-  * @apiParam {Number}   [limit=10] Set the number of documents to return.
-  * Set to 0 to return all possible documents.
-  */
+* @apiDefine projPop
+* @apiVersion 5.0.0
+* @apiParam {String}   [projection] Set the fields to be projected in the output
+* documents. Projection is the process of returning only
+* requested fields from input documents. See [project](https://docs.mongodb.com/manual/reference/operator/aggregation/project/index.html)
+* in the MongoDB documentation and
+* usage details in the [Optional Parameters](#opt) section.
+* @apiParam {String}   [population] Set the fields to be populated in the output documents.
+* Population is the process of automatically
+* replacing the specified paths in the document with document(s) from other collection(s).
+* See [populate](http://mongoosejs.com/docs/populate.html) in the Mongoose documentation and
+* usage details in the [Optional Parameters](#opt) section.
+*/
 
 /**
- * @apiDefine AnnotationSetSuccess
- * @apiVersion 5.0.0
- * @apiSuccess  {Number}   _id        The AnnotationSet id
- * @apiSuccess  {Number}   lexUnit    The LexUnit id
- * @apiSuccess  {Number}   sentence   The Sentence id
- * @apiSuccess  {Object}   pattern    The Pattern ObjectID
- * @apiSuccess  {Object[]} labels     The list of Label ObjectIDs
- */
+* @apiDefine vpParam
+* @apiVersion 5.0.0
+* @apiParam {String}     vp          Set the Valence Pattern: a
+* combination of triplets FE.PT.GF
+* @apiParam {Boolean}    [strictVUMatching=false]     Specify whether
+* the number of valence units should match exactly. Ex: Querying for
+* Donor.NP.Ext with strictVUMatching=true will return all patterns with only
+* one valenceUnit
+* @apiParam {Boolean}    [withExtraCoreFEs=true] Specify whether, in cases of
+* non-strict valence unit matching, extra Frame Elements can be core FEs.
+*/
 
 /**
-  * @apiDefine ClusterFrameSuccess
-  * @apiVersion 5.0.0
-  * @apiSuccess   {Number}    data.id         The Frame or FrameRelation id
-  * @apiSuccess   {String}    data.name       The Frame name
-  * @apiSuccess   {Number}    data.source     The source FrameRelation
-  * @apiSuccess   {Number}    data.target     The target FrameRelation
-  * @apiSuccess   {String}    data.type       The FrameRelation name
-  */
+* @apiDefine skipLimit
+* @apiVersion 5.0.0
+* @apiParam {Number}   [skip=0] Set the number of documents to skip before returning.
+* @apiParam {Number}   [limit=10] Set the number of documents to return.
+* Set to 0 to return all possible documents.
+*/
 
-  /**
-    * @apiDefine ClusterLexUnitSuccess
-    * @apiVersion 5.0.0
-    * @apiSuccess   {Number}    data.id         The LexUnit id
-    * @apiSuccess   {String}    data.name       The LexUnit name
-    * @apiSuccess   {String}    data.frame      The Frame name
-    * @apiSuccess   {Number}    data.source     The LexUnit.Frame id
-    * @apiSuccess   {Number}    data.target     The LexUnit id
-    * @apiSuccess   {String}    data.type       The relation type ("frame")
-    */
+/**
+* @apiDefine AnnotationSetSuccess
+* @apiVersion 5.0.0
+* @apiSuccess  {Number}   _id        The AnnotationSet id
+* @apiSuccess  {Number}   lexUnit    The LexUnit id
+* @apiSuccess  {Number}   sentence   The Sentence id
+* @apiSuccess  {Object}   pattern    The Pattern ObjectID
+* @apiSuccess  {Object[]} labels     The list of Label ObjectIDs
+*/
+
+/**
+* @apiDefine ClusterFrameSuccess
+* @apiVersion 5.0.0
+* @apiSuccess   {Number}    data.id         The Frame or FrameRelation id
+* @apiSuccess   {String}    data.name       The Frame name
+* @apiSuccess   {Number}    data.source     The source FrameRelation
+* @apiSuccess   {Number}    data.target     The target FrameRelation
+* @apiSuccess   {String}    data.type       The FrameRelation name
+*/
+
+/**
+* @apiDefine ClusterLexUnitSuccess
+* @apiVersion 5.0.0
+* @apiSuccess   {Number}    data.id         The LexUnit id
+* @apiSuccess   {String}    data.name       The LexUnit name
+* @apiSuccess   {String}    data.frame      The Frame name
+* @apiSuccess   {Number}    data.source     The LexUnit.Frame id
+* @apiSuccess   {Number}    data.target     The LexUnit id
+* @apiSuccess   {String}    data.type       The relation type ("frame")
+*/
+
+/**
+* @apiDefine FEhierarchySuccess
+* @apiVersion 5.0.0
+* @apiSuccess   {Object}      _id        The FEhierarchy ObjectID
+* @apiSuccess   {String}      name       The input FrameElement name
+* @apiSuccess   {Object[]}    children   The FEhierarchy elements for which the corresponding FEs inherit from the input FE
+* @apiSuccess   {Object[]}    parents    The FEhierarchy elements from which the input FE inherits
+*/
+
+/**
+* @apiDefine FrameHierarchySuccess
+* @apiVersion 5.0.0
+* @apiSuccess   {Object}      _id        The FrameHierarchy ObjectID
+* @apiSuccess   {String}      name       The input Frame name
+* @apiSuccess   {Object[]}    children   The FrameHierarchy elements for which the corresponding Frames inherit from the input Frame
+* @apiSuccess   {Object[]}    parents    The FrameHierarchy elements from which the input Frame inherits
+*/
 
 /**
  * @apiDefine FrameSuccess
@@ -344,7 +386,8 @@ const validateFormatAndProcessVUquery = compose([
  */
 
 /**
- * @api {get} /annoSet/:id/:projection/:population GetAnnoSet
+ * @api {get} /annoSet/:id/:projection/:population
+ * GetAnnoSet
  * @apiVersion 5.0.0
  * @apiName GetAnnoSet
  * @apiGroup AnnotationSet
@@ -514,16 +557,24 @@ router.get('/cluster/lexUnits',
 
 
 /**
-* @api {get} /feHierarchy?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs
+* @api {get} /feHierarchy/:projection?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs
+* GetFEhierarchy
 * @apiVersion 5.0.0
 * @apiName GetFEhierarchy
 * @apiGroup Hierarchy
-* @apiDescription Get all FE children for the FE(s) specified in the input vp. Returns an
-* empty object if no match is found
+* @apiDescription Get the FEHierarch(ies) for the FE names specified in the input vp. Returns an
+* empty object if no match is found. Note that the population parameter is useless.
+* parents and children are only specified for the head node of the tree.
+* All embedded elements only specify one of the other (children for children nodes
+* and parents for parents nodes).
 * @apiUse vpParam
 * @apiUse apiConfig
+* @apiUse projPop
 * @apiExample Default
+* # Default usage (no option set)
 * curl -i "http://localhost:3030/v5/en/170/feHierarchy?vp=Donor.NP.Ext+Theme.NP.Obj"
+* # Projecting the children field
+* curl -i "http://localhost:3030/v5/en/170/feHierarchy/children?vp=Donor.NP.Ext+Theme.NP.Obj"
 * @apiUse FEhierarchySuccess
 * @apiUse NotFoundVPError
 * @apiUse InvalidQuery
@@ -542,26 +593,32 @@ router.get('/feHierarchy/:projection',
            displayQueryExecutionTime);
 
 /**
-* @api {get} /frameHierarchy/:id
+* @api {get} /frameHierarchy/:projection?frameName=:frameName
+* GetFrameHierarchy
 * @apiVersion 5.0.0
 * @apiName GetFrameHierarchy
 * @apiGroup Hierarchy
-* @apiDescription Get all parent frames for the input Frame ID.
-* Throws an error if the specified Frame ID is not found.
+* @apiDescription Get the FrameHierarchy for the input Frame name.
+* Throws an error if the specified Frame name is not found.
 * @apiUse apiConfig
 * @apiExample Default
-* curl -i "http://localhost:3030/v5/en/170/frameHierarchy/42"
+* curl -i "http://localhost:3030/v5/en/170/frameHierarchy/Abandonment"
 * @apiUse FrameHierarchySuccess
-* @apiUse NotFoundIDError
+* @apiUse NotFoundNameError
 * @apiUse InvalidQuery
-* @apiUse InvalidParams
+* @apiUse InvalidQueryNameParam
 */
-router.get('/frameHierarchy/:id',
-           validateAndFormatIDquery,
-           frameHierarchy.getByID);
+router.get('/frameHierarchy',
+           validateAndFormatFrameNameQuery,
+           frameHierarchy.getByName);
+
+router.get('/frameHierarchy/:projection',
+           validateAndFormatFrameNameQuery,
+           frameHierarchy.getByName);
 
 /**
  * @api {get} /frame/:id/:projection/:population
+ * GetFrame
  * @apiVersion 5.0.0
  * @apiName GetFrame
  * @apiGroup Frame
@@ -595,6 +652,7 @@ router.get('/frame/:id/:projection/:population',
 
 /**
  * @api {get} /frames/:projection/:population?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs&skip=:skip&limit=:limit
+ * GetFrames
  * @apiVersion 5.0.0
  * @apiName GetFrames
  * @apiGroup Frame
@@ -638,6 +696,7 @@ router.get('/frames/:projection/:population',
 
 /**
  * @api {get} /frameElement/:id/:projection/:population
+ * GetFrameElement
  * @apiVersion 5.0.0
  * @apiName GetFrameElement
  * @apiGroup FrameElement
@@ -671,6 +730,7 @@ router.get('/frameElement/:id/:projection/:population',
 
 /**
  * @api {get} /lexUnit/:id/:projection/:population
+ * GetLexUnit
  * @apiVersion 5.0.0
  * @apiName GetLexUnit
  * @apiGroup LexUnit
@@ -704,6 +764,7 @@ router.get('/lexUnit/:id/:projection/:population',
 
 /**
  * @api {get} /lexUnits/:projection/:population?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs&skip=:skip&limit=:limit
+ * GetLexUnits
  * @apiVersion 5.0.0
  * @apiName GetLexUnits
  * @apiGroup LexUnit
@@ -746,6 +807,7 @@ router.get('/lexUnits/:projection/:population',
 
 /**
  * @api {get} /pattern/:id/:projection/:population
+ * GetPattern
  * @apiVersion 5.0.0
  * @apiName GetPattern
  * @apiGroup Pattern
@@ -779,6 +841,7 @@ router.get('/pattern/:id/:projection/:population',
 
 /**
  * @api {get} /patterns/:projection/:population?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs&skip=:skip&limit=:limit
+ * GetPatterns
  * @apiVersion 5.0.0
  * @apiName GetPatterns
  * @apiGroup Pattern
@@ -822,6 +885,7 @@ router.get('/patterns/:projection/:population',
 
 /**
  * @api {get} /valenceUnit/:id/:projection/:population
+ * GetValenceUnit
  * @apiVersion 5.0.0
  * @apiName GetValenceUnit
  * @apiGroup ValenceUnit
@@ -855,6 +919,7 @@ router.get('/valenceUnit/:id/:projection/:population',
 
 /**
  * @api {get} /valenceUnits/:projection/:population?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs&skip=:skip&limit=:limit
+ * GetValenceUnits
  * @apiVersion 5.0.0
  * @apiName GetValenceUnits
  * @apiGroup ValenceUnit
