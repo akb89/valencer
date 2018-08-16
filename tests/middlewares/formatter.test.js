@@ -10,6 +10,7 @@ const formatValencePatternToArrayOfArrayOfTokens = rewire('./../../middlewares/f
 const replaceFrameElementNamesByFrameElementIds = rewire('./../../middlewares/formatter').__get__('replaceFrameElementNamesByFrameElementIds');
 const formatProjectionString = rewire('./../../middlewares/formatter').__get__('formatProjectionString');
 const formatPopulationString = rewire('./../../middlewares/formatter').__get__('formatPopulationString');
+const extractFEnamesSet = rewire('./../../middlewares/formatter').__get__('extractFEnamesSet');
 
 describe('formatter', () => {
   before(async () => {
@@ -205,7 +206,6 @@ describe('formatter', () => {
       field_1: 1,
     });
   });
-
   it('#formatProjectionString should return an object with projection_field as keys and 1 as values', async () => {
     const next = () => {};
     const context = {
@@ -219,5 +219,28 @@ describe('formatter', () => {
       },
     };
     await formatPopulationString(context, next);
+  });
+  it('#extractFEnamesSet should return a valid set of FE names', async () => {
+    const next = () => {};
+    const context = {
+      valencer: {
+        models: {
+          FrameElement,
+        },
+        query: {
+          vp: {
+            formatted: [
+              ['Aa', 'B', 'C'],
+              ['D', 'eEe', 'F'],
+            ],
+          },
+          feNamesSet: new Set(),
+        },
+      },
+    };
+    await extractFEnamesSet(context, next);
+    context.valencer.query.feNamesSet.size.should.equal(2);
+    context.valencer.query.feNamesSet.has('Aa').should.be.true;
+    context.valencer.query.feNamesSet.has('eEe').should.be.true;
   });
 });

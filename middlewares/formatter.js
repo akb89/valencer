@@ -46,6 +46,7 @@ function getVUasArrayWithFEidsWithFEmodel(FrameElement) {
     return valenceUnitAsArray.reduce(async (valenceUnitArrayWithFEidsPromise, token) => {
       const valenceUnitArrayWithFEids = await valenceUnitArrayWithFEidsPromise;
       const fes = await FrameElement.find().where('name').equals(token);
+
       valenceUnitArrayWithFEids.push(fes.length ? fes.map(fe => fe._id) : token);
       return valenceUnitArrayWithFEids;
     }, []);
@@ -59,8 +60,23 @@ function getVPasArrayWithFEidsWithFEmodel(FrameElement) {
   };
 }
 
+function getFEnamesIDmapWithFEmodel(FrameElement) {
+  return async function getFEnamesIDmap(formattedVP) {
+    return formattedVP.reduce(async (feNamesIDmap, vUnitArray) => {
+      vUnitArray.forEach(async (token) => {
+        const fes = await FrameElement.find().where('name').equals(token);
+        if (fes.length > 0 && !feNamesIDmap.has(token)) {
+          feNamesIDmap.set(token, fes.map(fe => fe._id));
+        }
+        return feNamesIDmap;
+      });
+    }, new Map());
+  };
+}
+
 async function replaceFrameElementNamesByFrameElementIds(context, next) {
   const feModel = context.valencer.models.FrameElement;
+  const feNamesIDmap = getFEnamesIDmapWithFEmodel(feModel)(context.valencer.query.vp.formatted);
   context.valencer.query.vp.withFEids =
     await getVPasArrayWithFEidsWithFEmodel(feModel)(context.valencer.query.vp.formatted);
   logger.debug(`context.valencer.query.vp.withFEids = ${JSON.stringify(context.valencer.query.vp.withFEids)}`);
@@ -71,7 +87,6 @@ function formatProjectionString(context, next) {
   if (context.params.projection == null) {
     return next();
   }
-
   const projection = context.params.projection;
   const projections = projection.split(',')
     .filter(p => p !== '').reduce((proj, p) => {
@@ -89,7 +104,6 @@ function formatPopulationString(context, next) {
       if (select.length > 0 && idx === 0) {
         obj.select = strSelect;
       }
-
       return {
         populate: obj,
       };
@@ -126,9 +140,31 @@ function formatPopulationString(context, next) {
   return next();
 }
 
+function extractFEnamesSetWithFEmodel(FrameElement) {
+  return async function getFEnamesSet(formattedVP) {
+    return formattedVP.reduce(async (namesSetPromise, vus) => {
+      const namesSet = await namesSetPromise;
+      for (const token of vus) {
+        const fe = await FrameElement.findOne().where('name').equals(token);
+        if (fe !== null) {
+          namesSet.add(token);
+        }
+      }
+      return namesSet;
+    }, new Set());
+  };
+}
+
+async function extractFEnamesSet(context, next) {
+  const feModel = context.valencer.models.FrameElement;
+  context.valencer.query.feNamesSet = await extractFEnamesSetWithFEmodel(feModel)(context.valencer.query.vp.formatted);
+  return next();
+}
+
 module.exports = {
   formatValencePatternToArrayOfArrayOfTokens,
   replaceFrameElementNamesByFrameElementIds,
   formatProjectionString,
   formatPopulationString,
+  extractFEnamesSet,
 };

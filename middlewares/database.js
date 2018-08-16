@@ -18,6 +18,8 @@ function connect() {
         Frame: db.model('Frame', nfc.Frame.schema),
         FrameElement: db.model('FrameElement', nfc.FrameElement.schema),
         FERelation: db.model('FERelation', nfc.FERelation.schema),
+        FEHierarchy: db.model('FEHierarchy', nfc.FEHierarchy.schema),
+        FrameHierarchy: db.model('FrameHierarchy', nfc.FrameHierarchy.schema),
         FrameRelation: db.model('FrameRelation', nfc.FrameRelation.schema),
         FrameRelationType: db.model('FrameRelationType', nfc.FrameRelationType.schema),
         Label: db.model('Label', nfc.Label.schema),

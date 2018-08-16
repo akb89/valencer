@@ -3,23 +3,26 @@ const utils = require('../../utils/utils');
 
 const logger = config.logger;
 
-function getFEhierarchyWithModel(FERelation) {
-  return async function getFrames() {
+function getFEhierarchyWithModel(FEHierarchy) {
+  return async function getFEhierarchy(feNamesSet, projections = {}) {
+    return Array.from(feNamesSet).reduce(async (feHierarchyPromise, feName) => {
+      const feHierarchy = await feHierarchyPromise;
+      feHierarchy[feName] = await FEHierarchy.findOne({}, projections).where('name').equals(feName);
+      return feHierarchy;
+    }, {});
   };
 }
 
 async function getByVP(context, next) {
-  const feRelationModel = context.valencer.models.FERelation;
-  const frameIDs =
-    await getFrameIDsWithModel(feRelationModel)(context.valencer.results.tmp.filteredPatternsIDs);
-  const [count, results] = await Promise.all([
-    getFramesWithModel(context.valencer.models.Frame)(frameIDs, true),
-    getFramesWithModel(context.valencer.models.Frame)(frameIDs, false,
-                                                      context.valencer.query.projections,
-                                                      context.valencer.query.populations,
-                                                      context.valencer.query.skip,
-                                                      context.valencer.query.limit),
-  ]);
+  const startTime = utils.getStartTime();
+  logger.info(`Querying for FEHierarchy with vp = '${context.query.vp}'`);
+  logger.verbose(`Corresponding feNamesSet = '${Array.from(context.valencer.query.feNamesSet)}'`)
+  const feHierarchyModel = context.valencer.models.FEHierarchy;
+  console.log(context.valencer.query.projections);
+  const results = await getFEhierarchyWithModel(feHierarchyModel)(context.valencer.query.feNamesSet,
+                                                                  context.valencer.query.projections);
+  context.valencer.results.feHierarchy = results;
+  logger.verbose(`feHierarchy retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }
 

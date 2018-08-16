@@ -10,9 +10,11 @@ const validator = require('./middlewares/validator');
 const annotationSet = require('./middlewares/processors/annotationSet');
 const annotationSets = require('./middlewares/processors/annotationSets');
 const cluster = require('./middlewares/processors/cluster');
+const feHierarchy = require('./middlewares/processors/feHierarchy');
 const frame = require('./middlewares/processors/frame');
 const frameElement = require('./middlewares/processors/frameElement');
 const frames = require('./middlewares/processors/frames');
+const frameHierarchy = require('./middlewares/processors/frameHierarchy');
 const lexUnit = require('./middlewares/processors/lexUnit');
 const lexUnits = require('./middlewares/processors/lexUnits');
 const pattern = require('./middlewares/processors/pattern');
@@ -64,6 +66,8 @@ async function initializeValencerContext(context, next) {
       },
       annotationSets: [],
       cluster: [],
+      feHierarchy: {},
+      frameHierarchy: {},
       frames: [],
       lexUnits: [],
       patterns: [],
@@ -119,6 +123,23 @@ const validateFormatAndProcessVPquery = compose([
   coreVU.retrieveExcludedVUIDs,
   coreP.retrievePatternsIDs,
   filter.filterPatternsIDs,
+]);
+
+const validateFormatAndProcessVPqueryForHierarchy = compose([
+  initializeValencerContext,
+  validator.validatePathToDB,
+  validator.validateQueryNotEmpty,
+  validator.validateQueryVPnotEmpty,
+  validator.validateQueryVPcontainsNoInvalidCharacters,
+  validator.validateQueryVPcontainsNoInvalidSequence,
+  validator.validateQueryVPvalenceUnitLength,
+  validator.validateQueryStrictVUmatchingParameter,
+  validator.validateQueryWithExtraCoreFEsParameter,
+  validator.validateProjectionString,
+  formatter.formatProjectionString,
+  database.connect(),
+  formatter.formatValencePatternToArrayOfArrayOfTokens,
+  formatter.extractFEnamesSet,
 ]);
 
 const validateFormatAndProcessVUquery = compose([
@@ -491,8 +512,56 @@ router.get('/cluster/lexUnits',
            renderer.renderCluster,
            displayQueryExecutionTime);
 
+
 /**
- * @api {get} /frame/:id/:projection/:population GetFrame
+* @api {get} /feHierarchy?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs
+* @apiVersion 5.0.0
+* @apiName GetFEhierarchy
+* @apiGroup Hierarchy
+* @apiDescription Get all FE children for the FE(s) specified in the input vp. Returns an
+* empty object if no match is found
+* @apiUse vpParam
+* @apiUse apiConfig
+* @apiExample Default
+* curl -i "http://localhost:3030/v5/en/170/feHierarchy?vp=Donor.NP.Ext+Theme.NP.Obj"
+* @apiUse FEhierarchySuccess
+* @apiUse NotFoundVPError
+* @apiUse InvalidQuery
+* @apiUse InvalidQueryParams
+*/
+router.get('/feHierarchy',
+           validateFormatAndProcessVPqueryForHierarchy,
+           feHierarchy.getByVP,
+           renderer.renderFEhierarchy,
+           displayQueryExecutionTime);
+
+router.get('/feHierarchy/:projection',
+           validateFormatAndProcessVPqueryForHierarchy,
+           feHierarchy.getByVP,
+           renderer.renderFEhierarchy,
+           displayQueryExecutionTime);
+
+/**
+* @api {get} /frameHierarchy/:id
+* @apiVersion 5.0.0
+* @apiName GetFrameHierarchy
+* @apiGroup Hierarchy
+* @apiDescription Get all parent frames for the input Frame ID.
+* Throws an error if the specified Frame ID is not found.
+* @apiUse apiConfig
+* @apiExample Default
+* curl -i "http://localhost:3030/v5/en/170/frameHierarchy/42"
+* @apiUse FrameHierarchySuccess
+* @apiUse NotFoundIDError
+* @apiUse InvalidQuery
+* @apiUse InvalidParams
+*/
+router.get('/frameHierarchy/:id',
+           validateAndFormatIDquery,
+           frameHierarchy.getByID);
+
+/**
+ * @api {get} /frame/:id/:projection/:population
  * @apiVersion 5.0.0
  * @apiName GetFrame
  * @apiGroup Frame
@@ -525,7 +594,7 @@ router.get('/frame/:id/:projection/:population',
            frame.getByID);
 
 /**
- * @api {get} /frames/:projection/:population?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs&skip=:skip&limit=:limit GetFrames
+ * @api {get} /frames/:projection/:population?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs&skip=:skip&limit=:limit
  * @apiVersion 5.0.0
  * @apiName GetFrames
  * @apiGroup Frame
@@ -568,7 +637,7 @@ router.get('/frames/:projection/:population',
            displayQueryExecutionTime);
 
 /**
- * @api {get} /frameElement/:id/:projection/:population GetFrameElement
+ * @api {get} /frameElement/:id/:projection/:population
  * @apiVersion 5.0.0
  * @apiName GetFrameElement
  * @apiGroup FrameElement
@@ -601,7 +670,7 @@ router.get('/frameElement/:id/:projection/:population',
            frameElement.getByID);
 
 /**
- * @api {get} /lexUnit/:id/:projection/:population GetLexUnit
+ * @api {get} /lexUnit/:id/:projection/:population
  * @apiVersion 5.0.0
  * @apiName GetLexUnit
  * @apiGroup LexUnit
@@ -634,7 +703,7 @@ router.get('/lexUnit/:id/:projection/:population',
            lexUnit.getByID);
 
 /**
- * @api {get} /lexUnits/:projection/:population?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs&skip=:skip&limit=:limit GetLexUnits
+ * @api {get} /lexUnits/:projection/:population?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs&skip=:skip&limit=:limit
  * @apiVersion 5.0.0
  * @apiName GetLexUnits
  * @apiGroup LexUnit
@@ -676,7 +745,7 @@ router.get('/lexUnits/:projection/:population',
            displayQueryExecutionTime);
 
 /**
- * @api {get} /pattern/:id/:projection/:population GetPattern
+ * @api {get} /pattern/:id/:projection/:population
  * @apiVersion 5.0.0
  * @apiName GetPattern
  * @apiGroup Pattern
@@ -709,7 +778,7 @@ router.get('/pattern/:id/:projection/:population',
            pattern.getByID);
 
 /**
- * @api {get} /patterns/:projection/:population?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs&skip=:skip&limit=:limit GetPatterns
+ * @api {get} /patterns/:projection/:population?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs&skip=:skip&limit=:limit
  * @apiVersion 5.0.0
  * @apiName GetPatterns
  * @apiGroup Pattern
@@ -752,7 +821,7 @@ router.get('/patterns/:projection/:population',
            displayQueryExecutionTime);
 
 /**
- * @api {get} /valenceUnit/:id/:projection/:population GetValenceUnit
+ * @api {get} /valenceUnit/:id/:projection/:population
  * @apiVersion 5.0.0
  * @apiName GetValenceUnit
  * @apiGroup ValenceUnit
@@ -785,7 +854,7 @@ router.get('/valenceUnit/:id/:projection/:population',
            valenceUnit.getByID);
 
 /**
- * @api {get} /valenceUnits/:projection/:population?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs&skip=:skip&limit=:limit GetValenceUnits
+ * @api {get} /valenceUnits/:projection/:population?vp=:vp&strictVUMatching=:strictVUMatching&withExtraCoreFEs=:withExtraCoreFEs&skip=:skip&limit=:limit
  * @apiVersion 5.0.0
  * @apiName GetValenceUnits
  * @apiGroup ValenceUnit

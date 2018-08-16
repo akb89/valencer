@@ -8,6 +8,11 @@ function renderCluster(context, next) {
   return next();
 }
 
+function renderFEhierarchy(context, next) {
+  context.body = context.valencer.results.feHierarchy;
+  return next();
+}
+
 function renderFrames(context, next) {
   context.body = context.valencer.results.frames;
   return next();
@@ -31,6 +36,7 @@ function renderValenceUnits(context, next) {
 module.exports = {
   renderAnnotationSets,
   renderCluster,
+  renderFEhierarchy,
   renderFrames,
   renderLexUnits,
   renderPatterns,
