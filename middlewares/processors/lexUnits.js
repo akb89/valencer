@@ -44,8 +44,7 @@ async function getByVP(context, next) {
     Limit: context.valencer.query.limit,
   });
   context.valencer.results.lexUnits = results;
-  logger.verbose(`${results.length} unique LexUnits out of ${count} retrieved
-    from database in ${utils.getElapsedTime(startTime)}ms`);
+  logger.verbose(`${results.length} unique LexUnits out of ${count} retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }
 

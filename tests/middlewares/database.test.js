@@ -26,7 +26,7 @@ describe('database', () => {
       },
     };
     await connect()(context, next);
-    Object.keys(context.valencer.models).length.should.equal(15);
+    Object.keys(context.valencer.models).length.should.equal(17);
   });
   it('#connect should create a connection to mongodb and correctly assign schemas with non-empty models', async () => {
     const next = () => {};
