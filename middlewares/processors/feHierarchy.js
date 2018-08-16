@@ -16,11 +16,11 @@ function getFEhierarchyWithModel(FEHierarchy) {
 async function getByVP(context, next) {
   const startTime = utils.getStartTime();
   logger.info(`Querying for FEHierarchy with vp = '${context.query.vp}'`);
-  logger.verbose(`Corresponding feNamesSet = '${Array.from(context.valencer.query.feNamesSet)}'`)
+  logger.verbose(`Corresponding feNamesSet = '${Array.from(context.valencer.query.feNamesSet)}'`);
   const feHierarchyModel = context.valencer.models.FEHierarchy;
-  console.log(context.valencer.query.projections);
-  const results = await getFEhierarchyWithModel(feHierarchyModel)(context.valencer.query.feNamesSet,
-                                                                  context.valencer.query.projections);
+  const results =
+    await getFEhierarchyWithModel(feHierarchyModel)(context.valencer.query.feNamesSet,
+                                                    context.valencer.query.projections);
   context.valencer.results.feHierarchy = results;
   logger.verbose(`feHierarchy retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();

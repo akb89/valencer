@@ -60,23 +60,8 @@ function getVPasArrayWithFEidsWithFEmodel(FrameElement) {
   };
 }
 
-function getFEnamesIDmapWithFEmodel(FrameElement) {
-  return async function getFEnamesIDmap(formattedVP) {
-    return formattedVP.reduce(async (feNamesIDmap, vUnitArray) => {
-      vUnitArray.forEach(async (token) => {
-        const fes = await FrameElement.find().where('name').equals(token);
-        if (fes.length > 0 && !feNamesIDmap.has(token)) {
-          feNamesIDmap.set(token, fes.map(fe => fe._id));
-        }
-        return feNamesIDmap;
-      });
-    }, new Map());
-  };
-}
-
 async function replaceFrameElementNamesByFrameElementIds(context, next) {
   const feModel = context.valencer.models.FrameElement;
-  const feNamesIDmap = getFEnamesIDmapWithFEmodel(feModel)(context.valencer.query.vp.formatted);
   context.valencer.query.vp.withFEids =
     await getVPasArrayWithFEidsWithFEmodel(feModel)(context.valencer.query.vp.formatted);
   logger.debug(`context.valencer.query.vp.withFEids = ${JSON.stringify(context.valencer.query.vp.withFEids)}`);
@@ -157,7 +142,8 @@ function extractFEnamesSetWithFEmodel(FrameElement) {
 
 async function extractFEnamesSet(context, next) {
   const feModel = context.valencer.models.FrameElement;
-  context.valencer.query.feNamesSet = await extractFEnamesSetWithFEmodel(feModel)(context.valencer.query.vp.formatted);
+  context.valencer.query.feNamesSet =
+    await extractFEnamesSetWithFEmodel(feModel)(context.valencer.query.vp.formatted);
   return next();
 }
 

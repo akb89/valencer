@@ -3,7 +3,7 @@ const utils = require('../../utils/utils');
 
 const logger = config.logger;
 
-function getFrameHierarchyWithFrameHierarchyModel(FrameHierarchy) {
+function getFrameHierarchyWithModel(FrameHierarchy) {
   return async function getFrameHierarchy(frameName, projections = {}) {
     return FrameHierarchy.findOne({}, projections).where('name').equals(frameName);
   };
@@ -14,7 +14,8 @@ async function getByName(context, next) {
   logger.info(`Querying for FrameHierarchy for Frame with name = ${context.query.frameName}`);
   const frameHierarchyModel = context.valencer.models.FrameHierarchy;
   context.body =
-    await getFrameHierarchyWithFrameHierarchyModel(frameHierarchyModel)(context.query.frameName, context.valencer.query.projections);
+    await getFrameHierarchyWithModel(frameHierarchyModel)(context.query.frameName,
+                                                          context.valencer.query.projections);
   logger.verbose(`FrameHierarchy retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }
