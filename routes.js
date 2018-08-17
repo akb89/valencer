@@ -478,7 +478,7 @@ router.get('/annoSets/:projection/:population',
   * @apiUse apiConfig
   * @apiExample Default
   * # Default usage (no option set)
-  * curl -i "http://localhost:3030/v5/en/170/cluster/frames?vp=Donor.NP.ExtTheme.NP.Obj"
+  * curl -i "http://localhost:3030/v5/en/170/cluster/frames?vp=Donor.NP.Ext+Theme.NP.Obj"
   * @apiUse ClusterFrameSuccess
   * @apiUse NotFoundVPError
   * @apiUse InvalidQuery
