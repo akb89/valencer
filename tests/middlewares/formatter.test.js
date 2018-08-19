@@ -11,6 +11,7 @@ const replaceFrameElementNamesByFrameElementIds = rewire('./../../middlewares/fo
 const formatProjectionString = rewire('./../../middlewares/formatter').__get__('formatProjectionString');
 const formatPopulationString = rewire('./../../middlewares/formatter').__get__('formatPopulationString');
 const extractFEnamesSet = rewire('./../../middlewares/formatter').__get__('extractFEnamesSet');
+const convertPTandGFtoFNstyle = rewire('./../../middlewares/formatter').__get__('convertPTandGFtoFNstyle');
 
 describe('formatter', () => {
   before(async () => {
@@ -162,6 +163,33 @@ describe('formatter', () => {
       ['G', 'H', [9, 10, 11]],
     ]);
   });
+  it('#replaceFrameElementNamesByFrameElementIds should be able to process mapped queries', async () => {
+    const next = () => {};
+    const context = {
+      valencer: {
+        models: {
+          FrameElement,
+        },
+        query: {
+          vp: {
+            formatted: [
+              ['A', 'B', 'C'],
+              [['D', 'G', 'S'], 'E', ['X', 'Y', 'Z']],
+              [['G'], 'H', 'I'],
+            ],
+          },
+        },
+      },
+    };
+    await replaceFrameElementNamesByFrameElementIds(context, next);
+    context.valencer.query.vp.withFEids.should.deep.equal([
+      [
+        [1], 'B', 'C',
+      ],
+      [['D', 'G', 'S'], [4, 5], ['X', 'Y', 'Z']],
+      [['G'], 'H', [9, 10, 11]],
+    ]);
+  });
   it('#replaceFrameElementNamesByFrameElementIds should be case insensitive', async () => {
     const next = () => {};
     const context = {
@@ -242,5 +270,24 @@ describe('formatter', () => {
     context.valencer.query.feNamesSet.size.should.equal(2);
     context.valencer.query.feNamesSet.has('Aa').should.be.true;
     context.valencer.query.feNamesSet.has('eEe').should.be.true;
+  });
+  it('#convertPTandGFtoFNstyle', async () => {
+    const next = () => {};
+    const context = {
+      valencer: {
+        query: {
+          vp: {
+            formatted: [
+              ['A', 'nsubj'],
+              ['adjp', 'E', 'F'],
+            ],
+          },
+        },
+      },
+    };
+    await convertPTandGFtoFNstyle(context, next);
+    context.valencer.query.vp.formatted.should.deep.equal([
+      ['A', ['NP', 'Poss', 'PP', 'AVP', 'N', 'VPto'], 'Ext'],
+      [['ADJ', 'A'], 'E', 'F']]);
   });
 });

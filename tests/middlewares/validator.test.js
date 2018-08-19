@@ -31,6 +31,7 @@ const validateQueryNotEmpty = rewire('./../../middlewares/validator').__get__('v
 const validateQueryParamContainsNoInvalidCharacters = rewire('./../../middlewares/validator').__get__('validateQueryParamContainsNoInvalidCharacters');
 const validateQueryWithExtraCoreFEsParameter = rewire('./../../middlewares/validator').__get__('validateQueryWithExtraCoreFEsParameter');
 const validateQueryParametersCombination = rewire('./../../middlewares/validator').__get__('validateQueryParametersCombination');
+const validateQueryFormatAfterMapping = rewire('./../../middlewares/validator').__get__('validateQueryFormatAfterMapping');
 
 describe('validator', () => {
   before(async () => {
@@ -526,5 +527,22 @@ describe('validator', () => {
     const context = { query: { limit: '1' } };
     (() => validateQueryLimitParameter(context, next))
       .should.not.throw(ApiError.InvalidQueryParams);
+  });
+  it('#validateQueryFormatAfterMapping should throw InvalidQuery when containing overspecified VUs', () => {
+    const next = () => {};
+    const context = {
+      valencer: {
+        query: {
+          vp: {
+            withFEids: [['A'], ['B'], ['C'], ['D']],
+          },
+        },
+      },
+    };
+    (() => validateQueryFormatAfterMapping(context, next))
+      .should.not.throw(ApiError.InvalidQuery);
+    context.valencer.query.vp.withFEids = [['A', 'B', 'C', 'D']];
+    (() => validateQueryFormatAfterMapping(context, next))
+      .should.throw(ApiError.InvalidQuery);
   });
 });

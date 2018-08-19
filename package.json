@@ -1,6 +1,6 @@
 {
   "name": "Valencer",
-  "version": "5.3.1",
+  "version": "5.4.0",
   "description": "A REST API to query valence patterns in FrameNet",
   "keywords": [
     "FrameNet",
