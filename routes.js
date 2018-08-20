@@ -48,6 +48,10 @@ async function initializeValencerContext(context, next) {
         raw: '',
         formatted: [],
         withFEids: [],
+        feName: '',
+        hasUDtags: false,
+        hasPENNtags: false,
+        rawMatches: [],
       },
       frameName: '',
       feNamesSet: new Set(),
@@ -128,6 +132,9 @@ const validateFormatAndProcessVPquery = compose([
   formatter.formatPopulationString,
   database.connect(),
   formatter.formatValencePatternToArrayOfArrayOfTokens,
+  formatter.convertPTandGFtoFNstyle,
+  formatter.formatMatchingVPqueries,
+  validator.validateQueryFormatAfterMapping,
   formatter.replaceFrameElementNamesByFrameElementIds,
   validator.validateQueryParametersCombination, // Needs to be done after formatting
   coreVU.retrieveValenceUnitsIDs,
@@ -478,7 +485,7 @@ router.get('/annoSets/:projection/:population',
   * @apiUse apiConfig
   * @apiExample Default
   * # Default usage (no option set)
-  * curl -i "http://localhost:3030/v5/en/170/cluster/frames?vp=Donor.NP.ExtTheme.NP.Obj"
+  * curl -i "http://localhost:3030/v5/en/170/cluster/frames?vp=Donor.NP.Ext+Theme.NP.Obj"
   * @apiUse ClusterFrameSuccess
   * @apiUse NotFoundVPError
   * @apiUse InvalidQuery

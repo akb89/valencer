@@ -13,6 +13,37 @@ const config = require('../config');
 const Promise = bluebird.Promise;
 const logger = config.logger;
 
+/**
+ * Convert an array of array of tokens to full FN-style PT.GF
+ * Detect UD (Universal Dependencies) and PENN constituent tags and convert
+ * to full valid FrameNet PhraseType and GrammaticalFunctions.
+ */
+function convertPTandGFtoFNstyle(context, next) {
+  context.valencer.query.vp.formatted = context.valencer.query.vp.formatted.map(vu =>
+    vu.reduce((array, item) => {
+      if (Object.prototype.hasOwnProperty.call(constants.UD_TO_FN_MAPPING, item)) {
+        context.valencer.query.vp.hasUDtags = true;
+        array.push(constants.UD_TO_FN_MAPPING[item].PT);
+        array.push(constants.UD_TO_FN_MAPPING[item].GF);
+      } else if (Object.prototype.hasOwnProperty.call(constants.PENN_CONST_TO_FN_MAPPING, item)) {
+        context.valencer.query.vp.hasPENNtags = true;
+        array.push(constants.PENN_CONST_TO_FN_MAPPING[item]);
+      } else {
+        array.push(item);
+      }
+      return array;
+    }, []));
+  logger.debug(`Formatted query after mapping = ${JSON.stringify(context.valencer.query.vp.formatted)}`);
+  return next();
+}
+
+// When non-FN tags (PT/GF) are found, returns a list of matching queries
+// in FrameNet-style
+function formatMatchingVPqueries(context, next) {
+  context.valencer.query.vp.rawMatches = []; // TODO: implement
+  return next();
+}
+
 function getFormattedValencePattern(vp) {
   const formattedValencePattern = utils.toTokenArray(utils.toValenceArray(vp));
   return formattedValencePattern;
@@ -149,7 +180,9 @@ async function extractFEnamesSet(context, next) {
 
 module.exports = {
   formatValencePatternToArrayOfArrayOfTokens,
+  formatMatchingVPqueries,
   replaceFrameElementNamesByFrameElementIds,
+  convertPTandGFtoFNstyle,
   formatProjectionString,
   formatPopulationString,
   extractFEnamesSet,

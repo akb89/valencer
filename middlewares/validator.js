@@ -294,6 +294,16 @@ function validateQueryLimitParameter(context, next) {
   return next();
 }
 
+// UD tags can only be specified with a FE -> Max 2 tokens in VU
+function validateQueryFormatAfterMapping(context, next) {
+  context.valencer.query.vp.withFEids.forEach((vu) => {
+    if (vu.length > 3) {
+      throw new ApiError.InvalidQuery('Overspecified ValenceUnits: the query contains more than 3 tokens per valenceunit. If using UD tags, make sure to specify only two elements per VU: the FE and the UD tag');
+    }
+  });
+  return next();
+}
+
 module.exports = {
   validatePathToDB,
   validateQueryNotEmpty,
@@ -316,4 +326,5 @@ module.exports = {
   validatePopulationString,
   validateQuerySkipParameter,
   validateQueryLimitParameter,
+  validateQueryFormatAfterMapping,
 };

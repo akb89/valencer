@@ -38,8 +38,8 @@ To import FrameNet data to a Mongo database, check out
 [NoFrameNet](https://github.com/akb89/noframenet)
 
 Alternatively, we provide two MongoDB dumps for
-[FrameNet 1.5](data/fn_en_150.tar.bz2) and
-[FrameNet 1.7](data/fn_en_170.tar.bz2) data.
+[FrameNet 1.5](data/fn_en_150.7z) and
+[FrameNet 1.7](data/fn_en_170.7z) data.
 If you are running MongoDB on localhost and port 27017,
 you can easily import the dumps once unzipped via:
 ```
