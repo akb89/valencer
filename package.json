@@ -61,7 +61,7 @@
     "mongoose": "^5.0.0",
     "noframenet-core": "^5.4.2",
     "pm2": "^2.6.1",
-    "winston": "^2.3.1"
+    "winston": "^3.0.0"
   },
   "devDependencies": {
     "apidoc": "^0.17.6",
