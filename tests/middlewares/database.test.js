@@ -3,13 +3,16 @@ const mongoose = require('mongoose');
 const rewire = require('rewire');
 const config = require('./../../config');
 
+mongoose.set('useCreateIndex', true);
+
 const should = chai.should();
 const connect = rewire('./../../middlewares/database').__get__('connect');
 
 describe('database', () => {
   before(async () => {
     if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(config.dbUri, { keepAlive: 1, connectTimeoutMS: 30000 });
+      await mongoose.connect(config.dbUri,
+                             { keepAlive: 1, connectTimeoutMS: 30000, useNewUrlParser: true });
     }
   });
   after(async () => {

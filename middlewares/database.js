@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
-const config = require('./../config');
 const nfc = require('noframenet-core');
+const config = require('./../config');
 
 const logger = config.logger;
+
+mongoose.set('useCreateIndex', true);
 
 function connect() {
   return async function aconnect(context, next) {

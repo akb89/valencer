@@ -28,10 +28,12 @@ async function filterPatternsIDs(context, next) {
   logger.debug(`Filtering patternsIDs with strictVUMatching = ${context.query.strictVUMatching}`);
   const startTime = utils.getStartTime();
   const patternModel = context.valencer.models.Pattern;
-  context.valencer.results.tmp.filteredPatternsIDs =
-    await getFilteredPIDsWithPModel(patternModel)(context.valencer.results.tmp.patternsIDs,
-                                                  context.valencer.results.tmp.valenceUnitsIDs,
-                                                  context.query.strictVUMatching);
+  const pIDs = context.valencer.results.tmp.patternsIDs;
+  const vuIDs = context.valencer.results.tmp.valenceUnitsIDs;
+  const fpIDs = await getFilteredPIDsWithPModel(patternModel)(pIDs,
+                                                              vuIDs,
+                                                              context.query.strictVUMatching);
+  context.valencer.results.tmp.filteredPatternsIDs = fpIDs;
   logger.debug(`context.valencer.results.tmp.filteredPatternsIDs.length = ${context.valencer.results.tmp.filteredPatternsIDs.length}`);
   logger.verbose(`context.valencer.results.tmp.filteredPatternsIDs processed in ${utils.getElapsedTime(startTime)}ms`);
   return next();
