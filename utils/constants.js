@@ -7,47 +7,29 @@ const PENN_CONST_TO_FN_MAPPING = {
 const UD_TO_FN_MAPPING = {
   nsubj: {
     GF: 'Ext',
-    PT: ['NP', 'Poss', 'PP', 'AVP', 'N', 'VPto'],
+    PT: ['NP', 'Poss', 'AJP', 'AVP'],
   },
   csubj: {
     GF: 'Ext',
-    PT: ['Sfin', 'Sinterrog'],
+    PT: ['Sfin', 'Sinterrog', 'Swhether', 'Sing', 'Srel', 'Sto', 'Sforto', 'Sbrst', 'Sub'],
   },
-  // obj: [],
-  // ccomp: [],
-  // iobj: [],
-  // xcomp: [],
+  obj: {
+    GF: 'Obj',
+    PT: ['NP', 'Poss', 'AJP', 'AVP'],
+  },
+  ccomp: {
+    GF: 'Obj',
+    PT: ['Sfin', 'Sinterrog', 'Swhether', 'Sing', 'Srel', 'Sto', 'Sforto', 'Sbrst', 'Sub'],
+  },
+  iobj: {
+    GF: 'Dep',
+    PT: ['NP', 'Poss', 'AJP', 'AVP'],
+  },
+  xcomp: {
+    GF: 'Dep',
+    PT: ['Sfin', 'Sinterrog', 'Swhether', 'Sing', 'Srel', 'Sto', 'Sforto', 'Sbrst', 'Sub'],
+  },
 };
-
-/*
-"NP",
-"Poss",
-"Sfin",
-"PP",
-"Sinterrog",
-"AVP",
-"N",
-"VPto",
-"VPing",
-"VPfin",
-"QUO",
-"Sforto",
-"A",
-"Num",
-"VPed",
-"AJP",
-"Swhether",
-"Sun",
-"Srel",
-"VPbrst",
-"Sing",
-"Sub",
-"PPinterrog",
-"Sbrst",
-"Sto",
-"PPing",
-"unknown"
-*/
 
 module.exports = {
   DISALLOW_CHARS_PROJ_POPUL,

@@ -290,7 +290,7 @@ describe('formatter', () => {
     };
     await convertPTandGFtoFNstyle(context, next);
     context.valencer.query.vp.formatted.should.deep.equal([
-      ['A', ['NP', 'Poss', 'PP', 'AVP', 'N', 'VPto'], 'Ext'],
+      ['A', ['NP', 'Poss', 'AJP', 'AVP'], 'Ext'],
       [['ADJ', 'A'], 'E', 'F']]);
   });
 });
