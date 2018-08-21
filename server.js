@@ -14,6 +14,8 @@ const zlib = require('zlib');
 const router = require('./routes');
 const config = require('./config');
 
+mongoose.set('useCreateIndex', true);
+
 const logger = config.logger;
 const app = new Koa();
 
@@ -29,7 +31,7 @@ app.use(async (context, next) => {
   try {
     await next();
   } catch (err) {
-    logger.error(err);
+    logger.error(err.message);
     err.expose = true; // expose the error to the context;
     context.status = err.status || 500;
     context.body = err.message;
@@ -52,8 +54,8 @@ function printLogo() {
     printLogo();
     const dbServer = config.databases.server;
     const dbPort = config.databases.port;
-    const dbUri = `mongodb://${dbServer}:${dbPort}`;
-    await mongoose.connect(dbUri);
+    const dbUri = `mongodb://${dbServer}:${dbPort}/''`;
+    await mongoose.connect(dbUri, { useNewUrlParser: true });
     logger.info(`Connected to MongoDB on server: '${dbServer}' and port '${dbPort}'`);
     await app.listen(config.api.port);
     logger.info(`Valencer started on port ${config.api.port}`);

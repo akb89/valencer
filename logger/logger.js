@@ -2,7 +2,7 @@ const winston = require('winston');
 
 const myFormat = winston.format.combine(winston.format.timestamp(),
                                         winston.format.colorize(),
-                                        winston.format.printf(mess => `[${mess.timestamp}] ${mess.level}: ${mess.message}`));
+                                        winston.format.printf(logged => `[${logged.timestamp}] ${logged.level}: ${logged.message}`));
 
 const warn = winston.createLogger({
   transports: [
