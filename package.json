@@ -60,7 +60,7 @@
     "koa-router": "^7.2.0",
     "mongoose": "^5.0.0",
     "noframenet-core": "^5.4.2",
-    "pm2": "^2.6.1",
+    "pm2": "^3.0.3",
     "winston": "^3.0.0"
   },
   "devDependencies": {
