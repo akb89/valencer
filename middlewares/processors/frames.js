@@ -35,8 +35,8 @@ async function getByVP(context, next) {
   const startTime = utils.getStartTime();
   logger.info(`Querying for Frames with skip = '${context.valencer.query.skip}', limit = '${context.valencer.query.limit}' and vp = '${context.query.vp}'`);
   const annoSetModel = context.valencer.models.AnnotationSet;
-  const frameIDs =
-    await getFrameIDsWithModel(annoSetModel)(context.valencer.results.tmp.filteredPatternsIDs);
+  const fpIDs = context.valencer.results.tmp.filteredPatternsIDs;
+  const frameIDs = await getFrameIDsWithModel(annoSetModel)(fpIDs);
   const [count, results] = await Promise.all([
     getFramesWithModel(context.valencer.models.Frame)(frameIDs, true),
     getFramesWithModel(context.valencer.models.Frame)(frameIDs, false,

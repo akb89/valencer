@@ -7,8 +7,8 @@ const config = require('./../../config');
 mongoose.Promise = require('bluebird');
 
 const should = chai.should();
-const getValenceUnitsIDs = rewire('./../../middlewares/core/valenceUnits').__get__('getValenceUnitsIDsWithValenceUnitModel')(ValenceUnit);
-const getArrayOfArrayOfValenceUnitsIDs = rewire('./../../middlewares/core/valenceUnits').__get__('getArrayOfArrayOfValenceUnitsIDsWithValenceUnitModel')(ValenceUnit);
+const getValenceUnitsIDs = rewire('./../../middlewares/core/valenceUnits').__get__('getVUIDsWithValenceUnitModel')(ValenceUnit);
+const getArrayOfArrayOfValenceUnitsIDs = rewire('./../../middlewares/core/valenceUnits').__get__('getArrayOfArrayOfVUidsWithValenceUnitModel')(ValenceUnit);
 
 describe('core.valenceUnits.included', () => {
   before(async () => {
@@ -133,7 +133,7 @@ describe('core.valenceUnits.included', () => {
   });
   it('#getArrayOfArrayOfValenceUnitsIDs should return an array of ObjectIDs', async () => {
     const vuidss = await getArrayOfArrayOfValenceUnitsIDs([[[1], 'NP', 'Obj'], [[3], 'NP', 'Ext'], [[4], 'PP[about]', 'Ext']]);
-    vuidss.forEach(vuids => vuids.forEach(vuid =>
-      mongoose.Types.ObjectId.isValid(vuid).should.be.true));
+    const ObjectId = mongoose.Types.ObjectId;
+    vuidss.forEach(vuids => vuids.forEach(vuid => ObjectId.isValid(vuid).should.be.true));
   });
 });

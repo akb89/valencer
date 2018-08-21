@@ -1,6 +1,6 @@
+const Promise = require('bluebird');
 const config = require('../../config');
 const utils = require('../../utils/utils');
-const Promise = require('bluebird');
 
 const logger = config.logger;
 

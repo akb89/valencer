@@ -1,8 +1,8 @@
 const chai = require('chai');
 const rewire = require('rewire');
 const mongoose = require('mongoose');
-const config = require('./../../config');
 const FrameElement = require('noframenet-core').FrameElement;
+const config = require('./../../config');
 
 const should = chai.should();
 

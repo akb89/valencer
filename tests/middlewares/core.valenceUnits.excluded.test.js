@@ -86,9 +86,8 @@ describe('core.valenceUnits.excluded', () => {
     excludedFEids.includes(2).should.be.true;
   });
   it('#getExcludedVUids should return an array of ObjectIDs', async () => {
-    const excludedVUids = await getExcludedVUids([aFE._id, bFE._id, cFE._id]);
-    excludedVUids.forEach(excludedVUid =>
-      mongoose.Types.ObjectId.isValid(excludedVUid).should.be.true);
+    const xVUids = await getExcludedVUids([aFE._id, bFE._id, cFE._id]);
+    xVUids.forEach(excludedVUid => mongoose.Types.ObjectId.isValid(excludedVUid).should.be.true);
   });
   it('#getExcludedVUids should return the correct ValenceUnit ids', async () => {
     const excludedVUids = await getExcludedVUids([aFE._id, bFE._id, cFE._id]);
