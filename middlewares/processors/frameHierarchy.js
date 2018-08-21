@@ -13,9 +13,9 @@ async function getByName(context, next) {
   const startTime = utils.getStartTime();
   logger.info(`Querying for FrameHierarchy for Frame with name = ${context.query.frameName}`);
   const frameHierarchyModel = context.valencer.models.FrameHierarchy;
-  context.body =
-    await getFrameHierarchyWithModel(frameHierarchyModel)(context.query.frameName,
-                                                          context.valencer.query.projections);
+  const projections = context.valencer.query.projections;
+  context.body = await getFrameHierarchyWithModel(frameHierarchyModel)(context.query.frameName,
+                                                                       projections);
   logger.verbose(`FrameHierarchy retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }

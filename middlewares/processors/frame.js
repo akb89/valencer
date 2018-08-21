@@ -14,9 +14,9 @@ async function getByID(context, next) {
   const startTime = utils.getStartTime();
   logger.info(`Querying for Frame with _id = ${context.params.id}`);
   const frameModel = context.valencer.models.Frame;
-  context.body =
-    await getFrameWithFrameModel(frameModel)(context.params.id, context.valencer.query.projections,
-                                             context.valencer.query.populations);
+  context.body = await getFrameWithFrameModel(frameModel)(context.params.id,
+                                                          context.valencer.query.projections,
+                                                          context.valencer.query.populations);
   logger.verbose(`Frame with _id = ${context.params.id} retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }

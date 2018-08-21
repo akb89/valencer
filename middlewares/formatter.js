@@ -19,20 +19,20 @@ const logger = config.logger;
  * to full valid FrameNet PhraseType and GrammaticalFunctions.
  */
 function convertPTandGFtoFNstyle(context, next) {
-  context.valencer.query.vp.formatted = context.valencer.query.vp.formatted.map(vu =>
-    vu.reduce((array, item) => {
-      if (Object.prototype.hasOwnProperty.call(constants.UD_TO_FN_MAPPING, item)) {
-        context.valencer.query.vp.hasUDtags = true;
-        array.push(constants.UD_TO_FN_MAPPING[item].PT);
-        array.push(constants.UD_TO_FN_MAPPING[item].GF);
-      } else if (Object.prototype.hasOwnProperty.call(constants.PENN_CONST_TO_FN_MAPPING, item)) {
-        context.valencer.query.vp.hasPENNtags = true;
-        array.push(constants.PENN_CONST_TO_FN_MAPPING[item]);
-      } else {
-        array.push(item);
-      }
-      return array;
-    }, []));
+  const fVPq = context.valencer.query.vp.formatted.map(vu => vu.reduce((array, item) => {
+    if (Object.prototype.hasOwnProperty.call(constants.UD_TO_FN_MAPPING, item)) {
+      context.valencer.query.vp.hasUDtags = true;
+      array.push(constants.UD_TO_FN_MAPPING[item].PT);
+      array.push(constants.UD_TO_FN_MAPPING[item].GF);
+    } else if (Object.prototype.hasOwnProperty.call(constants.PENN_CONST_TO_FN_MAPPING, item)) {
+      context.valencer.query.vp.hasPENNtags = true;
+      array.push(constants.PENN_CONST_TO_FN_MAPPING[item]);
+    } else {
+      array.push(item);
+    }
+    return array;
+  }, []));
+  context.valencer.query.vp.formatted = fVPq;
   logger.debug(`Formatted query after mapping = ${JSON.stringify(context.valencer.query.vp.formatted)}`);
   return next();
 }
@@ -93,8 +93,9 @@ function getVPasArrayWithFEidsWithFEmodel(FrameElement) {
 
 async function replaceFrameElementNamesByFrameElementIds(context, next) {
   const feModel = context.valencer.models.FrameElement;
-  context.valencer.query.vp.withFEids =
-    await getVPasArrayWithFEidsWithFEmodel(feModel)(context.valencer.query.vp.formatted);
+  const fVPq = context.valencer.query.vp.formatted;
+  const qWithFEids = await getVPasArrayWithFEidsWithFEmodel(feModel)(fVPq);
+  context.valencer.query.vp.withFEids = qWithFEids;
   logger.debug(`context.valencer.query.vp.withFEids = ${JSON.stringify(context.valencer.query.vp.withFEids)}`);
   return next();
 }
@@ -173,8 +174,8 @@ function extractFEnamesSetWithFEmodel(FrameElement) {
 
 async function extractFEnamesSet(context, next) {
   const feModel = context.valencer.models.FrameElement;
-  context.valencer.query.feNamesSet =
-    await extractFEnamesSetWithFEmodel(feModel)(context.valencer.query.vp.formatted);
+  const fVPq = context.valencer.query.vp.formatted;
+  context.valencer.query.feNamesSet = await extractFEnamesSetWithFEmodel(feModel)(fVPq);
   return next();
 }
 

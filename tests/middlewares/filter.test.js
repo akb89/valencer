@@ -6,6 +6,8 @@ const Pattern = require('noframenet-core').Pattern;
 const ValenceUnit = require('noframenet-core').ValenceUnit;
 const config = require('./../../config');
 
+mongoose.set('useCreateIndex', true);
+
 const should = chai.should();
 const filterByStrictVUMatching = rewire('./../../middlewares/filter').__get__('filterByStrictVUMatching');
 const getFilteredPIDsWithPModel = rewire('./../../middlewares/filter').__get__('getFilteredPIDsWithPModel');
@@ -37,7 +39,8 @@ describe('filter', () => {
   let pattern12;
   before(async () => {
     if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(config.dbUri, { keepAlive: 1, connectTimeoutMS: 30000 });
+      await mongoose.connect(config.dbUri,
+                             { keepAlive: 1, connectTimeoutMS: 30000, useNewUrlParser: true });
     }
     aFE = new FrameElement({ _id: 1, name: 'A', coreType: 'Core' });
     await aFE.save();

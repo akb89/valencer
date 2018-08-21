@@ -6,14 +6,17 @@ const ValenceUnit = require('noframenet-core').ValenceUnit;
 const config = require('./../../config');
 mongoose.Promise = require('bluebird');
 
+mongoose.set('useCreateIndex', true);
+
 const should = chai.should();
-const getValenceUnitsIDs = rewire('./../../middlewares/core/valenceUnits').__get__('getValenceUnitsIDsWithValenceUnitModel')(ValenceUnit);
-const getArrayOfArrayOfValenceUnitsIDs = rewire('./../../middlewares/core/valenceUnits').__get__('getArrayOfArrayOfValenceUnitsIDsWithValenceUnitModel')(ValenceUnit);
+const getValenceUnitsIDs = rewire('./../../middlewares/core/valenceUnits').__get__('getVUIDsWithValenceUnitModel')(ValenceUnit);
+const getArrayOfArrayOfValenceUnitsIDs = rewire('./../../middlewares/core/valenceUnits').__get__('getArrayOfArrayOfVUidsWithValenceUnitModel')(ValenceUnit);
 
 describe('core.valenceUnits.included', () => {
   before(async () => {
     if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(config.dbUri, { keepAlive: 1, connectTimeoutMS: 30000 });
+      await mongoose.connect(config.dbUri,
+                             { keepAlive: 1, connectTimeoutMS: 30000, useNewUrlParser: true });
     }
     const aFE = new FrameElement({ _id: 1, name: 'A' });
     await aFE.save();
@@ -133,7 +136,7 @@ describe('core.valenceUnits.included', () => {
   });
   it('#getArrayOfArrayOfValenceUnitsIDs should return an array of ObjectIDs', async () => {
     const vuidss = await getArrayOfArrayOfValenceUnitsIDs([[[1], 'NP', 'Obj'], [[3], 'NP', 'Ext'], [[4], 'PP[about]', 'Ext']]);
-    vuidss.forEach(vuids => vuids.forEach(vuid =>
-      mongoose.Types.ObjectId.isValid(vuid).should.be.true));
+    const ObjectId = mongoose.Types.ObjectId;
+    vuidss.forEach(vuids => vuids.forEach(vuid => ObjectId.isValid(vuid).should.be.true));
   });
 });

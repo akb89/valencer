@@ -18,9 +18,10 @@ async function getByVP(context, next) {
   logger.info(`Querying for FEHierarchy with vp = '${context.query.vp}'`);
   logger.verbose(`Corresponding feNamesSet = '${Array.from(context.valencer.query.feNamesSet)}'`);
   const feHierarchyModel = context.valencer.models.FEHierarchy;
-  const results =
-    await getFEhierarchyWithModel(feHierarchyModel)(context.valencer.query.feNamesSet,
-                                                    context.valencer.query.projections);
+  const feNamesSet = context.valencer.query.feNamesSet;
+  const projections = context.valencer.query.projections;
+  const results = await getFEhierarchyWithModel(feHierarchyModel)(feNamesSet,
+                                                                  projections);
   context.valencer.results.feHierarchy = results;
   logger.verbose(`feHierarchy retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();

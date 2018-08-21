@@ -52,8 +52,8 @@ async function getFrames(context, next) {
   const startTime = utils.getStartTime();
   logger.info(`Querying for all cluster frames with a valence pattern matching: '${context.query.vp}'`);
   const frModel = context.valencer.models.FrameRelation;
-  context.valencer.results.cluster =
-    await getClusterFramesWithModel(frModel)(context.valencer.results.frames);
+  const cluster = await getClusterFramesWithModel(frModel)(context.valencer.results.frames);
+  context.valencer.results.cluster = cluster;
   logger.verbose(`${context.valencer.results.cluster.length} cluster frames retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }
@@ -64,9 +64,9 @@ async function getLexUnits(context, next) {
     ${context.valencer.query.frameID} with a valence pattern matching:
     '${context.query.vp}'`);
   const luModel = context.valencer.models.LexUnit;
-  context.valencer.results.cluster =
-    await getClusterLexUnitsWithModel(luModel)(context.valencer.results.lexUnits,
-                                               context.valencer.query.frameID);
+  const cluster = await getClusterLexUnitsWithModel(luModel)(context.valencer.results.lexUnits,
+                                                             context.valencer.query.frameID);
+  context.valencer.results.cluster = cluster;
   logger.verbose(`${context.valencer.results.cluster.length} cluster lexUnits retrieved from database in ${utils.getElapsedTime(startTime)}ms`);
   return next();
 }
