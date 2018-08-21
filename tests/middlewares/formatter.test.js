@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const FrameElement = require('noframenet-core').FrameElement;
 const config = require('./../../config');
 
+mongoose.set('useCreateIndex', true);
+
 const should = chai.should();
 
 const formatValencePatternToArrayOfArrayOfTokens = rewire('./../../middlewares/formatter').__get__('formatValencePatternToArrayOfArrayOfTokens');
@@ -19,6 +21,7 @@ describe('formatter', () => {
       await mongoose.connect(config.dbUri, {
         keepAlive: 1,
         connectTimeoutMS: 30000,
+        useNewUrlParser: true,
       });
     }
     const aFE = new FrameElement({

@@ -4,6 +4,8 @@ const config = require('./../config');
 
 const logger = config.logger;
 
+mongoose.set('useCreateIndex', true);
+
 function connect() {
   return async function aconnect(context, next) {
     const dbName = context.valencer.dbName;

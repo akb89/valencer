@@ -6,6 +6,8 @@ const Pattern = require('noframenet-core').Pattern;
 const ValenceUnit = require('noframenet-core').ValenceUnit;
 const config = require('./../../config');
 
+mongoose.set('useCreateIndex', true);
+
 const should = chai.should();
 const getPatternsIDs = rewire('./../../middlewares/core/patterns').__get__('getPatternIDsWithPatternModel')(Pattern);
 mongoose.Promise = require('bluebird');
@@ -27,7 +29,8 @@ describe('core.patterns', () => {
   let pattern8;
   before(async () => {
     if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(config.dbUri, { keepAlive: 1, connectTimeoutMS: 30000 });
+      await mongoose.connect(config.dbUri,
+                             { keepAlive: 1, connectTimeoutMS: 30000, useNewUrlParser: true });
     }
     const aFE = new FrameElement({ _id: 1, name: 'A' });
     await aFE.save();

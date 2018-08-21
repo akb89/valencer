@@ -6,6 +6,8 @@ const ValenceUnit = require('noframenet-core').ValenceUnit;
 const config = require('./../../config');
 mongoose.Promise = require('bluebird');
 
+mongoose.set('useCreateIndex', true);
+
 const should = chai.should();
 const getFrameElementNamesSet = rewire('./../../middlewares/core/valenceUnits').__get__('getFrameElementNamesSet');
 const getExcludedFEids = rewire('./../../middlewares/core/valenceUnits').__get__('getExcludedFEidsWithFEmodel')(FrameElement);
@@ -22,7 +24,8 @@ describe('core.valenceUnits.excluded', () => {
   let eSfinADJ;
   before(async () => {
     if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(config.dbUri, { keepAlive: 1, connectTimeoutMS: 30000 });
+      await mongoose.connect(config.dbUri,
+                             { keepAlive: 1, connectTimeoutMS: 30000, useNewUrlParser: true });
     }
     aFE = new FrameElement({ _id: 1, name: 'A', coreType: 'Core' });
     await aFE.save();
